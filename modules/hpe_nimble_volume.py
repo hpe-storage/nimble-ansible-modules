@@ -18,7 +18,7 @@ DOCUMENTATION = r'''
 ---
 author:
     - Alok Ranjan (@ranjanal)
-description: "On HPE Nimble Storage Array- Create, Update, Delete Volume  Online, Offline and Clone Volume"
+description: "On HPE Nimble Storage Array- Perform Create, Update, Delete, Online, Offline and Clone operations for a Volume"
 module: hpe_nimble_volume
 options:
     state:
