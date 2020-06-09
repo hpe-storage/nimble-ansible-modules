@@ -1,5 +1,4 @@
 ---
-#- import_playbook: bootstrap.yml
 - hosts: "localhost"
   gather_facts: true
   #debugger: always
@@ -48,7 +47,7 @@
         force: "{{force | default(0)}}"
         metadata: "{{ metadata }}"
         description: "{{ description }}"
-        volcoll_name: "{{ ansible_default_ipv4['address']}}-{{ volcoll_name }}"
+        volcoll: "{{ ansible_default_ipv4['address']}}-{{ volcoll }}"
         name: "{{ansible_default_ipv4['address']}}-{{ name }}"
       ignore_errors: yes
       tags:
@@ -84,39 +83,39 @@
     # - name: check whether mandatory varibales for clone task is provided
     #   raw: test -e /usr/bin/python3
     #   register: var_result
-    #   when: parent_vol_name is defined
+    #   when: parent_vol is defined
     #   tags:
     #     - clone_vol
 
 
     # Create a clone from the given snapshot name.
     # if snapshot name is not provided then create a snapshot of source volume
-    # clone task should only run if parent_vol_name is specified.snapshot name is optional
+    # clone task should only run if parent_vol is specified.snapshot name is optional
     - name: Let's create or refresh a clone!
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ansible_default_ipv4['address']}}-{{ cloned_vol_name | mandatory}}" # name here is the name of cloned volume
+        name: "{{ansible_default_ipv4['address']}}-{{ cloned_vol | mandatory}}" # name here is the name of cloned volume
         # parent volume to clone from
-        parent_vol_name: "{{ansible_default_ipv4['address']}}-{{ parent_vol_name }}" # do we neeed the source vol if snapshot_name is provided?
-        snapshot_name: "{{ snapshot_name | default(None)}}"
+        parent_vol: "{{ansible_default_ipv4['address']}}-{{ parent_vol }}" # do we neeed the source vol if snapshot is provided?
+        snapshot: "{{ snapshot | default(None)}}"
         state: "{{ state | default('present') }}" # fail if exist
       ignore_errors: yes
       when:
-        - parent_vol_name is defined
+        - parent_vol is defined
       tags:
         - clone_vol
 
-    # if no snapshot_name is given then restore volume to last snapshot,fails if no snapshots exist
-    # or if snapshot_name is provided then restore volume from that snapshot
+    # if no snapshot is given then restore volume to last snapshot,fails if no snapshots exist
+    # or if snapshot is provided then restore volume from that snapshot
     - name: Restore volume .
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ansible_default_ipv4['address']}}-{{ name }}"
-        snapshot_name: "{{ snapshot_name | default(None)}}"
+        snapshot: "{{ snapshot | default(None)}}"
         state: restore
       ignore_errors: yes
       tags:

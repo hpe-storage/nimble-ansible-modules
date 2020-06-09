@@ -1,14 +1,14 @@
 ---
-# - import_playbook: bootstrap.yml
+
 - hosts: "localhost"
   gather_facts: true
   vars:
     # we should always use python3
     ansible_python_interpreter: /usr/bin/python3
-    vol_name: "ansible-vol1"
+    volume: "ansible-vol1"
     #state: "create"
-    initiator_group_name: "ig-alokcentos1"
-    chap_user_name: "alok"
+    initiator_group: "ig-alokcentos1"
+    chap_user: "alok"
 
   tasks:
     - name: Load Storage System Vars
@@ -24,9 +24,9 @@
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        vol_name: "{{ansible_default_ipv4['address']}}-{{ vol_name }}"
-        initiator_group_name: "{{ansible_default_ipv4['address']}}-{{ initiator_group_name }}"
-        # chap_user_name: "{{ chap_user_name }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        initiator_group: "{{ansible_default_ipv4['address']}}-{{ initiator_group }}"
+        # chap_user: "{{ chap_user }}"
         state: "{{ state | default('present') }}" # fail if exist
       tags:
         - create_acr
@@ -37,7 +37,7 @@
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        vol_name: "{{ansible_default_ipv4['address']}}-{{ vol_name }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
         state: "absent" # fail if volume does not exist
       tags:
         - delete_acr

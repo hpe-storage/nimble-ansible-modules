@@ -29,7 +29,7 @@ options:
             - create
         type: 'str'
         description:
-        - choice for ACR operation
+        - Choice for ACR operation
     apply_to:
         required: False
         choices:
