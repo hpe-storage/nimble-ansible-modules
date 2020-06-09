@@ -18,7 +18,7 @@ DOCUMENTATION = r'''
 ---
 author:
     - Alok Ranjan (@ranjanal)
-description: "On HPE Nimble Storage Array- Perform Create, Update, Delete, Online, Offline and Clone operations for a Volume"
+description: "Manage volume on a Nimble Storage group"
 module: hpe_nimble_volume
 options:
     state:
@@ -49,12 +49,12 @@ options:
         default: null
         description:
         - Text description of volume.
-    perfpolicy_name:
+    perf_policy:
         required: False
         type: str
         default: null
         description:
-        - Name of the performance policy.After creating a volume, performance policy for the volume can only be
+        - Name of the performance policy. After creating a volume, performance policy for the volume can only be
           changed to another performance policy with same block size.
     limit:
         required: False
@@ -68,7 +68,7 @@ options:
         default: True
         description:
         - Online state of volume, available for host initiators to establish connections.
-    owned_by_group_name:
+    owned_by_group:
         required: False
         type: str
         default: null
@@ -89,7 +89,7 @@ options:
         default: 'volume'
         description:
         - This indicates whether volume is exported under iSCSI Group Target or iSCSI Volume Target. This attribute is only meaningful to iSCSI system
-    pool_name:
+    pool:
         required: False
         type: str
         default: null
@@ -112,7 +112,7 @@ options:
         type: bool
         default: False
         description:
-        - Whether this volume is a clone.Use this attribute in combination with name and snapshot_name to create a clone by setting clone = true.
+        - Whether this volume is a clone.Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
     agent_type:
         required: False
         choices:
@@ -125,7 +125,7 @@ options:
         default: 'none'
         description:
         - External management agent type.
-    dest_pool_name:
+    dest_pool:
         required: False
         type: str
         default: null
@@ -188,19 +188,19 @@ options:
         default: -1
         description:
         - Throughput limit for this volume in MB/s.
-    parent_vol_name:
+    parent_vol:
         required: False
         type: str
         default: null
         description:
         - Name of parent volume
-    snapshot_name:
+    snapshot:
         required: False
         type: str
         default: null
         description:
         - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation
-    volcoll_name:
+    volcoll:
         required: False
         type: str
         default: null
@@ -225,14 +225,14 @@ options:
         description:
         - Move a Volume to different Pool.
 
-extends_documentation_fragment: hpenimble
-short_description: "Manage HPE Nimble Storage volume"
+extends_documentation_fragment: hpe_nimble
+short_description: "Manages a HPE Nimble Storage volume"
 version_added: "2.9"
 '''
 
 EXAMPLES = r'''
 
-      # if state is create , then create a volume if not present. Fails if already present.
+      # if state is create, then create a volume if not present. Fails if already present.
       # if state is "present", then create a volume if not present, But Success if it already exists
     - name: Create Volume if not present
       hpe_nimble_volume:
@@ -266,33 +266,33 @@ EXAMPLES = r'''
 
     # Create a clone from the given snapshot name.
     # if snapshot name is not provided then create a snapshot of source volume
-    # clone task should only run if parent_vol_name is specified.snapshot name is optional
+    # clone task should only run if parent_vol is specified.snapshot name is optional
     - name: Let's create or refresh a clone!
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}" # do we neeed the source vol if snapshot_name is provided?
-        parent_vol_name: "{{ parent_vol_name | mandatory }}"
-        snapshot_name: "{{ snapshot_name | default(None)}}"
+        name: "{{ name }}" # name here is the name of cloned volume
+        parent_vol: "{{ parent_vol | mandatory }}"
+        snapshot: "{{ snapshot | default(None)}}"
         state: "{{ state | default('present') }}" # fail if exist
       when:
-        - parent_vol_name is defined
+        - parent_vol is defined
 
     - name: Let's destroy myvol1 (it's not offline)
       hpe_nimble_volume:
         name: "{{ name }}"
         state: absent
 
-    # if no snapshot_name is given then restore volume to last snapshot,fails if no snapshots exist
-    # or if snapshot_name is provided then restore volume from that snapshot
+    # if no snapshot is given then restore volume to last snapshot, fails if no snapshots exist
+    # or if snapshot is provided then restore volume from that snapshot
     - name: Restore volume "{{ name }}".
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ name }}"
-        snapshot_name: "{{ snapshot_name | default(None)}}"
+        snapshot: "{{ snapshot | default(None)}}"
         state: restore
 
     - name: Delete volume "{{ name }}" (it's not offline)
@@ -303,14 +303,14 @@ EXAMPLES = r'''
         name: "{{ name }}"
         state: absent
 
-    - name: Volume Move to pool
+    - name: Volume move to pool
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         move: true
         name: "{{ name }}"
-        dest_pool_name: "{{ dest_pool_name | mandatory }}"
+        dest_pool: "{{ dest_pool | mandatory }}"
 
 '''
 
@@ -323,7 +323,8 @@ try:
     from nimbleclient import exceptions
 except ImportError:
     client = None
-import ansible.module_utils.hpenimble as utils
+import ansible.module_utils.hpe_nimble as utils
+#import hpe_nimble_module_utils.hpe_nimble as utils
 from enum import Enum
 
 
@@ -337,23 +338,23 @@ class Vol_Operation(Enum):
 def move_volume(
         client_obj,
         vol_name,
-        dest_pool_name,
+        dest_pool,
         force_vvol):
 
     if utils.is_null_or_empty(vol_name):
-        return (False, False, "Volume Move failed. Volume name is null", {})
+        return (False, False, "Volume move failed. Volume name is null", {})
 
-    if utils.is_null_or_empty(dest_pool_name):
-        return (False, False, "Volume Move failed. dest_pool_name is null", {})
+    if utils.is_null_or_empty(dest_pool):
+        return (False, False, "Volume move failed. dest_pool is null", {})
     try:
         vol_resp = client_obj.volumes.get(id=None, name=vol_name)
         if utils.is_null_or_empty(vol_resp):
             return (False, False, "Volume '%s' not present to move" % vol_name, {})
 
-        client_obj.volumes.move(id=vol_resp.attrs.get("id"), dest_pool_id=utils.get_pool_id(client_obj, dest_pool_name), force_vvol=force_vvol)
+        client_obj.volumes.move(id=vol_resp.attrs.get("id"), dest_pool_id=utils.get_pool_id(client_obj, dest_pool), force_vvol=force_vvol)
         return (True, True, "Volume '%s' moved Successfully." % vol_resp.attrs.get("name"), {})
     except Exception as ex:
-        return (False, False, "Volume Move failed | %s" % ex, {})
+        return (False, False, "Volume move failed | %s" % ex, {})
 
 
 def update_volume(
@@ -383,9 +384,6 @@ def create_volume(
     if utils.is_null_or_empty(vol_name):
         return (False, False, "Volume creation failed. Volume name is null", {})
 
-    if len(vol_name) < 1 or len(vol_name) > 214:
-        return (False, False, "Volume create failed. Volume name ' %s 'must be atleast 1 character and not more than 214 "
-                "characters" % vol_name, {})
     try:
         vol_resp = client_obj.volumes.get(id=None, name=vol_name)
         # remove unchanged and null arguments from kwargs
@@ -417,7 +415,7 @@ def delete_volume(client_obj, vol_name):
         return (False, False, "Volume deletion failed | %s" % e, {})
 
 
-def restore_volume(client_obj, vol_name, snapshot_name_to_restore=None):
+def restore_volume(client_obj, vol_name, snapshot_to_restore=None):
     if utils.is_null_or_empty(vol_name):
         return (False, False, "Volume restore failed. Volume name is null", {})
     try:
@@ -425,20 +423,20 @@ def restore_volume(client_obj, vol_name, snapshot_name_to_restore=None):
         if utils.is_null_or_empty(vol_resp):
             return (False, False, "Volume '%s' not present to restore" % vol_name, {})
 
-        if utils.is_null_or_empty(snapshot_name_to_restore):
+        if utils.is_null_or_empty(snapshot_to_restore):
             # restore the volume to the last snapshot
             snap_list_resp = client_obj.snapshots.list(vol_name=vol_name)
             if utils.is_null_or_empty(snap_list_resp):
                 return (False, False, "Could not restore Volume '%s' as no snapshot is present in Source volume"
                         % vol_name, {})
             snap_resp = snap_list_resp[-1]
-            snapshot_name_to_restore = snap_resp.attrs.get("name")
+            snapshot_to_restore = snap_resp.attrs.get("name")
         else:
             # get the snapshot detail from the given source vol
-            snap_resp = client_obj.snapshots.get(vol_name=vol_name, name=snapshot_name_to_restore)
+            snap_resp = client_obj.snapshots.get(vol_name=vol_name, name=snapshot_to_restore)
             if utils.is_null_or_empty(snap_resp):
                 return (False, False, "Could not restore Volume '%s' as given snapshot name '%s' is not present in Source volume"
-                        % (vol_name, snapshot_name_to_restore), {})
+                        % (vol_name, snapshot_to_restore), {})
 
         # offline and restore
         client_obj.volumes.offline(id=vol_resp.attrs.get("id"))
@@ -446,7 +444,7 @@ def restore_volume(client_obj, vol_name, snapshot_name_to_restore=None):
                                    id=vol_resp.attrs.get("id"))
         # bring volume online
         client_obj.volumes.online(id=vol_resp.attrs.get("id"))
-        return (True, True, "Restored volume %s from snapshot '%s' successfully." % (vol_name, snapshot_name_to_restore), {})
+        return (True, True, "Restored volume %s from snapshot '%s' successfully." % (vol_name, snapshot_to_restore), {})
     except Exception as e:
         return (False, False, "Volume restore failed | %s" % e, {})
 
@@ -489,19 +487,19 @@ def create_clone_from_snapshot(
         client_obj,
         snap_list_resp,
         vol_name,
-        snapshot_name_to_clone,
+        snapshot_to_clone,
         state):
-    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent_vol_name is None:
+    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent_vol is None:
     if (utils.is_null_or_empty(client_obj)
         or utils.is_null_or_empty(vol_name)
             or utils.is_null_or_empty(snap_list_resp)
-            or utils.is_null_or_empty(snapshot_name_to_clone)):
+            or utils.is_null_or_empty(snapshot_to_clone)):
         return (False, "create_clone_from_snapshot failed as valid args not provided")
     try:
         # to_return = Vol_Operation.FAILED  # assume failed
         # find the snapshot from snapshot list
         for snap_obj in snap_list_resp:
-            if snap_obj.attrs.get("name") == snapshot_name_to_clone:
+            if snap_obj.attrs.get("name") == snapshot_to_clone:
                 # create
                 resp = client_obj.volumes.create(name=vol_name,
                                                  base_snap_id=snap_obj.attrs.get("id"),
@@ -522,10 +520,10 @@ def create_clone_from_snapshot(
 
 def clone_volume(
         client_obj,
-        parent_vol_name,
+        parent_vol,
         state,
         vol_name=None,
-        snapshot_name_to_clone=None):
+        snapshot_to_clone=None):
 
     if utils.is_null_or_empty(vol_name):
         return (False, False, "Clone operation failed. Clone Volume name is not present.", {})
@@ -534,17 +532,17 @@ def clone_volume(
     # we first create a snapshot of source volume and then
     # clone from the snapshot
     try:
-        if utils.is_null_or_empty(snapshot_name_to_clone):
-            if utils.is_null_or_empty(parent_vol_name):
+        if utils.is_null_or_empty(snapshot_to_clone):
+            if utils.is_null_or_empty(parent_vol):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             # get the vol id
-            vol_resp = client_obj.volumes.get(name=parent_vol_name)
+            vol_resp = client_obj.volumes.get(name=parent_vol)
             if utils.is_null_or_empty(vol_resp):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             else:
                 # create a temp snapshot
-                snapshot_name_to_clone = utils.get_unique_string("ansible-snapshot")
-                snap_resp = client_obj.snapshots.create(name=snapshot_name_to_clone,
+                snapshot_to_clone = utils.get_unique_string("ansible-snapshot")
+                snap_resp = client_obj.snapshots.create(name=snapshot_to_clone,
                                                         vol_id=vol_resp.attrs.get("id"),
                                                         description="created by ansible",
                                                         online=False,
@@ -552,18 +550,18 @@ def clone_volume(
                 if utils.is_null_or_empty(snap_resp):
                     return (False, False, "Clone Operation Failed. Could not create a snapshot from source volume", {})
                 # create clone
-                clonevol_resp, msg = create_clone_from_snapshot(client_obj, [snap_resp], vol_name, snapshot_name_to_clone, state)
+                clonevol_resp, msg = create_clone_from_snapshot(client_obj, [snap_resp], vol_name, snapshot_to_clone, state)
                 if clonevol_resp == Vol_Operation.ALREADY_EXISTS or clonevol_resp == Vol_Operation.FAILED:
                     # remove the snapshot
                     client_obj.snapshots.delete(id=snap_resp.attrs.get("id"))
         else:
             # get the snapshot detail from the given source vol
-            snap_list_resp = client_obj.snapshots.list(vol_name=parent_vol_name, name=snapshot_name_to_clone)
+            snap_list_resp = client_obj.snapshots.list(vol_name=parent_vol, name=snapshot_to_clone)
             if utils.is_null_or_empty(snap_list_resp):
                 return (False, False, "Could not create clone Volume '%s' as given snapshot name '%s' is not present in Parent volume"
-                        % (vol_name, snapshot_name_to_clone), {})
+                        % (vol_name, snapshot_to_clone), {})
             # create clone
-            clonevol_resp, msg = create_clone_from_snapshot(client_obj, snap_list_resp, vol_name, snapshot_name_to_clone, state)
+            clonevol_resp, msg = create_clone_from_snapshot(client_obj, snap_list_resp, vol_name, snapshot_to_clone, state)
 
         if clonevol_resp is Vol_Operation.SUCCESS:
             return (True, True, "Successfully Created Cloned volume '%s'" % msg, {})
@@ -602,7 +600,7 @@ def main():
             "type": "str",
             "default": None
         },
-        "perfpolicy_name": {
+        "perf_policy": {
             "required": False,
             "type": "str",
             "default": None
@@ -616,7 +614,7 @@ def main():
             "type": "bool",
             "default": True
         },
-        "owned_by_group_name": {
+        "owned_by_group": {
             "required": False,
             "type": "str",
             "default": None
@@ -632,7 +630,7 @@ def main():
             "type": "str",
             "default": 'volume'
         },
-        "pool_name": {
+        "pool": {
             "required": False,
             "type": "str",
             "default": None
@@ -658,7 +656,7 @@ def main():
             "type": "str",
             "default": 'none'
         },
-        "dest_pool_name": {
+        "dest_pool": {
             "required": False,
             "type": "str",
             "default": None
@@ -702,17 +700,17 @@ def main():
             "required": False,
             "type": "int"
         },
-        "parent_vol_name": {
+        "parent_vol": {
             "required": False,
             "type": "str",
             "default": None
         },
-        "snapshot_name": {
+        "snapshot": {
             "required": False,
             "type": "str",
             "default": None
         },
-        "volcoll_name": {
+        "volcoll": {
             "required": False,
             "type": "str",
             "default": None
@@ -734,34 +732,33 @@ def main():
         },
         "move": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    required_if = [('state', 'restore', ['snapshot_name'])]
+    required_if = [('state', 'restore', ['snapshot'])]
 
     module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
-        module.fail_json(msg='the python nimble_sdk module is required')
+        module.fail_json(msg='the python nimble-sdk module is required')
 
     state = module.params["state"]
     vol_name = module.params["name"]
     size = module.params["size"]
     description = module.params["description"]
-    perfpolicy_name = module.params["perfpolicy_name"]
+    perf_policy = module.params["perf_policy"]
     limit = module.params["limit"]
     online = module.params["online"]
-    owned_by_group_name = module.params["owned_by_group_name"]
+    owned_by_group = module.params["owned_by_group"]
     multi_initiator = module.params["multi_initiator"]
     iscsi_target_scope = module.params["iscsi_target_scope"]
-    pool_name = module.params["pool_name"]
+    pool = module.params["pool"]
     read_only = module.params["read_only"]
     block_size = module.params["block_size"]
     clone = module.params["clone"]
     agent_type = module.params["agent_type"]
-    dest_pool_name = module.params["dest_pool_name"]
+    dest_pool = module.params["dest_pool"]
     cache_pinned = module.params["cache_pinned"]
     thinly_provisioned = module.params["thinly_provisioned"]
     encryption_cipher = module.params["encryption_cipher"]
@@ -770,9 +767,9 @@ def main():
     dedupe_enabled = module.params["dedupe_enabled"]
     limit_iops = module.params["limit_iops"]
     limit_mbps = module.params["limit_mbps"]
-    parent_vol_name = module.params["parent_vol_name"]  # used for cloning
-    snapshot_name = module.params["snapshot_name"]
-    volcoll_name = module.params["volcoll_name"]
+    parent_vol = module.params["parent_vol"]  # used for cloning
+    snapshot = module.params["snapshot"]
+    volcoll = module.params["volcoll"]
     metadata = module.params["metadata"]
     force = module.params["force"]
     force_vvol = module.params["force_vvol"]
@@ -795,50 +792,75 @@ def main():
 
     # States
     if move is True and state == "present":
-        if utils.is_null_or_empty(dest_pool_name) is False:
-            return_status, changed, msg, changed_attrs_dict = move_volume(client_obj, vol_name, dest_pool_name, force_vvol)
+        if utils.is_null_or_empty(dest_pool) is False:
+            return_status, changed, msg, changed_attrs_dict = move_volume(client_obj, vol_name, dest_pool, force_vvol)
         else:
-            module.fail_json(msg="Volume Move failed. dest_pool_name is null")
+            module.fail_json(msg="Volume move failed. dest_pool is null")
 
-    elif state == "create" or state == "present":
+    elif move is None and (state == "create" or state == "present"):
+        if utils.is_null_or_empty(vol_name):
+            return_status = changed = False
+            msg = "Volume creation failed. Volume name is null"
+
         # state create/present can be provided for creating a new volume or
         # creating a clone from source volume
-        if parent_vol_name is not None:
+        if parent_vol is not None:
             return_status, changed, msg, changed_attrs_dict = clone_volume(
-                client_obj, parent_vol_name, state,
-                vol_name, snapshot_name)
+                client_obj, parent_vol, state,
+                vol_name, snapshot)
         else:
-            if utils.is_null_or_empty(vol_name):
-                return_status = changed = False
-                msg = "Volume creation failed. Volume name is null"
+            vol_resp = client_obj.volumes.get(id=None, name=vol_name)
+            if utils.is_null_or_empty(vol_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict = create_volume(
+                    client_obj, vol_name,
+                    perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),
+                    size=size,
+                    description=description,
+                    limit=limit,
+                    online=online,
+                    owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group),
+                    multi_initiator=multi_initiator,
+                    pool_id=utils.get_pool_id(client_obj, pool),
+                    iscsi_target_scope=iscsi_target_scope,
+                    read_only=read_only, block_size=block_size,
+                    clone=clone, agent_type=agent_type,
+                    dest_pool_n=dest_pool,
+                    metadata=metadata,
+                    cache_pinned=cache_pinned,
+                    thinly_provisioned=thinly_provisioned,
+                    encryption_cipher=encryption_cipher,
+                    app_uuid=app_uuid,
+                    folder_id=utils.get_folder_id(client_obj, folder_name),
+                    dedupe_enabled=dedupe_enabled,
+                    limit_iops=limit_iops,
+                    limit_mbps=limit_mbps)
             else:
-                vol_resp = client_obj.volumes.get(id=None, name=vol_name)
-                if utils.is_null_or_empty(vol_resp) or state == "create":
-                    return_status, changed, msg, changed_attrs_dict = create_volume(
-                        client_obj, vol_name, perfpolicy_id=utils.get_perfpolicy_id(client_obj, perfpolicy_name), size=size, description=description,
-                        limit=limit, online=online, owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group_name), multi_initiator=multi_initiator,
-                        pool_id=utils.get_pool_id(client_obj, pool_name), iscsi_target_scope=iscsi_target_scope, read_only=read_only, block_size=block_size,
-                        clone=clone, agent_type=agent_type, dest_pool_n=dest_pool_name,
-                        metadata=metadata, cache_pinned=cache_pinned, thinly_provisioned=thinly_provisioned, encryption_cipher=encryption_cipher,
-                        app_uuid=app_uuid, folder_id=utils.get_folder_id(client_obj, folder_name), dedupe_enabled=dedupe_enabled, limit_iops=limit_iops,
-                        limit_mbps=limit_mbps)
-                else:
-                    # if utils.is_null_or_empty(dest_pool_name) is False:
-                    #     # it is a move operation
-                    #     return_status, changed, msg, changed_attrs_dict = move_volume(
-                    #         client_obj, vol_resp, dest_pool_name, force_vvol)
-                    #     if return_status is False:
-                    #         module.fail_json(return_status=return_status, changed=changed, msg=msg)
-                    #     vol_resp = client_obj.volumes.get(id=None, name=vol_name)
-
-                    # if we are here it means volume is already present. hence issue update call
-                    return_status, changed, msg, changed_attrs_dict = update_volume(
-                        client_obj, vol_resp, size=size, perfpolicy_id=utils.get_perfpolicy_id(client_obj, perfpolicy_name), description=description,
-                        limit=limit, online=online, owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group_name), multi_initiator=multi_initiator,
-                        iscsi_target_scope=iscsi_target_scope, read_only=read_only, block_size=block_size, clone=clone, agent_type=agent_type,
-                        volcoll_id=utils.get_volcoll_id(client_obj, volcoll_name), metadata=metadata,
-                        cache_pinned=cache_pinned, thinly_provisioned=thinly_provisioned, app_uuid=app_uuid, folder_id=utils.get_folder_id(client_obj, folder_name),
-                        dedupe_enabled=dedupe_enabled, limit_iops=limit_iops, limit_mbps=limit_mbps, force=force)
+                # if we are here it means volume is already present. hence issue update call
+                return_status, changed, msg, changed_attrs_dict = update_volume(
+                    client_obj,
+                    vol_resp,
+                    size=size,
+                    perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),
+                    description=description,
+                    limit=limit,
+                    online=online,
+                    owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group),
+                    multi_initiator=multi_initiator,
+                    iscsi_target_scope=iscsi_target_scope,
+                    read_only=read_only,
+                    block_size=block_size,
+                    clone=clone,
+                    agent_type=agent_type,
+                    volcoll_id=utils.get_volcoll_id(client_obj, volcoll),
+                    metadata=metadata,
+                    cache_pinned=cache_pinned,
+                    thinly_provisioned=thinly_provisioned,
+                    app_uuid=app_uuid,
+                    folder_id=utils.get_folder_id(client_obj, folder_name),
+                    dedupe_enabled=dedupe_enabled,
+                    limit_iops=limit_iops,
+                    limit_mbps=limit_mbps,
+                    force=force)
 
     elif state == "offline":
         return_status, changed, msg, changed_attrs_dict = change_volume_state(client_obj, vol_name, False)
@@ -850,7 +872,7 @@ def main():
         return_status, changed, msg, changed_attrs_dict = delete_volume(client_obj, vol_name)
 
     elif state == "restore":
-        return_status, changed, msg, changed_attrs_dict = restore_volume(client_obj, vol_name, snapshot_name)
+        return_status, changed, msg, changed_attrs_dict = restore_volume(client_obj, vol_name, snapshot)
 
     if return_status:
         if not utils.is_null_or_empty(changed_attrs_dict) and changed_attrs_dict.__len__() > 0:

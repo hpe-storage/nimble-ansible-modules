@@ -1,8 +1,13 @@
+#!/usr/bin/python
+
+# Copyright: (c) 2020, Hewlett Packard Enterprise Development LP
+# GNU General Public License v3.0+
+# author alok ranjan (alok.ranjan2@hpe.com)
 
 # this file will ultimately sit in "/usr/lib/python3.6/site-packages/ansible/module_ in production
 import threading
 import datetime
-import time
+import uuid
 
 lock = threading.RLock()
 
@@ -11,24 +16,21 @@ def is_null_or_empty(name):
     if type(name) is bool:
         # do nothing . just return the same
         return name
-    if name is None or not name or name == "" or name == "null":
+    if name is None or not name or name == "":
         return True
     return False
 
 
 def get_unique_string(baseName):
     lock.acquire()
-    time.sleep(0.1)
     unique_string = baseName + datetime.datetime.now().strftime(
-        "-%d-%m-%Y") + \
-        str(time.time())
+        "-%d-%m-%Y") + '-' + str(uuid.uuid1().time)
     lock.release()
     return unique_string
 
 
 # remove arguments from kwargs which are by default none or empty
 def remove_null_args(**kwargs):
-    tosearch = {}
     tosearch = kwargs.copy()
     for key, value in tosearch.items():
         if type(value) is not bool:
@@ -37,15 +39,15 @@ def remove_null_args(**kwargs):
     return kwargs
 
 
-def is_dict_same(server_dict, dict_tocheck):
-    if server_dict is None and dict_tocheck is None:
+def is_dict_same(server_dict, dict_to_check):
+    if server_dict is None and dict_to_check is None:
         return True
-    for key_tockeck in dict_tocheck.keys():
-        # there can be two possibility.
+    for key_to_check in dict_to_check.keys():
+        # there can be two possibilities.
         # 1. key is not present. hence return false.
         # 2. key is present, but value is not same. return false for this too
-        if key_tockeck in server_dict.keys():
-            if dict_tocheck[key_tockeck] == server_dict[key_tockeck]:
+        if key_to_check in server_dict.keys():
+            if dict_to_check[key_to_check] == server_dict[key_to_check]:
                 continue
             else:
                 return False
@@ -55,15 +57,15 @@ def is_dict_same(server_dict, dict_tocheck):
     return True
 
 
-def is_dict_present_on_server(server_list_of_dict, dict_tocheck):
+def is_dict_item_present_on_server(server_list_of_dict, dict_to_check):
 
-    if dict_tocheck is None and server_list_of_dict is None:
+    if dict_to_check is None and server_list_of_dict is None:
         return True
     if type(server_list_of_dict) is not list:
         return False
 
     for server_dict in server_list_of_dict:
-        if is_dict_same(server_dict, dict_tocheck) is True:
+        if is_dict_same(server_dict, dict_to_check) is True:
             return True
     return False
 
@@ -71,34 +73,20 @@ def is_dict_present_on_server(server_list_of_dict, dict_tocheck):
 # remove unchanged item from kwargs by matching them with the data present in given object attrs
 def remove_unchanged_or_null_args(obj_attrs, **kwargs):
     params = remove_null_args(**kwargs)
-    tosearch = {}
     tosearch = params.copy()
     changed_attrs_dict = {}
     for key, value in tosearch.items():
         server_value = obj_attrs.attrs.get(key)
 
         if type(server_value) is list and type(value) is dict:
-            # we will land here if the user wants to update a metdata.
-            # sevrer return a list of metadata dictionary
-            temp_server_metdata_dict = {}
+            # we will land here if the user wants to update a metadata.
+            # server return a list of metadata dictionary
+            temp_server_metadata_dict = {}
             for server_entry in server_value:
-                temp_server_metdata_dict[server_entry['key']] = server_entry['value']
-            if is_dict_same(temp_server_metdata_dict, value) is False:
+                temp_server_metadata_dict[server_entry['key']] = server_entry['value']
+            if is_dict_same(temp_server_metadata_dict, value) is False:
                 changed_attrs_dict[key] = value
                 continue
-
-            #     # match key and value
-            #     obj_key_data = server_entry['key']
-            #     obj_value_data = server_entry['value']
-            #     if obj_key_data in value.keys():
-            #         if value[obj_key_data] == obj_value_data:
-            #             continue
-            #         else:
-            #             changed_attrs_dict[key] = value
-            #             break
-            #     else:
-            #         changed_attrs_dict[key] = value
-            #         break
 
         elif type(server_value) is dict and type(value) is dict:
             if is_dict_same(server_value, value) is False:
@@ -107,9 +95,9 @@ def remove_unchanged_or_null_args(obj_attrs, **kwargs):
 
         elif type(server_value) is list and type(value) is list:
             # check if the list has dictionary to compare
-            for entry_tocheck in value:
-                if type(entry_tocheck) is dict:
-                    if is_dict_present_on_server(server_value, entry_tocheck) is True:
+            for entry_to_check in value:
+                if type(entry_to_check) is dict:
+                    if is_dict_item_present_on_server(server_value, entry_to_check) is True:
                         continue
                     else:
                         changed_attrs_dict[key] = value
@@ -152,6 +140,7 @@ def basic_auth_arg_fields():
         }
     }
     return fields
+
 
 def get_vol_id(client_obj, vol_name):
     if is_null_or_empty(vol_name):
@@ -263,7 +252,7 @@ def get_replication_partner_id(client_obj, replication_partner_name):
         return resp.attrs.get("id")
 
 
-def get_vollcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
+def get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
     if is_null_or_empty(volcoll_name) and is_null_or_empty(prot_template_name):
         return None
     if is_null_or_empty(volcoll_name) is False and is_null_or_empty(prot_template_name) is False:
