@@ -198,7 +198,7 @@ options:
         default: -1
         description:
         - Throughput limit for this volume in MB/s.
-    parent_vol:
+    parent_volume:
         required: False
         type: str
         default: null
@@ -276,18 +276,18 @@ EXAMPLES = r'''
 
     # Create a clone from the given snapshot name.
     # if snapshot name is not provided then create a snapshot of source volume
-    # clone task should only run if parent_vol is specified.snapshot name is optional
+    # clone task should only run if parent_volume is specified.snapshot name is optional
     - name: Let's create or refresh a clone!
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ name }}" # name here is the name of cloned volume
-        parent_vol: "{{ parent_vol | mandatory }}"
+        parent_volume: "{{ parent_volume | mandatory }}"
         snapshot: "{{ snapshot | default(None)}}"
         state: "{{ state | default('present') }}" # fail if exist
       when:
-        - parent_vol is defined
+        - parent_volume is defined
 
     - name: Let's destroy myvol1 (it's not offline)
       hpe_nimble_volume:
@@ -499,7 +499,7 @@ def create_clone_from_snapshot(
         vol_name,
         snapshot_to_clone,
         state):
-    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent_vol is None:
+    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent_volume is None:
     if (utils.is_null_or_empty(client_obj)
         or utils.is_null_or_empty(vol_name)
             or utils.is_null_or_empty(snap_list_resp)
@@ -530,7 +530,7 @@ def create_clone_from_snapshot(
 
 def clone_volume(
         client_obj,
-        parent_vol,
+        parent_volume,
         state,
         vol_name=None,
         snapshot_to_clone=None):
@@ -543,10 +543,10 @@ def clone_volume(
     # clone from the snapshot
     try:
         if utils.is_null_or_empty(snapshot_to_clone):
-            if utils.is_null_or_empty(parent_vol):
+            if utils.is_null_or_empty(parent_volume):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             # get the vol id
-            vol_resp = client_obj.volumes.get(name=parent_vol)
+            vol_resp = client_obj.volumes.get(name=parent_volume)
             if utils.is_null_or_empty(vol_resp):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             else:
@@ -566,7 +566,7 @@ def clone_volume(
                     client_obj.snapshots.delete(id=snap_resp.attrs.get("id"))
         else:
             # get the snapshot detail from the given source vol
-            snap_list_resp = client_obj.snapshots.list(vol_name=parent_vol, name=snapshot_to_clone)
+            snap_list_resp = client_obj.snapshots.list(vol_name=parent_volume, name=snapshot_to_clone)
             if utils.is_null_or_empty(snap_list_resp):
                 return (False, False, "Could not create clone Volume '%s' as given snapshot name '%s' is not present in Parent volume"
                         % (vol_name, snapshot_to_clone), {})
@@ -710,7 +710,7 @@ def main():
             "required": False,
             "type": "int"
         },
-        "parent_vol": {
+        "parent_volume": {
             "required": False,
             "type": "str",
             "default": None
@@ -777,7 +777,7 @@ def main():
     dedupe_enabled = module.params["dedupe_enabled"]
     limit_iops = module.params["limit_iops"]
     limit_mbps = module.params["limit_mbps"]
-    parent_vol = module.params["parent_vol"]  # used for cloning
+    parent_volume = module.params["parent_volume"]  # used for cloning
     snapshot = module.params["snapshot"]
     volcoll = module.params["volcoll"]
     metadata = module.params["metadata"]
@@ -814,9 +814,9 @@ def main():
 
         # state create/present can be provided for creating a new volume or
         # creating a clone from source volume
-        if parent_vol is not None:
+        if parent_volume is not None:
             return_status, changed, msg, changed_attrs_dict = clone_volume(
-                client_obj, parent_vol, state,
+                client_obj, parent_volume, state,
                 vol_name, snapshot)
         else:
             vol_resp = client_obj.volumes.get(id=None, name=vol_name)
