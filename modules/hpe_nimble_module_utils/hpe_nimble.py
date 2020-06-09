@@ -5,11 +5,8 @@
 # author alok ranjan (alok.ranjan2@hpe.com)
 
 # this file will ultimately sit in "/usr/lib/python3.6/site-packages/ansible/module_ in production
-import threading
 import datetime
 import uuid
-
-lock = threading.RLock()
 
 
 def is_null_or_empty(name):
@@ -22,10 +19,8 @@ def is_null_or_empty(name):
 
 
 def get_unique_string(baseName):
-    lock.acquire()
     unique_string = baseName + datetime.datetime.now().strftime(
         "-%d-%m-%Y") + '-' + str(uuid.uuid1().time)
-    lock.release()
     return unique_string
 
 
