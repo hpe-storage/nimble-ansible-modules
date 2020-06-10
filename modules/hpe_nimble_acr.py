@@ -17,38 +17,36 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
-
 
 DOCUMENTATION = r'''
 ---
 author:
     - Alok Ranjan (@ranjanal)
-description: "On HPE Nimble Storage Array - Create or delete ACL for volume"
+description: On HPE Nimble Storage Array - Create or delete ACR for volume.
 module: hpe_nimble_acr
 
 options:
     state:
         required: True
         choices:
-            - present
-            - absent
-            - create
-        type: 'str'
+        - present
+        - absent
+        - create
+        type: str
         description:
-        - Choice for ACR operation
+        - Choice for ACR operation.
     apply_to:
         required: False
         choices:
-            - volume
-            - snapshot
-            - both
-            - pe
-            - vvol_volume
-            - vvol_snapshot
+        - volume
+        - snapshot
+        - both
+        - pe
+        - vvol_volume
+        - vvol_snapshot
         type: str
         default: both
         description:
@@ -63,7 +61,7 @@ options:
         type: int
         description:
         - If this access control record applies to a regular volume, this attribute is the volume's LUN (Logical Unit Number).
-          If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is Fibre Channel, the LUN will be in the range from 0 to 2047
+          If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is Fibre Channel, the LUN will be in the range from 0 to 2047.
     volume:
         required: False
         type: str
@@ -73,8 +71,8 @@ options:
         required: False
         type: list
         description:
-        - List of candidate protocol endpoints that may be used to access the Virtual Volume. One of them will be selected for the access control record.
-          This field is required only when creating an access control record for a Virtual Volume.
+        - List of candidate protocol endpoints that may be used to access the Virtual volume. One of them will be selected for the access control record.
+          This field is required only when creating an access control record for a Virtual volume.
     protocol_endpoint:
         required: False
         type: str
@@ -92,14 +90,14 @@ options:
         - The Initiator Group name.
 
 extends_documentation_fragment: hpe_nimble
-short_description: "Manages a HPE Nimble Storage ACR"
+short_description: "Manages a HPE Nimble Storage Access Control Record"
 version_added: "2.9"
 '''
 
 EXAMPLES = r'''
 
-    # if state is create, create ACL for given volume, fails if it exist or cannot create
-    # if state is present, create ACL if not present, else success
+    # If state is "create", create ACR for given volume, fails if it exist.
+    # If state is "present", create ACR if not already present.
     - name: Create ACR for volume
       hpe_nimble_acr:
         hostname: "{{ hostname }}"
@@ -109,7 +107,7 @@ EXAMPLES = r'''
         initiator_group: "{{ initiator_group }}"
         state: "{{ state | default('present') }}" # fail if exist
 
-    # Delete the ACL for a given volume name
+    # Delete the ACR for a given volume name
     - name: Delete ACR for volume
       hpe_nimble_acr:
         hostname: "{{ hostname }}"
@@ -121,7 +119,6 @@ EXAMPLES = r'''
 '''
 RETURN = r'''
 '''
-
 
 from ansible.module_utils.basic import AnsibleModule
 try:
@@ -280,9 +277,16 @@ def main():
     # States
     if state == "create" or state == "present":
         return_status, changed, msg = create_acr(
-            client_obj, initiator_group, volume, state,
-            apply_to=apply_to, chap_user_id=utils.get_chap_user_id(client_obj, chap_user), lun=lun,
-            pe_ids=pe_ids, protocol_endpoint=utils.get_pe_id(client_obj, protocol_endpoint), snap_id=utils.get_snapshot_id(client_obj, snapshot))
+            client_obj,
+            initiator_group,
+            volume,
+            state,
+            apply_to=apply_to,
+            chap_user_id=utils.get_chap_user_id(client_obj, chap_user),
+            lun=lun,
+            pe_id=utils.get_pe_id(client_obj, protocol_endpoint),
+            snap_id=utils.get_snapshot_id(client_obj, snapshot),
+            pe_ids=pe_ids)
 
     elif state == "absent":
         return_status, changed, msg = delete_acr(client_obj, volume)

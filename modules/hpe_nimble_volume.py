@@ -14,26 +14,23 @@
 
 # author alok ranjan (alok.ranjan2@hpe.com)
 
-
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
 
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-
 DOCUMENTATION = r'''
 ---
 author:
     - Alok Ranjan (@ranjanal)
-description: "Manage volume on a Nimble Storage group"
+description: Manage volume on a Nimble Storage group
 module: hpe_nimble_volume
 options:
     state:
         description:
-        - "Choice for Volume operations"
+        - Choice for volume operations.
         choices:
         - present
         - absent
@@ -47,12 +44,12 @@ options:
         required: True
         type: str
         description:
-        - "Name of the Source Volume."
+        - Name of the Source volume.
     size:
         type: int
         default: 100
         description:
-        - "The size of the volume."
+        - The size of the volume.
     description:
         required: False
         type: str
@@ -69,9 +66,8 @@ options:
     limit:
         required: False
         type: int
-        default: 100
         description:
-        - Limit on the volume's mapped usage, expressed as a percentage of the volume's size
+        - Limit on the volume's mapped usage, expressed as a percentage of the volume's size.
     online:
         required: False
         type: bool
@@ -81,28 +77,26 @@ options:
     owned_by_group:
         required: False
         type: str
-        default: null
         description:
-        - Name of group that currently owns the volume
+        - Name of group that currently owns the volume.
     multi_initiator:
         required: False
         type: bool
         default: False
         description:
-        - For iSCSI Volume Target, this flag indicates whether the volume and its snapshots can be accessed from multiple initiators at the same time.
+        - For iSCSI volume target, this flag indicates whether the volume and its snapshots can be accessed from multiple initiators at the same time.
     iscsi_target_scope:
         required: False
         type: str
         choices:
-            - volume
-            - group
-        default: 'volume'
+        - volume
+        - group
+        default: volume
         description:
-        - This indicates whether volume is exported under iSCSI Group Target or iSCSI Volume Target. This attribute is only meaningful to iSCSI system
+        - This indicates whether volume is exported under iSCSI Group Target or iSCSI volume target. This attribute is only meaningful to iSCSI system.
     pool:
         required: False
         type: str
-        default: null
         description:
         - Name associated with the pool in the storage pool table.
     read_only:
@@ -122,23 +116,22 @@ options:
         type: bool
         default: False
         description:
-        - Whether this volume is a clone.Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
+        - Whether this volume is a clone. Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
     agent_type:
         required: False
         choices:
-            - none
-            - smis
-            - vvol
-            - openstack
-            - openstackv2
+        - none
+        - smis
+        - vvol
+        - openstack
+        - openstackv2
         type: str
-        default: 'none'
+        default: none
         description:
         - External management agent type.
-    dest_pool:
+    destination:
         required: False
         type: str
-        default: null
         description:
         - Name of the destination pool where the volume is moving to.
     cache_pinned:
@@ -156,28 +149,25 @@ options:
     encryption_cipher:
         required: False
         choices:
-            - none
-            - aes_256_xts
+        - none
+        - aes_256_xts
         type: str
-        default: 'none'
+        default: none
         description:
         - The encryption cipher of the volume.
     app_uuid:
         required: False
         type: str
-        default: null
         description:
         - Application identifier of volume.
-    folder_name:
+    folder:
         required: False
         type: str
-        default: null
         description:
         - Name of the folder holding this volume.
     metadata:
         required: False
         type: dict
-        default: null
         description:
         - Key-value pairs that augment an volume's attributes.
     dedupe_enabled:
@@ -198,22 +188,19 @@ options:
         default: -1
         description:
         - Throughput limit for this volume in MB/s.
-    parent_volume:
+    parent:
         required: False
         type: str
-        default: null
         description:
-        - Name of parent volume
+        - Name of parent volume.
     snapshot:
         required: False
         type: str
-        default: null
         description:
-        - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation
+        - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation.
     volcoll:
         required: False
         type: str
-        default: null
         description:
         - Name of volume collection of which this volume is a member.
     force:
@@ -222,18 +209,24 @@ options:
         default: False
         description:
         - Forcibly offline, reduce size or change read-only status a volume.
+    caching_enabled:
+        required: False
+        type: bool
+        default: False
+        description:
+        - Indicate caching the volume is enabled.
     force_vvol:
         required: False
         type: bool
         default: False
         description:
-        - Forcibly move a Virtual Volume.
+        - Forcibly move a Virtual volume.
     move:
         required: False
         type: bool
         default: False
         description:
-        - Move a Volume to different Pool.
+        - Move a volume to different Pool.
 
 extends_documentation_fragment: hpe_nimble
 short_description: "Manages a HPE Nimble Storage volume"
@@ -242,9 +235,9 @@ version_added: "2.9"
 
 EXAMPLES = r'''
 
-      # if state is create, then create a volume if not present. Fails if already present.
-      # if state is "present", then create a volume if not present, But Success if it already exists
-    - name: Create Volume if not present
+    # If state is "create", then create a volume if not present. Fails if already present.
+    # If state is "present", then create a volume if not present. Succeeds if it already exists.
+    - name: Create volume if not present
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
@@ -258,7 +251,7 @@ EXAMPLES = r'''
         description: "{{ description }}"
         name: "{{ name }}"
 
-    - name: Changing Volume "{{ name }}" to offline state
+    - name: Changing volume "{{ name }}" to offline state
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
@@ -266,7 +259,7 @@ EXAMPLES = r'''
         state: offline
         name: "{{ name }}"
 
-    - name: Changing Volume "{{ name }}" to online state
+    - name: Changing volume "{{ name }}" to online state
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
@@ -275,27 +268,27 @@ EXAMPLES = r'''
         name: "{{ name }}"
 
     # Create a clone from the given snapshot name.
-    # if snapshot name is not provided then create a snapshot of source volume
-    # clone task should only run if parent_volume is specified.snapshot name is optional
-    - name: Let's create or refresh a clone!
+    # If snapshot name is not provided then a snapshot is created on the source volume.
+    # Clone task only run if "parent" is specified. Snapshot is optional.
+    - name: Create or Refresh a clone!
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ name }}" # name here is the name of cloned volume
-        parent_volume: "{{ parent_volume | mandatory }}"
+        parent: "{{ parent | mandatory }}"
         snapshot: "{{ snapshot | default(None)}}"
         state: "{{ state | default('present') }}" # fail if exist
       when:
-        - parent_volume is defined
+        - parent is defined
 
-    - name: Let's destroy myvol1 (it's not offline)
+    - name: Destroy volume (it's not offline)
       hpe_nimble_volume:
         name: "{{ name }}"
         state: absent
 
-    # if no snapshot is given then restore volume to last snapshot, fails if no snapshots exist
-    # or if snapshot is provided then restore volume from that snapshot
+    # If no snapshot is given, then restore volume to last snapshot. Fails if no snapshots exist.
+    # If snapshot is provided, then restore volume from specified snapshot.
     - name: Restore volume "{{ name }}".
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
@@ -313,17 +306,17 @@ EXAMPLES = r'''
         name: "{{ name }}"
         state: absent
 
-    - name: Volume move to pool
+    - name: Move volume to pool
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
         password: "{{ password }}"
         move: true
         name: "{{ name }}"
-        dest_pool: "{{ dest_pool | mandatory }}"
+        state: present
+        destination: "{{ destination | mandatory }}"
 
 '''
-
 RETURN = r'''
 '''
 
@@ -334,7 +327,6 @@ try:
 except ImportError:
     client = None
 import ansible.module_utils.hpe_nimble as utils
-#import hpe_nimble_module_utils.hpe_nimble as utils
 from enum import Enum
 
 
@@ -499,7 +491,7 @@ def create_clone_from_snapshot(
         vol_name,
         snapshot_to_clone,
         state):
-    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent_volume is None:
+    # if client_obj is None or not snap_list_resp or snap_list_resp is None or parent is None:
     if (utils.is_null_or_empty(client_obj)
         or utils.is_null_or_empty(vol_name)
             or utils.is_null_or_empty(snap_list_resp)
@@ -530,7 +522,7 @@ def create_clone_from_snapshot(
 
 def clone_volume(
         client_obj,
-        parent_volume,
+        parent,
         state,
         vol_name=None,
         snapshot_to_clone=None):
@@ -543,10 +535,10 @@ def clone_volume(
     # clone from the snapshot
     try:
         if utils.is_null_or_empty(snapshot_to_clone):
-            if utils.is_null_or_empty(parent_volume):
+            if utils.is_null_or_empty(parent):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             # get the vol id
-            vol_resp = client_obj.volumes.get(name=parent_volume)
+            vol_resp = client_obj.volumes.get(name=parent)
             if utils.is_null_or_empty(vol_resp):
                 return (False, False, "Clone operation failed. Parent Volume name is not present.", {})
             else:
@@ -566,7 +558,7 @@ def clone_volume(
                     client_obj.snapshots.delete(id=snap_resp.attrs.get("id"))
         else:
             # get the snapshot detail from the given source vol
-            snap_list_resp = client_obj.snapshots.list(vol_name=parent_volume, name=snapshot_to_clone)
+            snap_list_resp = client_obj.snapshots.list(vol_name=parent, name=snapshot_to_clone)
             if utils.is_null_or_empty(snap_list_resp):
                 return (False, False, "Could not create clone Volume '%s' as given snapshot name '%s' is not present in Parent volume"
                         % (vol_name, snapshot_to_clone), {})
@@ -666,7 +658,7 @@ def main():
             "type": "str",
             "default": 'none'
         },
-        "dest_pool": {
+        "destination": {
             "required": False,
             "type": "str",
             "default": None
@@ -692,7 +684,7 @@ def main():
             "type": "str",
             "default": None
         },
-        "folder_name": {
+        "folder": {
             "required": False,
             "type": "str",
             "default": None
@@ -710,7 +702,7 @@ def main():
             "required": False,
             "type": "int"
         },
-        "parent_volume": {
+        "parent": {
             "required": False,
             "type": "str",
             "default": None
@@ -731,6 +723,11 @@ def main():
             "default": None
         },
         "force": {
+            "required": False,
+            "type": "bool",
+            "default": False
+        },
+        "caching_enabled": {
             "required": False,
             "type": "bool",
             "default": False
@@ -768,20 +765,21 @@ def main():
     block_size = module.params["block_size"]
     clone = module.params["clone"]
     agent_type = module.params["agent_type"]
-    dest_pool = module.params["dest_pool"]
+    dest_pool = module.params["destination"]
     cache_pinned = module.params["cache_pinned"]
     thinly_provisioned = module.params["thinly_provisioned"]
     encryption_cipher = module.params["encryption_cipher"]
     app_uuid = module.params["app_uuid"]
-    folder_name = module.params["folder_name"]
+    folder = module.params["folder"]
     dedupe_enabled = module.params["dedupe_enabled"]
     limit_iops = module.params["limit_iops"]
     limit_mbps = module.params["limit_mbps"]
-    parent_volume = module.params["parent_volume"]  # used for cloning
+    parent = module.params["parent"]  # used for cloning
     snapshot = module.params["snapshot"]
     volcoll = module.params["volcoll"]
     metadata = module.params["metadata"]
     force = module.params["force"]
+    caching_enabled = module.params["caching_enabled"]
     force_vvol = module.params["force_vvol"]
     move = module.params["move"]
     hostname = module.params["hostname"]
@@ -814,9 +812,9 @@ def main():
 
         # state create/present can be provided for creating a new volume or
         # creating a clone from source volume
-        if parent_volume is not None:
+        if parent is not None:
             return_status, changed, msg, changed_attrs_dict = clone_volume(
-                client_obj, parent_volume, state,
+                client_obj, parent, state,
                 vol_name, snapshot)
         else:
             vol_resp = client_obj.volumes.get(id=None, name=vol_name)
@@ -830,17 +828,19 @@ def main():
                     online=online,
                     owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group),
                     multi_initiator=multi_initiator,
-                    pool_id=utils.get_pool_id(client_obj, pool),
                     iscsi_target_scope=iscsi_target_scope,
-                    read_only=read_only, block_size=block_size,
-                    clone=clone, agent_type=agent_type,
-                    dest_pool_n=dest_pool,
-                    metadata=metadata,
+                    pool_id=utils.get_pool_id(client_obj, pool),
+                    read_only=read_only,
+                    block_size=block_size,
+                    clone=clone,
+                    agent_type=agent_type,
+                    dest_pool_id=utils.get_pool_id(client_obj, dest_pool),
                     cache_pinned=cache_pinned,
                     thinly_provisioned=thinly_provisioned,
                     encryption_cipher=encryption_cipher,
                     app_uuid=app_uuid,
-                    folder_id=utils.get_folder_id(client_obj, folder_name),
+                    folder_id=utils.get_folder_id(client_obj, folder),
+                    metadata=metadata,
                     dedupe_enabled=dedupe_enabled,
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
@@ -850,8 +850,8 @@ def main():
                     client_obj,
                     vol_resp,
                     size=size,
-                    perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),
                     description=description,
+                    perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),
                     limit=limit,
                     online=online,
                     owned_by_group_id=utils.get_owned_by_group_id(client_obj, owned_by_group),
@@ -859,18 +859,18 @@ def main():
                     iscsi_target_scope=iscsi_target_scope,
                     read_only=read_only,
                     block_size=block_size,
-                    clone=clone,
-                    agent_type=agent_type,
                     volcoll_id=utils.get_volcoll_id(client_obj, volcoll),
-                    metadata=metadata,
+                    agent_type=agent_type,
+                    force=force,
                     cache_pinned=cache_pinned,
                     thinly_provisioned=thinly_provisioned,
                     app_uuid=app_uuid,
-                    folder_id=utils.get_folder_id(client_obj, folder_name),
+                    folder_id=utils.get_folder_id(client_obj, folder),
+                    metadata=metadata,
+                    caching_enabled=caching_enabled,
                     dedupe_enabled=dedupe_enabled,
                     limit_iops=limit_iops,
-                    limit_mbps=limit_mbps,
-                    force=force)
+                    limit_mbps=limit_mbps)
 
     elif state == "offline":
         return_status, changed, msg, changed_attrs_dict = change_volume_state(client_obj, vol_name, False)
