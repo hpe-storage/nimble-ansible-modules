@@ -28,95 +28,6 @@ author:
 description: Manage volume on a Nimble Storage group
 module: hpe_nimble_volume
 options:
-    state:
-        description:
-        - Choice for volume operations.
-        choices:
-        - present
-        - absent
-        - create
-        - online
-        - offline
-        - restore
-        required: True
-        type: str
-    name:
-        required: True
-        type: str
-        description:
-        - Name of the Source volume.
-    size:
-        type: int
-        default: 100
-        description:
-        - The size of the volume.
-    description:
-        required: False
-        type: str
-        default: null
-        description:
-        - Text description of volume.
-    perf_policy:
-        required: False
-        type: str
-        default: null
-        description:
-        - Name of the performance policy. After creating a volume, performance policy for the volume can only be
-          changed to another performance policy with same block size.
-    limit:
-        required: False
-        type: int
-        description:
-        - Limit on the volume's mapped usage, expressed as a percentage of the volume's size.
-    online:
-        required: False
-        type: bool
-        default: True
-        description:
-        - Online state of volume, available for host initiators to establish connections.
-    owned_by_group:
-        required: False
-        type: str
-        description:
-        - Name of group that currently owns the volume.
-    multi_initiator:
-        required: False
-        type: bool
-        default: False
-        description:
-        - For iSCSI volume target, this flag indicates whether the volume and its snapshots can be accessed from multiple initiators at the same time.
-    iscsi_target_scope:
-        required: False
-        type: str
-        choices:
-        - volume
-        - group
-        default: volume
-        description:
-        - This indicates whether volume is exported under iSCSI Group Target or iSCSI volume target. This attribute is only meaningful to iSCSI system.
-    pool:
-        required: False
-        type: str
-        description:
-        - Name associated with the pool in the storage pool table.
-    read_only:
-        required: False
-        type: bool
-        default: False
-        description:
-        - Volume is read-only.
-    block_size:
-        required: False
-        type: int
-        default: 4096
-        description:
-        - Size in bytes of blocks in the volume.
-    clone:
-        required: False
-        type: bool
-        default: False
-        description:
-        - Whether this volume is a clone. Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
     agent_type:
         required: False
         choices:
@@ -129,23 +40,52 @@ options:
         default: none
         description:
         - External management agent type.
-    destination:
+    app_uuid:
         required: False
         type: str
         description:
-        - Name of the destination pool where the volume is moving to.
+        - Application identifier of volume.
+    block_size:
+        required: False
+        type: int
+        default: 4096
+        description:
+        - Size in bytes of blocks in the volume.
     cache_pinned:
         required: False
         type: bool
         default: False
         description:
         - If set to true, all the contents of this volume are kept in flash cache.
-    thinly_provisioned:
+    caching:
         required: False
         type: bool
-        default: True
+        default: False
         description:
-        - Set volume's provisioning level to thin.
+        - Indicate caching the volume is enabled.
+    clone:
+        required: False
+        type: bool
+        default: False
+        description:
+        - Whether this volume is a clone. Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
+    dedupe:
+        required: False
+        type: bool
+        default: False
+        description:
+        - Indicate whether dedupe is enabled.
+    description:
+        required: False
+        type: str
+        default: null
+        description:
+        - Text description of volume.
+    destination:
+        required: False
+        type: str
+        description:
+        - Name of the destination pool where the volume is moving to.
     encryption_cipher:
         required: False
         choices:
@@ -155,27 +95,37 @@ options:
         default: none
         description:
         - The encryption cipher of the volume.
-    app_uuid:
-        required: False
-        type: str
-        description:
-        - Application identifier of volume.
     folder:
         required: False
         type: str
         description:
         - Name of the folder holding this volume.
-    metadata:
-        required: False
-        type: dict
-        description:
-        - Key-value pairs that augment an volume's attributes.
-    dedupe_enabled:
+    force:
         required: False
         type: bool
         default: False
         description:
-        - Indicate whether dedupe is enabled.
+        - Forcibly offline, reduce size or change read-only status a volume.
+    force_vvol:
+        required: False
+        type: bool
+        default: False
+        description:
+        - Forcibly move a virtual volume.
+    iscsi_target_scope:
+        required: False
+        type: str
+        choices:
+        - volume
+        - group
+        default: volume
+        description:
+        - This indicates whether volume is exported under iSCSI Group Target or iSCSI volume target. This attribute is only meaningful to iSCSI system.
+    limit:
+        required: False
+        type: int
+        description:
+        - Limit on the volume's mapped usage, expressed as a percentage of the volume's size.
     limit_iops:
         required: False
         type: int
@@ -188,49 +138,100 @@ options:
         default: -1
         description:
         - Throughput limit for this volume in MB/s.
-    parent:
+    metadata:
         required: False
-        type: str
+        type: dict
         description:
-        - Name of parent volume.
-    snapshot:
-        required: False
-        type: str
-        description:
-        - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation.
-    volcoll:
-        required: False
-        type: str
-        description:
-        - Name of volume collection of which this volume is a member.
-    force:
-        required: False
-        type: bool
-        default: False
-        description:
-        - Forcibly offline, reduce size or change read-only status a volume.
-    caching_enabled:
-        required: False
-        type: bool
-        default: False
-        description:
-        - Indicate caching the volume is enabled.
-    force_vvol:
-        required: False
-        type: bool
-        default: False
-        description:
-        - Forcibly move a Virtual volume.
+        - User defined key-value pairs that augment an volume's attributes. List of key-value pairs. Keys must be unique and non-empty.
+        - When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
     move:
         required: False
         type: bool
         default: False
         description:
-        - Move a volume to different Pool.
+        - Move a volume to different pool.
+    multi_initiator:
+        required: False
+        type: bool
+        default: False
+        description:
+        - For iSCSI volume target, this flag indicates whether the volume and its snapshots can be accessed from multiple initiators at the same time.
+    name:
+        required: True
+        type: str
+        description:
+        - Name of the source volume.
+    online:
+        required: False
+        type: bool
+        default: True
+        description:
+        - Online state of volume, available for host initiators to establish connections.
+    owned_by_group:
+        required: False
+        type: str
+        description:
+        - Name of group that currently owns the volume.
+    parent:
+        required: False
+        type: str
+        description:
+        - Name of parent volume.
+    perf_policy:
+        required: False
+        type: str
+        default: null
+        description:
+        - Name of the performance policy. After creating a volume, performance policy for the volume can only be
+          changed to another performance policy with same block size.
+    pool:
+        required: False
+        type: str
+        description:
+        - Name associated with the pool in the storage pool table.
+    read_only:
+        required: False
+        type: bool
+        default: False
+        description:
+        - Volume is read-only.
+    size:
+        type: int
+        default: 100
+        description:
+        - The size of the volume.
+    snapshot:
+        required: False
+        type: str
+        description:
+        - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation.
+    state:
+        description:
+        - Choice for volume operations.
+        choices:
+        - present
+        - absent
+        - create
+        - online
+        - offline
+        - restore
+        required: True
+        type: str
+    thinly_provisioned:
+        required: False
+        type: bool
+        default: True
+        description:
+        - Set volume's provisioning level to thin.
+    volcoll:
+        required: False
+        type: str
+        description:
+        - Name of volume collection of which this volume is a member.
 
 extends_documentation_fragment: hpe_nimble
-short_description: "Manages a HPE Nimble Storage volume"
-version_added: "2.9"
+short_description: Manages a HPE Nimble Storage volume
+version_added: 2.9
 '''
 
 EXAMPLES = r'''
@@ -247,7 +248,7 @@ EXAMPLES = r'''
         limit_iops: "{{ limit_iops }}"
         limit_mbps: 5000
         force: false
-        metadata: "{{ metadata }}"
+        metadata: "{{ metadata }}" # metadata = {'mykey1': 'myval1', 'mykey2': 'myval2'}
         description: "{{ description }}"
         name: "{{ name }}"
 
@@ -282,7 +283,7 @@ EXAMPLES = r'''
       when:
         - parent is defined
 
-    - name: Destroy volume (it's not offline)
+    - name: Destroy volume (must be offline)
       hpe_nimble_volume:
         name: "{{ name }}"
         state: absent
@@ -298,7 +299,7 @@ EXAMPLES = r'''
         snapshot: "{{ snapshot | default(None)}}"
         state: restore
 
-    - name: Delete volume "{{ name }}" (it's not offline)
+    - name: Delete volume "{{ name }}" (must be offline)
       hpe_nimble_volume:
         hostname: "{{ hostname }}"
         username: "{{ username }}"
@@ -689,7 +690,7 @@ def main():
             "type": "str",
             "default": None
         },
-        "dedupe_enabled": {
+        "dedupe": {
             "required": False,
             "type": "bool",
             "default": False
@@ -727,7 +728,7 @@ def main():
             "type": "bool",
             "default": False
         },
-        "caching_enabled": {
+        "caching": {
             "required": False,
             "type": "bool",
             "default": False
@@ -771,7 +772,7 @@ def main():
     encryption_cipher = module.params["encryption_cipher"]
     app_uuid = module.params["app_uuid"]
     folder = module.params["folder"]
-    dedupe_enabled = module.params["dedupe_enabled"]
+    dedupe = module.params["dedupe"]
     limit_iops = module.params["limit_iops"]
     limit_mbps = module.params["limit_mbps"]
     parent = module.params["parent"]  # used for cloning
@@ -779,7 +780,7 @@ def main():
     volcoll = module.params["volcoll"]
     metadata = module.params["metadata"]
     force = module.params["force"]
-    caching_enabled = module.params["caching_enabled"]
+    caching = module.params["caching"]
     force_vvol = module.params["force_vvol"]
     move = module.params["move"]
     hostname = module.params["hostname"]
@@ -805,7 +806,7 @@ def main():
         else:
             module.fail_json(msg="Volume move failed. dest_pool is null")
 
-    elif move is None and (state == "create" or state == "present"):
+    elif (move is None or move is False) and (state == "create" or state == "present"):
         if utils.is_null_or_empty(vol_name):
             return_status = changed = False
             msg = "Volume creation failed. Volume name is null"
@@ -841,7 +842,7 @@ def main():
                     app_uuid=app_uuid,
                     folder_id=utils.get_folder_id(client_obj, folder),
                     metadata=metadata,
-                    dedupe_enabled=dedupe_enabled,
+                    dedupe_enabled=dedupe,
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
             else:
@@ -867,8 +868,8 @@ def main():
                     app_uuid=app_uuid,
                     folder_id=utils.get_folder_id(client_obj, folder),
                     metadata=metadata,
-                    caching_enabled=caching_enabled,
-                    dedupe_enabled=dedupe_enabled,
+                    caching_enabled=caching,
+                    dedupe_enabled=dedupe,
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
 
