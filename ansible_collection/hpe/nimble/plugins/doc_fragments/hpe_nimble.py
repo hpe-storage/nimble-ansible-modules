@@ -12,33 +12,26 @@
 
 # author alok ranjan (alok.ranjan2@hpe.com)
 
-# remove this line.
-# to implement extend_document_fragmentation , we need virtual env..
-# run  . venv/bin/activate and . hacking/env-setup in a shell (make sure to be
-# at the correct folder./home/alok/work/projects/myansible/ansible)
-
-
 class ModuleDocFragment(object):
 
     # HPE Nimble doc fragment
     DOCUMENTATION = '''
 options:
-    hostname:
-        description:
-        - The storage system IP address.
-        required: True
-        type: str
-    password:
-        description:
-        - The storage system password.
-        required: True
-        type: str
-    username:
-        description:
-        - The storage system user name.
-        required: True
-        type: str
-
+  hostname:
+    description:
+    - The storage system IP address.
+    required: True
+    type: str
+  password:
+    description:
+    - The storage system password.
+    required: True
+    type: str
+  username:
+    description:
+    - The storage system user name.
+    required: True
+    type: str
 requirements:
   - Ansible 2.9 or later
   - Nimble OS 5.1.4 or later

@@ -6,7 +6,7 @@ authors:
     - Alok Ranjan <alok.ranjan2@hpe.com>"
 license: "Apache License, Version 2.0 or later"
 readme: README.md
-description: Manage HpeNimble Storage Array
+description: Manage Hpe Nimble Storage Array
 repository: https://github.com/hpe-storage/nimble-ansible-modules
 tags:
     - storage
