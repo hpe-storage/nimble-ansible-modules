@@ -1,8 +1,6 @@
-# nimble-ansible-modules
-
 # HPE Ansible Collections
 
-There are currently 5 HPE Collections
+There are currently 1 HPE Collections
 * [Nimble](https://galaxy.ansible.com/hpe/nimble)
 
 ## Requirements

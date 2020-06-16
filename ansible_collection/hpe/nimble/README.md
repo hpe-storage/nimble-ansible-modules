@@ -1,8 +1,10 @@
 # HPE Nimble Storage Ansible Collection
 
 =============================================================
+
 Copyright (c) 2020 HPE Nimble, Inc. All rights reserved.
 Specifications subject to change without notice.
+
 =============================================================
 
 
