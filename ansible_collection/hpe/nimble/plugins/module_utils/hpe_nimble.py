@@ -153,7 +153,7 @@ def get_vol_id(client_obj, vol_name):
     else:
         resp = client_obj.volumes.get(name=vol_name)
         if resp is None:
-            raise Exception("Invalid value for vol_name: '%s'" % vol_name)
+            raise Exception("Invalid value for volume: '%s'" % vol_name)
         return resp.attrs.get("id")
 
 
@@ -163,7 +163,7 @@ def get_volcoll_id(client_obj, volcoll_name):
     else:
         resp = client_obj.volume_collections.get(name=volcoll_name)
         if resp is None:
-            raise Exception("Invalid value for volcoll_name: '%s'" % volcoll_name)
+            raise Exception("Invalid value for volcoll: '%s'" % volcoll_name)
         return resp.attrs.get("id")
 
 
@@ -173,7 +173,7 @@ def get_owned_by_group_id(client_obj, owned_by_group_name):
     else:
         resp = client_obj.groups.get(name=owned_by_group_name)
         if resp is None:
-            raise Exception("Invalid value for owned_by_group_name: '%s'" % owned_by_group_name)
+            raise Exception("Invalid value for owned_by_group: '%s'" % owned_by_group_name)
         return resp.attrs.get("id")
 
 
@@ -183,7 +183,7 @@ def get_pool_id(client_obj, pool_name):
     else:
         resp = client_obj.pools.get(name=pool_name)
         if resp is None:
-            raise Exception("Invalid value for pool_name: '%s'" % pool_name)
+            raise Exception("Invalid value for pool: '%s'" % pool_name)
         return resp.attrs.get("id")
 
 
@@ -193,7 +193,7 @@ def get_folder_id(client_obj, folder_name):
     else:
         resp = client_obj.folders.get(name=folder_name)
         if resp is None:
-            raise Exception("Invalid value for folder_name: '%s'" % folder_name)
+            raise Exception("Invalid value for folder: '%s'" % folder_name)
         return resp.attrs.get("id")
 
 
@@ -203,7 +203,7 @@ def get_perfpolicy_id(client_obj, perfpolicy_name):
     else:
         resp = client_obj.performance_policies.get(name=perfpolicy_name)
         if resp is None:
-            raise Exception("Invalid value for perfpolicy_name: '%s'" % perfpolicy_name)
+            raise Exception("Invalid value for perfpolicy: '%s'" % perfpolicy_name)
         return resp.attrs.get("id")
 
 
@@ -213,7 +213,7 @@ def get_prottmpl_id(client_obj, prottmpl_name):
     else:
         resp = client_obj.protection_templates.get(name=prottmpl_name)
         if resp is None:
-            raise Exception("Invalid value for prottmpl_name: '%s'" % prottmpl_name)
+            raise Exception("Invalid value for prottmpl: '%s'" % prottmpl_name)
         return resp.attrs.get("id")
 
 
@@ -223,7 +223,7 @@ def get_chap_user_id(client_obj, chap_user_name):
     else:
         resp = client_obj.chap_users.get(name=chap_user_name)
         if resp is None:
-            raise Exception("Invalid value for chap_user_name: '%s'" % chap_user_name)
+            raise Exception("Invalid value for chap user: '%s'" % chap_user_name)
         return resp.attrs.get("id")
 
 
@@ -233,7 +233,7 @@ def get_pe_id(client_obj, pe_name):
     else:
         resp = client_obj.protocol_endpoints.get(name=pe_name)
         if resp is None:
-            raise Exception("Invalid value for pe_name: '%s'" % pe_name)
+            raise Exception("Invalid value for protection endpoint: '%s'" % pe_name)
         return resp.attrs.get("id")
 
 
@@ -243,7 +243,7 @@ def get_snapshot_id(client_obj, snap_name):
     else:
         resp = client_obj.snapshots.get(name=snap_name)
         if resp is None:
-            raise Exception("Invalid value for snap_name: '%s'" % snap_name)
+            raise Exception("Invalid value for snapshot: '%s'" % snap_name)
         return resp.attrs.get("id")
 
 
@@ -253,7 +253,7 @@ def get_replication_partner_id(client_obj, replication_partner_name):
     else:
         resp = client_obj.replication_partners.get(name=replication_partner_name)
         if resp is None:
-            raise Exception("Invalid value for replication_partner_name: '%s'" % replication_partner_name)
+            raise Exception("Invalid value for replication partner: '%s'" % replication_partner_name)
         return resp.attrs.get("id")
 
 
@@ -261,16 +261,16 @@ def get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
     if is_null_or_empty(volcoll_name) and is_null_or_empty(prot_template_name):
         return None
     if is_null_or_empty(volcoll_name) is False and is_null_or_empty(prot_template_name) is False:
-        raise Exception("Volcoll_name and prot_template_name are mutually exlusive. Please provide either one of them.")
+        raise Exception("Volcoll and prot_template are mutually exlusive. Please provide either one of them.")
     else:
         if volcoll_name is not None:
             resp = get_volcoll_id(client_obj, volcoll_name)
             if resp is None:
-                raise Exception("Invalid value for volcoll_name: '%s'" % volcoll_name)
+                raise Exception("Invalid value for volcoll: '%s'" % volcoll_name)
         elif prot_template_name is not None:
             resp = get_prottmpl_id(client_obj, prot_template_name)
             if resp is None:
-                raise Exception("Invalid value for prot_template_name: '%s'" % prot_template_name)
+                raise Exception("Invalid value for prot_template: '%s'" % prot_template_name)
         return resp
 
 
@@ -280,5 +280,5 @@ def get_downstream_partner_id(client_obj, downstream_partner):
     else:
         resp = client_obj.replication_partners.get(name=downstream_partner)
         if resp is None:
-            raise Exception("Invalid value for downstream_partner: '%s'" % downstream_partner)
+            raise Exception("Invalid value for downstream partner: '%s'" % downstream_partner)
         return resp.attrs.get("id")

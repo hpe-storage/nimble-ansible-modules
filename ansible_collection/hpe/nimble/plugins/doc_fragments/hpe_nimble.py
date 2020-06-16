@@ -12,6 +12,12 @@
 
 # author alok ranjan (alok.ranjan2@hpe.com)
 
+# remove this line.
+# to implement extend_document_fragmentation , we need virtual env..
+# run  . venv/bin/activate and . hacking/env-setup in a shell (make sure to be
+# at the correct folder./home/alok/work/projects/myansible/ansible)
+
+
 class ModuleDocFragment(object):
 
     # HPE Nimble doc fragment
@@ -34,9 +40,9 @@ options:
         type: str
 
 requirements:
-  - Nimble OS 5.1.x
-  - Ansible - 2.9+
-  - nimble-sdk >= 1.0.0. Install using 'pip install nimble-sdk'
+  - Ansible 2.9 or later
+  - Nimble OS 5.1.4 or later
+  - HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
 
 notes:
   -  check_mode not supported

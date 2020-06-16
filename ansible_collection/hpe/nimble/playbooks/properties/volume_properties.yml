@@ -1,0 +1,17 @@
+#state: "create"
+name: "ansible-vol1"
+cloned_vol: "ansible-cloned-vol1"
+#volcoll: "volcoll2"
+force: true
+size: 2000
+limit_iops: 1020
+limit_mbps: 50000
+description: "hello alok modaifi 3"
+parent: "ansible-vol1"
+metadata: {
+        "key_-*1": "xyz",
+        "alok": "metadasda",
+        "nikki6": "met2ads12sda"
+    }
+destination: "alok-default"
+#snapshot: "alok2" # used for cloning
