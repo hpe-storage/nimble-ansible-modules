@@ -55,14 +55,14 @@ options:
     required: False
     type: int
     description:
-    - If this access control record applies to a regular volume, this attribute is the volume's LUN (Logical Unit Number).
-    If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is fibre channel, the LUN will be in the range from 0 to 2047.
+    - If this access control record applies to a regular volume, this attribute is the volume's LUN Logical Unit Number.
+    - If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is fibre channel, the LUN will be in the range from 0 to 2047.
   pe_ids:
     required: False
     type: list
     description:
     - List of candidate protocol endpoints that may be used to access the Virtual volume. One of them will be selected for the access control record.
-    This field is required only when creating an access control record for a virtual volume.
+    - This field is required only when creating an access control record for a virtual volume.
   protocol_endpoint:
     required: False
     type: str
@@ -88,7 +88,7 @@ options:
     description:
     - Name for the volume this access control record applies to.
 extends_documentation_fragment: hpe_nimble
-short_description: Manages a HPE Nimble Storage Access Control Record.
+short_description: Manages a HPE Nimble Storage access control record.
 version_added: 2.9
 '''
 
@@ -123,7 +123,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
-import ansible_collections.hpe_nimble.array.plugins.module_utils.hpe_nimble as utils
+import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
 def create_acr(
@@ -134,18 +134,18 @@ def create_acr(
         **kwargs):
 
     if utils.is_null_or_empty(initiator_group):
-        return (False, False, "Access Control Record creation failed. No initiator group provided.")
+        return (False, False, "Access control record creation failed. No initiator group provided.")
     if utils.is_null_or_empty(volume):
-        return (False, False, "Access Control Record creation failed. No volume name provided.")
+        return (False, False, "Access control record creation failed. No volume name provided.")
 
     try:
         # see if the igroup is already present
         ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group)
         if ig_resp is None:
-            return (False, False, "Initiator Group '%s' is not present on Array." % initiator_group)
+            return (False, False, "Initiator Group '%s' is not present on array." % initiator_group)
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
-            return (False, False, "Volume name '%s' is not present on Array." % volume)
+            return (False, False, "Volume name '%s' is not present on array." % volume)
 
         acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
         if utils.is_null_or_empty(acr_resp) is False:
@@ -156,14 +156,14 @@ def create_acr(
             acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
                                                                 vol_id=vol_resp.attrs.get("id"),
                                                                 **params)
-            return (True, True, "Successfully created Access Control Record for volume '%s'." % volume)
+            return (True, True, "Successfully created access control record for volume '%s'." % volume)
         else:
             # check the state. if it is set to present ,we pass else if it is 'create' then we will fail
             if state == "present":
-                return (True, False, "Access Control Record is already present for volume '%s'." % volume)
-        return (False, False, "Access Control Record for volume '%s' cannot be created as it is already present." % volume)
+                return (True, False, "Access control record is already present for volume '%s'." % volume)
+        return (False, False, "Access control record for volume '%s' cannot be created as it is already present." % volume)
     except Exception as e:
-        return (False, False, "Access Control Record creation failed | %s" % e)
+        return (False, False, "Access control record creation failed | %s" % e)
 
 
 def delete_acr(
@@ -171,21 +171,21 @@ def delete_acr(
         volume):
 
     if utils.is_null_or_empty(volume):
-        return (False, False, "Access Control Record deletion failed. No volume name Provided.")
+        return (False, False, "Access control record deletion failed. No volume name Provided.")
 
     try:
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
-            return (False, False, "Volume name '%s' is not present on Array." % volume)
+            return (False, False, "Volume name '%s' is not present on array." % volume)
 
         acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
         if acr_resp is not None:
             acr_resp = client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
-            return (True, True, "Successfully deleted Access Control Record for volume '%s'." % volume)
+            return (True, True, "Successfully deleted access control record for volume '%s'." % volume)
         else:
-            return (True, False, "Access Control Record for volume '%s' Cannot be deleted as it is not present." % volume)
+            return (True, False, "Access control record for volume '%s' Cannot be deleted as it is not present." % volume)
     except Exception as e:
-        return (False, False, "Access Control Record deletion failed | %s" % e)
+        return (False, False, "Access control record deletion failed | %s" % e)
 
 
 def main():

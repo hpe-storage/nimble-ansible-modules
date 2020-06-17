@@ -326,7 +326,7 @@ try:
     from nimbleclient import exceptions
 except ImportError:
     client = None
-import ansible_collections.hpe_nimble.array.plugins.module_utils.hpe_nimble as utils
+import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 from enum import Enum
 
 
@@ -394,7 +394,7 @@ def create_volume(
             client_obj.volumes.create(vol_name, **params)
             return (True, True, "Created volume %s successfully." % vol_name, {})
         else:
-            return (False, False, "Volume '%s' Cannot be created as it is already present." % vol_name, {})
+            return (False, False, "Volume '%s' cannot be created as it is already present." % vol_name, {})
     except Exception as e:
         return (False, False, "Volume creation failed | %s" % e, {})
 
@@ -548,7 +548,7 @@ def clone_volume(
                                                         online=False,
                                                         writable=False)
                 if utils.is_null_or_empty(snap_resp):
-                    return (False, False, "Clone Operation Failed. Could not create a snapshot from source volume", {})
+                    return (False, False, "Clone Operation Failed as could not create a snapshot from source volume", {})
                 # create clone
                 clonevol_resp, msg = create_clone_from_snapshot(client_obj, [snap_resp], vol_name, snapshot_to_clone, state)
                 if clonevol_resp == Vol_Operation.ALREADY_EXISTS or clonevol_resp == Vol_Operation.FAILED:
@@ -558,7 +558,7 @@ def clone_volume(
             # get the snapshot detail from the given source vol
             snap_list_resp = client_obj.snapshots.list(vol_name=parent, name=snapshot_to_clone)
             if utils.is_null_or_empty(snap_list_resp):
-                return (False, False, "Could not create clone volume '%s' as given snapshot name '%s' is not present in Parent volume"
+                return (False, False, "Could not create clone volume '%s' as given snapshot name '%s' is not present in parent volume"
                         % (vol_name, snapshot_to_clone), {})
             # create clone
             clonevol_resp, msg = create_clone_from_snapshot(client_obj, snap_list_resp, vol_name, snapshot_to_clone, state)
@@ -566,11 +566,11 @@ def clone_volume(
         if clonevol_resp is Vol_Operation.SUCCESS:
             return (True, True, "Successfully created cloned volume '%s'" % msg, {})
         elif clonevol_resp is Vol_Operation.FAILED:
-            return (False, False, "Failed to Clone volume. Msg: '%s'" % msg, {})
+            return (False, False, "Failed to clone volume. Msg: '%s'" % msg, {})
         elif clonevol_resp == Vol_Operation.ALREADY_EXISTS:
             return (True, False, " '%s'" % msg, {})
     except Exception as e:
-        return (False, False, "clone_volume Operation Failed | %s" % e, {})
+        return (False, False, "clone volume operation Failed | %s" % e, {})
 
 
 def main():

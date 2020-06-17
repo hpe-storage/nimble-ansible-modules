@@ -173,7 +173,7 @@ def get_owned_by_group_id(client_obj, owned_by_group_name):
     else:
         resp = client_obj.groups.get(name=owned_by_group_name)
         if resp is None:
-            raise Exception("Invalid value for owned_by_group: '%s'" % owned_by_group_name)
+            raise Exception("Invalid value for owned by group: '%s'" % owned_by_group_name)
         return resp.attrs.get("id")
 
 
@@ -203,7 +203,7 @@ def get_perfpolicy_id(client_obj, perfpolicy_name):
     else:
         resp = client_obj.performance_policies.get(name=perfpolicy_name)
         if resp is None:
-            raise Exception("Invalid value for perfpolicy: '%s'" % perfpolicy_name)
+            raise Exception("Invalid value for performance policy: '%s'" % perfpolicy_name)
         return resp.attrs.get("id")
 
 
@@ -213,7 +213,7 @@ def get_prottmpl_id(client_obj, prottmpl_name):
     else:
         resp = client_obj.protection_templates.get(name=prottmpl_name)
         if resp is None:
-            raise Exception("Invalid value for prottmpl: '%s'" % prottmpl_name)
+            raise Exception("Invalid value for protection template: '%s'" % prottmpl_name)
         return resp.attrs.get("id")
 
 
@@ -270,7 +270,7 @@ def get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
         elif prot_template_name is not None:
             resp = get_prottmpl_id(client_obj, prot_template_name)
             if resp is None:
-                raise Exception("Invalid value for prot_template: '%s'" % prot_template_name)
+                raise Exception("Invalid value for protection template: '%s'" % prot_template_name)
         return resp
 
 
