@@ -21,8 +21,7 @@ import uuid
 
 def is_null_or_empty(name):
     if type(name) is bool:
-        # do nothing . just return the same
-        return name
+        return False
     if name is None or not name or name == "":
         return True
     return False

@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: On HPE Nimble Storage Array - Create or delete access control record for volume.
+description: On HPE Nimble Storage array - Create or delete access control record for volume.
 module: hpe_nimble_acr
 options:
   apply_to:
