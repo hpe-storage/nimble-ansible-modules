@@ -142,10 +142,10 @@ def create_acr(
         # see if the igroup is already present
         ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group)
         if ig_resp is None:
-            return (False, False, "Initiator Group '%s' is not present on array." % initiator_group)
+            return (False, False, f"Initiator Group '{initiator_group}' is not present on array.")
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
-            return (False, False, "Volume name '%s' is not present on array." % volume)
+            return (False, False, f"Volume name '{volume}' is not present on array.")
 
         acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
         if utils.is_null_or_empty(acr_resp) is False:
@@ -156,14 +156,14 @@ def create_acr(
             acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
                                                                 vol_id=vol_resp.attrs.get("id"),
                                                                 **params)
-            return (True, True, "Successfully created access control record for volume '%s'." % volume)
+            return (True, True, f"Successfully created access control record for volume '{volume}'.")
         else:
             # check the state. if it is set to present ,we pass else if it is 'create' then we will fail
             if state == "present":
-                return (True, False, "Access control record is already present for volume '%s'." % volume)
-        return (False, False, "Access control record for volume '%s' cannot be created as it is already present." % volume)
-    except Exception as e:
-        return (False, False, "Access control record creation failed | %s" % e)
+                return (True, False, f"Access control record is already present for volume '{volume}'.")
+        return (False, False, f"Access control record for volume '{volume}' cannot be created as it is already present.")
+    except Exception as ex:
+        return (False, False, f"Access control record creation failed | {ex}")
 
 
 def delete_acr(
@@ -176,16 +176,16 @@ def delete_acr(
     try:
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
-            return (False, False, "Volume name '%s' is not present on array." % volume)
+            return (False, False, f"Volume name '{volume}' is not present on array.")
 
         acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
         if acr_resp is not None:
             acr_resp = client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
-            return (True, True, "Successfully deleted access control record for volume '%s'." % volume)
+            return (True, True, f"Successfully deleted access control record for volume '{volume}'.")
         else:
-            return (True, False, "Access control record for volume '%s' Cannot be deleted as it is not present." % volume)
-    except Exception as e:
-        return (False, False, "Access control record deletion failed | %s" % e)
+            return (True, False, f"Access control record for volume '{volume}' Cannot be deleted as it is not present.")
+    except Exception as ex:
+        return (False, False, f"Access control record deletion failed | {ex}")
 
 
 def main():
@@ -270,7 +270,7 @@ def main():
 
     # defaults
     return_status = changed = False
-    msg = "No Task was run."
+    msg = "No Task to run."
 
     # States
     if state == "create" or state == "present":

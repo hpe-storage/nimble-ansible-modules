@@ -43,20 +43,17 @@ def remove_null_args(**kwargs):
     return kwargs
 
 
-def is_dict_same(server_dict, dict_to_check):
+def is_dict_key_value_present_in_server_dict(server_dict, dict_to_check):
     if server_dict is None and dict_to_check is None:
         return True
-    for key_to_check in dict_to_check.keys():
+    if len(dict_to_check) == 0:
+        return False
+
+    for key, value in dict_to_check.items():
         # there can be two possibilities.
         # 1. key is not present. hence return false.
         # 2. key is present, but value is not same. return false for this too
-        if key_to_check in server_dict.keys():
-            if dict_to_check[key_to_check] == server_dict[key_to_check]:
-                continue
-            else:
-                return False
-        else:
-            # key not present
+        if key not in server_dict or value != server_dict[key]:
             return False
     return True
 
@@ -65,54 +62,68 @@ def is_dict_item_present_on_server(server_list_of_dict, dict_to_check):
 
     if dict_to_check is None and server_list_of_dict is None:
         return True
+    if len(dict_to_check) == 0:
+        return False
     if type(server_list_of_dict) is not list:
         return False
 
     for server_dict in server_list_of_dict:
-        if is_dict_same(server_dict, dict_to_check) is True:
+        if is_dict_key_value_present_in_server_dict(server_dict, dict_to_check) is True:
             return True
     return False
 
 
 # remove unchanged item from kwargs by matching them with the data present in given object attrs
-def remove_unchanged_or_null_args(obj_attrs, **kwargs):
+def remove_unchanged_or_null_args(server_resp, **kwargs):
+    # Filter out null/empty arguments from the input
     params = remove_null_args(**kwargs)
-    tosearch = params.copy()
+    params_to_search = params.copy()
+
     changed_attrs_dict = {}
-    for key, value in tosearch.items():
-        server_value = obj_attrs.attrs.get(key)
+    if hasattr(server_resp, "attrs") is False:
+        return (changed_attrs_dict, params)
+    if server_resp is None or server_resp.attrs is None or type(server_resp.attrs) is not dict:
+        return (changed_attrs_dict, params)
+
+    for key, value in params_to_search.items():
+        # there could be a possibility that a user provided a wrong "key" name which is not at all present
+        # in server resp.In that case get() will return None and hence will be added to lsit of changed_attrs.
+        server_value = server_resp.attrs.get(key)
 
         if type(server_value) is list and type(value) is dict:
+            if len(value) == 0:
+                continue
             # we will land here if the user wants to update a metadata.
             # server return a list of metadata dictionary
             temp_server_metadata_dict = {}
             for server_entry in server_value:
                 temp_server_metadata_dict[server_entry['key']] = server_entry['value']
-            if is_dict_same(temp_server_metadata_dict, value) is False:
+            if is_dict_key_value_present_in_server_dict(temp_server_metadata_dict, value) is False:
                 changed_attrs_dict[key] = value
                 continue
 
         elif type(server_value) is dict and type(value) is dict:
-            if is_dict_same(server_value, value) is False:
+            if len(value) == 0:
+                continue
+            if is_dict_key_value_present_in_server_dict(server_value, value) is False:
                 changed_attrs_dict[key] = value
                 continue
 
         elif type(server_value) is list and type(value) is list:
+            if len(value) == 0:
+                continue
             # check if the list has dictionary to compare
             for entry_to_check in value:
                 if type(entry_to_check) is dict:
                     if is_dict_item_present_on_server(server_value, entry_to_check) is True:
                         continue
-                    else:
-                        changed_attrs_dict[key] = value
-                        # no need to further check for other keys as we already got one mismatch
-                        break
+                    # no need to further check for other keys as we already got one mismatch
+                    changed_attrs_dict[key] = value
                 else:
-                    server_value.sort()
-                    value.sort()
-                    if server_value != value:
+                    if server_value.sort() != value.sort():
                         changed_attrs_dict[key] = value
-                        break
+                break
+            continue
 
         elif server_value != value:
             # force is a special key used to force any operation for object
@@ -152,7 +163,7 @@ def get_vol_id(client_obj, vol_name):
     else:
         resp = client_obj.volumes.get(name=vol_name)
         if resp is None:
-            raise Exception("Invalid value for volume: '%s'" % vol_name)
+            raise Exception(f"Invalid value for volume: {vol_name}")
         return resp.attrs.get("id")
 
 
@@ -162,7 +173,7 @@ def get_volcoll_id(client_obj, volcoll_name):
     else:
         resp = client_obj.volume_collections.get(name=volcoll_name)
         if resp is None:
-            raise Exception("Invalid value for volcoll: '%s'" % volcoll_name)
+            raise Exception(f"Invalid value for volcoll: {volcoll_name}")
         return resp.attrs.get("id")
 
 
@@ -172,7 +183,7 @@ def get_owned_by_group_id(client_obj, owned_by_group_name):
     else:
         resp = client_obj.groups.get(name=owned_by_group_name)
         if resp is None:
-            raise Exception("Invalid value for owned by group: '%s'" % owned_by_group_name)
+            raise Exception(f"Invalid value for owned by group: {owned_by_group_name}")
         return resp.attrs.get("id")
 
 
@@ -182,7 +193,7 @@ def get_pool_id(client_obj, pool_name):
     else:
         resp = client_obj.pools.get(name=pool_name)
         if resp is None:
-            raise Exception("Invalid value for pool: '%s'" % pool_name)
+            raise Exception(f"Invalid value for pool: {pool_name}")
         return resp.attrs.get("id")
 
 
@@ -192,7 +203,7 @@ def get_folder_id(client_obj, folder_name):
     else:
         resp = client_obj.folders.get(name=folder_name)
         if resp is None:
-            raise Exception("Invalid value for folder: '%s'" % folder_name)
+            raise Exception(f"Invalid value for folder: {folder_name}")
         return resp.attrs.get("id")
 
 
@@ -202,7 +213,7 @@ def get_perfpolicy_id(client_obj, perfpolicy_name):
     else:
         resp = client_obj.performance_policies.get(name=perfpolicy_name)
         if resp is None:
-            raise Exception("Invalid value for performance policy: '%s'" % perfpolicy_name)
+            raise Exception(f"Invalid value for performance policy: {perfpolicy_name}")
         return resp.attrs.get("id")
 
 
@@ -212,7 +223,7 @@ def get_prottmpl_id(client_obj, prottmpl_name):
     else:
         resp = client_obj.protection_templates.get(name=prottmpl_name)
         if resp is None:
-            raise Exception("Invalid value for protection template: '%s'" % prottmpl_name)
+            raise Exception(f"Invalid value for protection template: {prottmpl_name}")
         return resp.attrs.get("id")
 
 
@@ -222,7 +233,7 @@ def get_chap_user_id(client_obj, chap_user_name):
     else:
         resp = client_obj.chap_users.get(name=chap_user_name)
         if resp is None:
-            raise Exception("Invalid value for chap user: '%s'" % chap_user_name)
+            raise Exception(f"Invalid value for chap user: {chap_user_name}")
         return resp.attrs.get("id")
 
 
@@ -232,7 +243,7 @@ def get_pe_id(client_obj, pe_name):
     else:
         resp = client_obj.protocol_endpoints.get(name=pe_name)
         if resp is None:
-            raise Exception("Invalid value for protection endpoint: '%s'" % pe_name)
+            raise Exception(f"Invalid value for protection endpoint: {pe_name}")
         return resp.attrs.get("id")
 
 
@@ -242,7 +253,7 @@ def get_snapshot_id(client_obj, snap_name):
     else:
         resp = client_obj.snapshots.get(name=snap_name)
         if resp is None:
-            raise Exception("Invalid value for snapshot: '%s'" % snap_name)
+            raise Exception(f"Invalid value for snapshot: {snap_name}")
         return resp.attrs.get("id")
 
 
@@ -252,7 +263,7 @@ def get_replication_partner_id(client_obj, replication_partner_name):
     else:
         resp = client_obj.replication_partners.get(name=replication_partner_name)
         if resp is None:
-            raise Exception("Invalid value for replication partner: '%s'" % replication_partner_name)
+            raise Exception(f"Invalid value for replication partner: {replication_partner_name}")
         return resp.attrs.get("id")
 
 
@@ -265,11 +276,11 @@ def get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
         if volcoll_name is not None:
             resp = get_volcoll_id(client_obj, volcoll_name)
             if resp is None:
-                raise Exception("Invalid value for volcoll: '%s'" % volcoll_name)
+                raise Exception(f"Invalid value for volcoll: {volcoll_name}")
         elif prot_template_name is not None:
             resp = get_prottmpl_id(client_obj, prot_template_name)
             if resp is None:
-                raise Exception("Invalid value for protection template: '%s'" % prot_template_name)
+                raise Exception(f"Invalid value for protection template: {prot_template_name}")
         return resp
 
 
@@ -279,5 +290,5 @@ def get_downstream_partner_id(client_obj, downstream_partner):
     else:
         resp = client_obj.replication_partners.get(name=downstream_partner)
         if resp is None:
-            raise Exception("Invalid value for downstream partner: '%s'" % downstream_partner)
+            raise Exception(f"Invalid value for downstream partner: {downstream_partner}")
         return resp.attrs.get("id")
