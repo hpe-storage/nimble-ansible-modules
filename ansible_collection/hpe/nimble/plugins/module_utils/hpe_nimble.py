@@ -80,14 +80,16 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
     params_to_search = params.copy()
 
     changed_attrs_dict = {}
+    # check if server resp has attribute called attrs
     if hasattr(server_resp, "attrs") is False:
         return (changed_attrs_dict, params)
+
     if server_resp is None or server_resp.attrs is None or type(server_resp.attrs) is not dict:
         return (changed_attrs_dict, params)
 
     for key, value in params_to_search.items():
         # there could be a possibility that a user provided a wrong "key" name which is not at all present
-        # in server resp.In that case get() will return None and hence will be added to lsit of changed_attrs.
+        # in server resp.In that case get() will return None and hence will be added to list of changed_attrs.
         server_value = server_resp.attrs.get(key)
 
         if type(server_value) is list and type(value) is dict:
@@ -126,8 +128,8 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
             continue
 
         elif server_value != value:
-            # force is a special key used to force any operation for object
-            # so that is never updated as an attribute
+            # This is a special key used to force any operation for object.
+            # So, that is never updated as a server attribute.
             if key != "force":
                 changed_attrs_dict[key] = value
         else:
