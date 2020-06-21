@@ -77,15 +77,12 @@ def is_dict_item_present_on_server(server_list_of_dict, dict_to_check):
 def remove_unchanged_or_null_args(server_resp, **kwargs):
     # Filter out null/empty arguments from the input
     params = remove_null_args(**kwargs)
-    params_to_search = params.copy()
-
-    changed_attrs_dict = {}
     # check if server resp has attribute called attrs
-    if hasattr(server_resp, "attrs") is False:
-        return (changed_attrs_dict, params)
+    if hasattr(server_resp, "attrs") is False or type(server_resp.attrs) is not dict:
+        return (params, params)
 
-    if server_resp is None or server_resp.attrs is None or type(server_resp.attrs) is not dict:
-        return (changed_attrs_dict, params)
+    params_to_search = params.copy()
+    changed_attrs_dict = {}
 
     for key, value in params_to_search.items():
         # there could be a possibility that a user provided a wrong "key" name which is not at all present
