@@ -14,7 +14,6 @@
 
 # author alok ranjan (alok.ranjan2@hpe.com)
 
-# this file will ultimately sit in "/usr/lib/python3.6/site-packages/ansible/module_ in production
 import datetime
 import uuid
 
@@ -43,21 +42,6 @@ def remove_null_args(**kwargs):
     return kwargs
 
 
-def is_dict_key_value_present_in_server_dict(server_dict, dict_to_check):
-    if server_dict is None and dict_to_check is None:
-        return True
-    if len(dict_to_check) == 0:
-        return False
-
-    for key, value in dict_to_check.items():
-        # there can be two possibilities.
-        # 1. key is not present. hence return false.
-        # 2. key is present, but value is not same. return false for this too
-        if key not in server_dict or value != server_dict[key]:
-            return False
-    return True
-
-
 def is_dict_item_present_on_server(server_list_of_dict, dict_to_check):
 
     if dict_to_check is None and server_list_of_dict is None:
@@ -68,7 +52,7 @@ def is_dict_item_present_on_server(server_list_of_dict, dict_to_check):
         return False
 
     for server_dict in server_list_of_dict:
-        if is_dict_key_value_present_in_server_dict(server_dict, dict_to_check) is True:
+        if (dict_to_check.items() <= server_dict.items()) is True:
             return True
     return False
 
@@ -97,14 +81,14 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
             temp_server_metadata_dict = {}
             for server_entry in server_value:
                 temp_server_metadata_dict[server_entry['key']] = server_entry['value']
-            if is_dict_key_value_present_in_server_dict(temp_server_metadata_dict, value) is False:
+            if (value.items() <= temp_server_metadata_dict.items()) is False:
                 changed_attrs_dict[key] = value
                 continue
 
         elif type(server_value) is dict and type(value) is dict:
             if len(value) == 0:
                 continue
-            if is_dict_key_value_present_in_server_dict(server_value, value) is False:
+            if (value.items() <= server_value.items()) is False:
                 changed_attrs_dict[key] = value
                 continue
 

@@ -662,8 +662,7 @@ def main():
         "encryption_cipher": {
             "required": False,
             "choices": ['none', 'aes_256_xts'],
-            "type": "str",
-            "default": 'none'
+            "type": "str"
         },
         "app_uuid": {
             "required": False,
