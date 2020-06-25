@@ -54,7 +54,7 @@ options:
     required: False
     type: list
     description:
-    - List of target Fibre Channel ports with Target Driven Zoning configured on this initiator group.
+    - List of target fibre Channel ports with target driven zoning configured on this initiator group.
   host_type:
     required: False
     type: str

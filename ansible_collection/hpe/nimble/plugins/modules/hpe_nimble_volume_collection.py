@@ -76,7 +76,7 @@ options:
     required: False
     type: str
     description:
-    - If the application is running within a Windows cluster environment then this is the instance name of the service running within the cluster environment.
+    - If the application is running within a windows cluster environment then this is the instance name of the service running within the cluster environment.
   app_sync:
     choices:
     - none
@@ -87,7 +87,7 @@ options:
     type: str
     default: none
     description:
-    - Application Synchronization.
+    - Application synchronization.
   demote:
     required: False
     type: bool
