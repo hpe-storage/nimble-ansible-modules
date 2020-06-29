@@ -24,7 +24,7 @@ DOCUMENTATION = r'''
 author:
   - Alok Ranjan (@ranjanal)
 description: On HPE Nimble Storage array- Create or delete initiator group and initiators
-module: hpe_nimble_igroup
+module: hpe_nimble_initiator_group
 options:
   access_protocol:
     choices:
@@ -102,7 +102,7 @@ EXAMPLES = r'''
 # if state is create, then create ig. Fails if already present.
 # if state is present, then create ig if not present. Succeeds if it already exists.
 - name: Create an initiator group.
-  hpe_nimble_igroup:
+  hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -113,7 +113,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}" # fail if exist
 
 - name: Append a bunch of iscsi_initiators to my igroup
-  hpe_nimble_igroup:
+  hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -123,7 +123,7 @@ EXAMPLES = r'''
     state: append # fails if igroup doesn't exist
 
 - name: Delete my igroup
-  hpe_nimble_igroup:
+  hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
