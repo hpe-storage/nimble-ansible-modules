@@ -402,7 +402,6 @@ def delete_volume(client_obj, vol_name):
         else:
             # disassociate the volume from vol coll
             client_obj.volumes.update(id=vol_resp.attrs.get("id"), volcoll_id="")
-            client_obj.volumes.offline(id=vol_resp.attrs.get("id"))
             client_obj.volumes.delete(id=vol_resp.attrs.get("id"))
             return (True, True, f"Deleted volume '{vol_name}' successfully.", {})
     except Exception as ex:
