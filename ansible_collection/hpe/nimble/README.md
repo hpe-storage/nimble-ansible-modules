@@ -11,7 +11,7 @@
 
 Install the HPE Nimble Storage array collection on your Ansible management host.
 
-- Download the collection from here [\ansible-collection-builds\] https://confluence.eng.nimblestorage.com/display/IFP/Ansible+Storage+Modules#AnsibleStorageModules-AnsibleCollectionBuilds:
+- Download the collection.
 - Go to the downloaded path and run cmd " ansible-galaxy collection install <package-name.tar.gz>". Ex: ansible-galaxy collection install hpe-nimble-1.0.0.tar.gz.
 - Above command will install the collection in /root/.ansible/collections/ansible_collections
 
@@ -19,10 +19,10 @@ Install the HPE Nimble Storage array collection on your Ansible management host.
 
 ## Available Modules
 
-- hpe_nimble_acr - Manages a HPE Nimble Storage access control record
-- hpe_nimble_initiator_group - Manage HPE Nimble Storage initiator group
-- hpe_nimble_volume -  Manage volume on a Nimble Storage group
-- hpe_nimble_volume_collection - Manage HPE Nimble Storage volume collection
+- hpe_nimble_acr - Manage HPE Nimble Storage access control records
+- hpe_nimble_initiator_group - Manage HPE Nimble Storage initiator groups
+- hpe_nimble_volume -  Manage HPE Nimble Storage volumes
+- hpe_nimble_volume_collection - Manage HPE Nimble Storage volume collections
 
 ## License
 

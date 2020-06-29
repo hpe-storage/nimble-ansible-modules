@@ -221,7 +221,7 @@ options:
     description:
     - Name of volume collection of which this volume is a member.
 extends_documentation_fragment: hpe_nimble
-short_description: Manages a HPE Nimble Storage volume.
+short_description: Manage HPE Nimble Storage volumes.
 version_added: 2.9
 '''
 
@@ -234,7 +234,7 @@ EXAMPLES = r'''
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
     size: "{{ size }}"
     limit_iops: "{{ limit_iops }}"
     limit_mbps: 5000
@@ -270,7 +270,7 @@ EXAMPLES = r'''
     name: "{{ name }}" # name here is the name of cloned volume
     parent: "{{ parent | mandatory }}"
     snapshot: "{{ snapshot | default(None)}}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
   when:
     - parent is defined
 
@@ -400,8 +400,6 @@ def delete_volume(client_obj, vol_name):
         if utils.is_null_or_empty(vol_resp):
             return (False, False, f"Volume '{vol_name}' not present to delete.", {})
         else:
-            # disassociate the volume from vol coll
-            client_obj.volumes.update(id=vol_resp.attrs.get("id"), volcoll_id="")
             client_obj.volumes.delete(id=vol_resp.attrs.get("id"))
             return (True, True, f"Deleted volume '{vol_name}' successfully.", {})
     except Exception as ex:
@@ -727,7 +725,7 @@ def main():
 
     module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
-        module.fail_json(msg='the python nimble-sdk module is required.')
+        module.fail_json(msg='Python nimble-sdk could not be found.')
 
     state = module.params["state"]
     vol_name = module.params["name"]
@@ -766,7 +764,7 @@ def main():
     password = module.params["password"]
 
     if (username is None or password is None or hostname is None):
-        module.fail_json(msg="Volume creation failed. Storage system IP or username or password is null.")
+        module.fail_json(msg="Missing variables: hostname, username or password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,

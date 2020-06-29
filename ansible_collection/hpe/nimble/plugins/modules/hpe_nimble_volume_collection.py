@@ -199,7 +199,7 @@ options:
     description:
     - Application VMware vCenter password. A password with few constraints.
 extends_documentation_fragment: hpe_nimble
-short_description: Manage HPE Nimble Storage volume collection.
+short_description: Manage HPE Nimble Storage volume collections.
 version_added: 2.9
 '''
 
@@ -279,7 +279,6 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
-
 
 def create_volcoll(
         client_obj,
@@ -587,7 +586,7 @@ def main():
     fields.update(default_fields)
     module = AnsibleModule(argument_spec=fields)
     if client is None:
-        module.fail_json(msg='the python nimble-sdk module is required.')
+        module.fail_json(msg='Python nimble-sdk could not be found.')
 
     hostname = module.params["hostname"]
     username = module.params["username"]
@@ -620,9 +619,8 @@ def main():
     no_reverse = module.params["no_reverse"]
     override_upstream_down = module.params["override_upstream_down"]
 
-    if (username is None or password is None or hostname is None or volcoll_name is None):
-        module.fail_json(
-            msg="Storage system IP or username or password or volcoll is null.")
+    if (username is None or password is None or hostname is None):
+        module.fail_json(msg="Missing variables: hostname, username or password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,

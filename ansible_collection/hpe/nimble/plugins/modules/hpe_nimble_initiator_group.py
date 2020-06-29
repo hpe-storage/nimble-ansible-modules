@@ -60,8 +60,8 @@ options:
     type: str
     description:
     - Initiator group host type. Available options are auto and hpux. The default option is auto. This attribute will be
-    - applied to all the initiators in the initiator group. Initiators with different host OSes should not be kept in the
-    - same initiator group having a non-default host type attribute.
+      applied to all the initiators in the initiator group. Initiators with different host OSes should not be kept in the
+      same initiator group having a non-default host type attribute.
   iscsi_initiators:
     required: False
     type: list
@@ -93,7 +93,7 @@ options:
     description:
     - List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
 extends_documentation_fragment: hpe_nimble
-short_description: Manage HPE Nimble Storage initiator group
+short_description: Manage HPE Nimble Storage initiator groups
 version_added: 2.9
 '''
 
@@ -101,18 +101,18 @@ EXAMPLES = r'''
 
 # if state is create, then create ig. Fails if already present.
 # if state is present, then create ig if not present. Succeeds if it already exists.
-- name: Create an initiator group.
+- name: Create an igroup
   hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
     name: "{{ name }}"
-    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dict. each entry in dict has one intitator details. default empty
+    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one intitator details.
     description: "{{ description | default(None) }}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
 
-- name: Append a bunch of iscsi_initiators to my igroup
+- name: Append a bunch of iscsi_initiators to igroup
   hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -120,16 +120,16 @@ EXAMPLES = r'''
     name: "{{ name }}"
     iscsi_initiators: "{{ iscsi_initiators | default([])}}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
-    state: append # fails if igroup doesn't exist
+    state: append
 
-- name: Delete my igroup
+- name: Delete igroup
   hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
     name: "{{ name }}"
-    state: absent # fails if unable to delete igroup
+    state: absent
 
 '''
 RETURN = r'''
@@ -141,7 +141,6 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
-
 
 def is_initiator_present(
         ig_resp,
@@ -304,7 +303,7 @@ def main():
     required_if = [('state', 'create', ['access_protocol'])]
     module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
-        module.fail_json(msg='the python nimble-sdk module is required.')
+        module.fail_json(msg='Python nimble-sdk could not be found.')
 
     hostname = module.params["hostname"]
     username = module.params["username"]
@@ -323,7 +322,7 @@ def main():
 
     if (username is None or password is None or hostname is None):
         module.fail_json(
-            msg="Storage system IP or username or password or backend protocol is null.")
+            msg="Missing variables: hostname, username or password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,
