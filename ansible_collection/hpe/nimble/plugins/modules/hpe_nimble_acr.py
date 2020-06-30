@@ -260,7 +260,7 @@ def main():
 
     if (username is None or password is None or hostname is None):
         module.fail_json(
-            msg="Missing variables: hostname, username or password is mandatory.")
+            msg="Missing variables: hostname, username and password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,
@@ -270,7 +270,7 @@ def main():
 
     # defaults
     return_status = changed = False
-    msg = "No Task to run."
+    msg = "No task to run."
 
     # States
     if state == "create" or state == "present":

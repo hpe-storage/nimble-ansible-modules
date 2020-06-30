@@ -49,7 +49,7 @@ options:
     type: list
     default: None
     description:
-    - List of FC initiators. When create/update fc_initiators, wwpn is required.
+    - List of FC initiators. When create/update fc_initiators, WWPN is required.
   fc_tdz_ports:
     required: False
     type: list
@@ -159,12 +159,10 @@ def is_initiator_present(
     if utils.is_null_or_empty(initiators_list) is True:
         return False
     for initiator_obj in initiators_list:
-        if access_protocol == "iscsi":
-            if iqn_or_wwpn_name == initiator_obj['iqn']:
-                return True
-        elif access_protocol == "fc":
-            if iqn_or_wwpn_name == initiator_obj['wwpn']:
-                return True
+        if access_protocol == "iscsi" and iqn_or_wwpn_name == initiator_obj['iqn']:
+            return True
+        elif access_protocol == "fc" and iqn_or_wwpn_name == initiator_obj['wwpn']:
+            return True
     return False
 
 
@@ -322,7 +320,7 @@ def main():
 
     if (username is None or password is None or hostname is None):
         module.fail_json(
-            msg="Missing variables: hostname, username or password is mandatory.")
+            msg="Missing variables: hostname, username and password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,
@@ -331,7 +329,7 @@ def main():
     )
     # defaults
     return_status = changed = False
-    msg = "No Task to run."
+    msg = "No task to run."
 
     # States
     if state == "create" or state == "present":
