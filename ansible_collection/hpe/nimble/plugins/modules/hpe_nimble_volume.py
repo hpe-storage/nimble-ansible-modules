@@ -354,12 +354,17 @@ def move_volume(
 def update_volume(
         client_obj,
         vol_resp,
+        disassociate,
         **kwargs):
 
     if utils.is_null_or_empty(vol_resp):
         return (False, False, "Invalid volume to update.", {})
     try:
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(vol_resp, **kwargs)
+
+        if disassociate is True and utils.is_null_or_empty(vol_resp.attrs.get("volcoll_id")) is False:
+            params['volcoll_id'] = ""
+            changed_attrs_dict['volcoll_id'] = ""
 
         if changed_attrs_dict.__len__() > 0:
             client_obj.volumes.update(id=vol_resp.attrs.get("id"), **params)
@@ -822,10 +827,16 @@ def main():
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
             else:
-                # if we are here it means volume is already present. hence issue update call
+                if volcoll is not None and volcoll == "":
+                    # volcoll can be an empty string when user wants to disassociate volume from volcoll
+                    disassociate = True
+                else:
+                    disassociate = False
+
                 return_status, changed, msg, changed_attrs_dict = update_volume(
                     client_obj,
                     vol_resp,
+                    disassociate,
                     size=size,
                     description=description,
                     perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),

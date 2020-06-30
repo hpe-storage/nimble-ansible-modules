@@ -83,16 +83,19 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
                 temp_server_metadata_dict[server_entry['key']] = server_entry['value']
             if (value.items() <= temp_server_metadata_dict.items()) is False:
                 changed_attrs_dict[key] = value
-                continue
+            else:
+                params.pop(key)
 
         elif type(server_value) is dict and type(value) is dict:
             if len(value) == 0:
                 continue
             if (value.items() <= server_value.items()) is False:
                 changed_attrs_dict[key] = value
-                continue
+            else:
+                params.pop(key)
 
         elif type(server_value) is list and type(value) is list:
+            found_changed_list = False
             if len(value) == 0:
                 continue
             # check if the list has dictionary to compare
@@ -102,11 +105,14 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
                         continue
                     # no need to further check for other keys as we already got one mismatch
                     changed_attrs_dict[key] = value
+                    found_changed_list = True
                 else:
                     if server_value.sort() != value.sort():
                         changed_attrs_dict[key] = value
+                        found_changed_list = True
                 break
-            continue
+            if found_changed_list is False:
+                params.pop(key)
 
         elif server_value != value:
             # This is a special key used to force any operation for object.
