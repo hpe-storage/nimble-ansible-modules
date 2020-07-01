@@ -23,7 +23,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: On HPE Nimble Storage array- Create or delete initiator group and initiators
+description: Manage HPE Nimble Storage initiator groups.
 module: hpe_nimble_initiator_group
 options:
   access_protocol:
@@ -54,7 +54,7 @@ options:
     required: False
     type: list
     description:
-    - List of target fibre Channel ports with target driven zoning configured on this initiator group.
+    - List of target fibre channel ports with target driven zoning configured on this initiator group.
   host_type:
     required: False
     type: str
@@ -93,7 +93,7 @@ options:
     description:
     - List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
 extends_documentation_fragment: hpe_nimble
-short_description: Manage HPE Nimble Storage initiator groups
+short_description: Manage HPE Nimble Storage initiator groups.
 version_added: 2.9
 '''
 
@@ -108,7 +108,7 @@ EXAMPLES = r'''
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
     name: "{{ name }}"
-    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one intitator details.
+    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one inititator details.
     description: "{{ description | default(None) }}"
     state: "{{ state | default('present') }}"
 

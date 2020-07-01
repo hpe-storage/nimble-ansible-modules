@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: Manage volume on a Nimble Storage group.
+description: Manage volumes on HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
   agent_type:
@@ -138,7 +138,7 @@ options:
     type: dict
     description:
     - User defined key-value pairs that augment an volume's attributes. List of key-value pairs. Keys must be unique and non-empty.
-    - When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
+      When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
   move:
     required: False
     type: bool
@@ -354,7 +354,6 @@ def move_volume(
 def update_volume(
         client_obj,
         vol_resp,
-        disassociate,
         **kwargs):
 
     if utils.is_null_or_empty(vol_resp):
@@ -362,9 +361,14 @@ def update_volume(
     try:
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(vol_resp, **kwargs)
 
-        if disassociate is True and utils.is_null_or_empty(vol_resp.attrs.get("volcoll_id")) is False:
-            params['volcoll_id'] = ""
-            changed_attrs_dict['volcoll_id'] = ""
+        if 'volcoll_name' in kwargs:
+            if kwargs['volcoll_name'] == "" and vol_resp.attrs.get('volcoll_id') != "":
+                params['volcoll_id'] = ""
+                changed_attrs_dict['volcoll_id'] = ""
+            else:
+                if 'volcoll_name' in params:
+                    params.pop('volcoll_name')
+                    changed_attrs_dict.pop('volcoll_name')
 
         if changed_attrs_dict.__len__() > 0:
             client_obj.volumes.update(id=vol_resp.attrs.get("id"), **params)
@@ -827,16 +831,10 @@ def main():
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
             else:
-                if volcoll is not None and volcoll == "":
-                    # volcoll can be an empty string when user wants to disassociate volume from volcoll
-                    disassociate = True
-                else:
-                    disassociate = False
-
                 return_status, changed, msg, changed_attrs_dict = update_volume(
                     client_obj,
                     vol_resp,
-                    disassociate,
+                    volcoll_name=volcoll,
                     size=size,
                     description=description,
                     perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),

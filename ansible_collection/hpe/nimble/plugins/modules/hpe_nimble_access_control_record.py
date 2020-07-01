@@ -26,7 +26,7 @@ DOCUMENTATION = r'''
 author:
   - Alok Ranjan (@ranjanal)
 description: On HPE Nimble Storage array - Create or delete access control record for volume.
-module: hpe_nimble_acr
+module: hpe_nimble_access_control_record
 options:
   apply_to:
     required: False
@@ -97,17 +97,17 @@ EXAMPLES = r'''
 # If state is "create", create access control record for given volume, fails if it exist.
 # If state is "present", create access control record if not already present.
 - name: Create access control record for volume
-  hpe_nimble_acr:
+  hpe_nimble_access_control_record:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
     initiator_group: "{{ initiator_group }}"
-    state: "{{ state | default('present') }}" 
+    state: "{{ state | default('present') }}"
 
 # Delete the access control record for a given volume name
 - name: Delete access control record for volume
-  hpe_nimble_acr:
+  hpe_nimble_access_control_record:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -124,7 +124,6 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
-
 
 def create_acr(
         client_obj,

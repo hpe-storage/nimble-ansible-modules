@@ -22,7 +22,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: Manage a volume collection on a HPE Nimble Storage group.
+description: Manage volume collections on HPE Nimble Storage group.
 module: hpe_nimble_volume_collection
 options:
   abort_handover:
@@ -92,7 +92,7 @@ options:
     required: False
     type: bool
     description:
-    - Release ownership of the specified volume collection. The volumes associated with the volume collection will set to offline and
+    - Release ownership of the specified volume collection. The volumes associated with the volume collection will be set to offline and
       a snapshot will be created, then full control over the volume collection will be transferred to the new owner. This option can be used
       following a promote to revert the volume collection back to its prior configured state. This operation does not alter the configuration on
       the new owner itself, but does require the new owner to be running in order to obtain its identity information. This operation is not supported
@@ -106,8 +106,8 @@ options:
     required: False
     type: bool
     description:
-    - Gracefully transfer ownership of the specified volume collection.This action can be used to pass control of the volume collection to the downstream
-      replication partner.Ownership and full control over the volume collection will be given to the downstream replication partner. The volumes associated
+    - Gracefully transfer ownership of the specified volume collection. This action can be used to pass control of the volume collection to the downstream
+      replication partner. Ownership and full control over the volume collection will be given to the downstream replication partner. The volumes associated
       with the volume collection will be set to offline prior to the final snapshot being taken and replicated, thus ensuring full data synchronization
       as part of the transfer. By default, the new owner will automatically begin replicating the volume collection back to this node when the handover completes.
   invoke_on_upstream_partner:
@@ -125,8 +125,8 @@ options:
     required: False
     type: dict
     description:
-    - User defined key-value pairs that augment an volume collection attributes. List of key-value pairs. Keys must be unique and non-empty.
-    - When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
+    - User defined key-value pairs that augment a volume collection attributes. List of key-value pairs. Keys must be unique and non-empty.
+      When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
   name:
     required: True
     type: str
