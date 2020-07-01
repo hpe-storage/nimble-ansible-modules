@@ -108,7 +108,7 @@ EXAMPLES = r'''
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
     name: "{{ name }}"
-    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one inititator details.
+    iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one initiator details.
     description: "{{ description | default(None) }}"
     state: "{{ state | default('present') }}"
 
