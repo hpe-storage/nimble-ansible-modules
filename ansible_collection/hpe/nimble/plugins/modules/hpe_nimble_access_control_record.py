@@ -26,7 +26,7 @@ DOCUMENTATION = r'''
 author:
   - Alok Ranjan (@ranjanal)
 description: On HPE Nimble Storage array - Create or delete access control record for volume.
-module: hpe_nimble_acr
+module: hpe_nimble_access_control_record
 options:
   apply_to:
     required: False
@@ -88,7 +88,7 @@ options:
     description:
     - Name for the volume this access control record applies to.
 extends_documentation_fragment: hpe_nimble
-short_description: Manages a HPE Nimble Storage access control record.
+short_description: Manage HPE Nimble Storage access control records.
 version_added: 2.9
 '''
 
@@ -97,17 +97,17 @@ EXAMPLES = r'''
 # If state is "create", create access control record for given volume, fails if it exist.
 # If state is "present", create access control record if not already present.
 - name: Create access control record for volume
-  hpe_nimble_acr:
+  hpe_nimble_access_control_record:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
     initiator_group: "{{ initiator_group }}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
 
 # Delete the access control record for a given volume name
 - name: Delete access control record for volume
-  hpe_nimble_acr:
+  hpe_nimble_access_control_record:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -124,7 +124,6 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
-
 
 def create_acr(
         client_obj,
@@ -243,7 +242,7 @@ def main():
     fields.update(default_fields)
     module = AnsibleModule(argument_spec=fields)
     if client is None:
-        module.fail_json(msg='the python nimble-sdk module is required.')
+        module.fail_json(msg='Python nimble-sdk could not be found.')
 
     hostname = module.params["hostname"]
     username = module.params["username"]
@@ -260,7 +259,7 @@ def main():
 
     if (username is None or password is None or hostname is None):
         module.fail_json(
-            msg="Storage system IP or username or password is null.")
+            msg="Missing variables: hostname, username and password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,
@@ -270,7 +269,7 @@ def main():
 
     # defaults
     return_status = changed = False
-    msg = "No Task to run."
+    msg = "No task to run."
 
     # States
     if state == "create" or state == "present":
