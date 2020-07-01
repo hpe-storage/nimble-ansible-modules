@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: Manage volume on a Nimble Storage group.
+description: Manage volumes on HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
   agent_type:
@@ -138,7 +138,7 @@ options:
     type: dict
     description:
     - User defined key-value pairs that augment an volume's attributes. List of key-value pairs. Keys must be unique and non-empty.
-    - When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
+      When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
   move:
     required: False
     type: bool
@@ -221,7 +221,7 @@ options:
     description:
     - Name of volume collection of which this volume is a member.
 extends_documentation_fragment: hpe_nimble
-short_description: Manages a HPE Nimble Storage volume.
+short_description: Manage HPE Nimble Storage volumes.
 version_added: 2.9
 '''
 
@@ -234,7 +234,7 @@ EXAMPLES = r'''
     hostname: "{{ hostname }}"
     username: "{{ username }}"
     password: "{{ password }}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
     size: "{{ size }}"
     limit_iops: "{{ limit_iops }}"
     limit_mbps: 5000
@@ -270,7 +270,7 @@ EXAMPLES = r'''
     name: "{{ name }}" # name here is the name of cloned volume
     parent: "{{ parent | mandatory }}"
     snapshot: "{{ snapshot | default(None)}}"
-    state: "{{ state | default('present') }}" # fail if exist
+    state: "{{ state | default('present') }}"
   when:
     - parent is defined
 
@@ -361,6 +361,15 @@ def update_volume(
     try:
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(vol_resp, **kwargs)
 
+        if 'volcoll_name' in kwargs:
+            if kwargs['volcoll_name'] == "" and vol_resp.attrs.get('volcoll_id') != "":
+                params['volcoll_id'] = ""
+                changed_attrs_dict['volcoll_id'] = ""
+            else:
+                if 'volcoll_name' in params:
+                    params.pop('volcoll_name')
+                    changed_attrs_dict.pop('volcoll_name')
+
         if changed_attrs_dict.__len__() > 0:
             client_obj.volumes.update(id=vol_resp.attrs.get("id"), **params)
             return (True, True, f"Volume '{vol_resp.attrs.get('name')}' already present. Modified the following fields:", changed_attrs_dict)
@@ -400,9 +409,6 @@ def delete_volume(client_obj, vol_name):
         if utils.is_null_or_empty(vol_resp):
             return (False, False, f"Volume '{vol_name}' not present to delete.", {})
         else:
-            # disassociate the volume from vol coll
-            client_obj.volumes.update(id=vol_resp.attrs.get("id"), volcoll_id="")
-            client_obj.volumes.offline(id=vol_resp.attrs.get("id"))
             client_obj.volumes.delete(id=vol_resp.attrs.get("id"))
             return (True, True, f"Deleted volume '{vol_name}' successfully.", {})
     except Exception as ex:
@@ -662,8 +668,7 @@ def main():
         "encryption_cipher": {
             "required": False,
             "choices": ['none', 'aes_256_xts'],
-            "type": "str",
-            "default": 'none'
+            "type": "str"
         },
         "app_uuid": {
             "required": False,
@@ -729,7 +734,7 @@ def main():
 
     module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
-        module.fail_json(msg='the python nimble-sdk module is required.')
+        module.fail_json(msg='Python nimble-sdk could not be found.')
 
     state = module.params["state"]
     vol_name = module.params["name"]
@@ -768,7 +773,7 @@ def main():
     password = module.params["password"]
 
     if (username is None or password is None or hostname is None):
-        module.fail_json(msg="Volume creation failed. Storage system IP or username or password is null.")
+        module.fail_json(msg="Missing variables: hostname, username and password is mandatory.")
 
     client_obj = client.NimOSClient(
         hostname,
@@ -777,7 +782,7 @@ def main():
     )
     # defaults
     return_status = changed = False
-    msg = "No Task to run."
+    msg = "No task to run."
 
     # States
     if move is True and state == "present":
@@ -826,10 +831,10 @@ def main():
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
             else:
-                # if we are here it means volume is already present. hence issue update call
                 return_status, changed, msg, changed_attrs_dict = update_volume(
                     client_obj,
                     vol_resp,
+                    volcoll_name=volcoll,
                     size=size,
                     description=description,
                     perfpolicy_id=utils.get_perfpolicy_id(client_obj, perf_policy),
