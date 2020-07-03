@@ -112,16 +112,6 @@ EXAMPLES = r'''
     description: "{{ description | default(None) }}"
     state: "{{ state | default('present') }}"
 
-- name: Append a bunch of iscsi_initiators to igroup
-  hpe_nimble_initiator_group:
-    hostname: "{{ hostname }}"
-    username: "{{ username }}"
-    password: "{{ password }}"
-    name: "{{ name }}"
-    iscsi_initiators: "{{ iscsi_initiators | default([])}}"
-    access_protocol: "{{ access_protocol | default('iscsi')}}"
-    state: append
-
 - name: Delete igroup
   hpe_nimble_initiator_group:
     hostname: "{{ hostname }}"
@@ -236,7 +226,6 @@ def main():
             "choices": ['present',
                         'absent',
                         'create'
-                        # 'append'
                         ],
             "type": "str"
         },
