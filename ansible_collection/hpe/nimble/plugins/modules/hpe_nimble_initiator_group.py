@@ -270,8 +270,7 @@ def main():
         "fc_initiators": {
             "required": False,
             "type": "list",
-            "no_log": False,
-            "default": None
+            "no_log": False
         },
         "app_uuid": {
             "required": False,
@@ -280,8 +279,7 @@ def main():
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "default": None
+            "type": "dict"
         }
     }
 

@@ -253,7 +253,6 @@ def main():
                         'operator',
                         'guest'
                         ],
-            "default": 'guest',
             "type": "str",
             "no_log": False
         },
@@ -265,7 +264,6 @@ def main():
         "inactivity_timeout": {
             "required": False,
             "type": "int",
-            "default": 0,
             "no_log": False
         },
         "full_name": {
@@ -281,7 +279,6 @@ def main():
         "disabled": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "auth_password": {

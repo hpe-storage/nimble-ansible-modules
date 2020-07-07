@@ -232,8 +232,7 @@ def main():
         "name": {
             "required": True,
             "type": "str",
-            "no_log": False,
-            "default": None
+            "no_log": False
         },
         "description": {
             "required": False,
@@ -248,7 +247,6 @@ def main():
         "is_external_trigger": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "vol_snap_attr_list": {
@@ -264,37 +262,31 @@ def main():
         "start_online": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "allow_writes": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "disable_appsync": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "snap_verify": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "skip_db_consistency_check": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "invoke_on_upstream_partner": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "agent_type": {

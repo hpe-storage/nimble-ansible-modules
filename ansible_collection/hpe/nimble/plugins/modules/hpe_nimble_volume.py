@@ -587,18 +587,15 @@ def main():
             "type": "str"
         },
         "size": {
-            "type": "int",
-            "default": 100
+            "type": "int"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "perf_policy": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "limit": {
             "required": False,
@@ -606,13 +603,11 @@ def main():
         },
         "online": {
             "required": False,
-            "type": "bool",
-            "default": True
+            "type": "bool"
         },
         "owned_by_group": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "multi_initiator": {
             "required": False,
@@ -621,49 +616,40 @@ def main():
         "iscsi_target_scope": {
             "required": False,
             "choices": ['volume', 'group'],
-            "type": "str",
-            "default": 'volume'
+            "type": "str"
         },
         "pool": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "read_only": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "block_size": {
             "required": False,
-            "type": "int",
-            "default": 4096
+            "type": "int"
         },
         "clone": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "agent_type": {
             "required": False,
             "choices": ['none', 'smis', 'vvol', 'openstack', 'openstackv2'],
-            "type": "str",
-            "default": 'none'
+            "type": "str"
         },
         "destination": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "cache_pinned": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "thinly_provisioned": {
             "required": False,
-            "type": "bool",
-            "default": True
+            "type": "bool"
         },
         "encryption_cipher": {
             "required": False,
@@ -680,8 +666,7 @@ def main():
         },
         "dedupe": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "limit_iops": {
             "required": False,
@@ -693,23 +678,19 @@ def main():
         },
         "parent": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "snapshot": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "volcoll": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "default": None
+            "type": "dict"
         },
         "force": {
             "required": False,

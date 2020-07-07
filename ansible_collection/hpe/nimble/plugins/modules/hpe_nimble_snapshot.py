@@ -229,8 +229,7 @@ def main():
         "name": {
             "required": True,
             "type": "str",
-            "no_log": False,
-            "default": None
+            "no_log": False
         },
         "description": {
             "required": False,
@@ -239,19 +238,16 @@ def main():
         },
         "volume": {
             "required": True,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "online": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "writable": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "app_uuid": {
@@ -261,14 +257,12 @@ def main():
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "default": None
+            "type": "dict"
         },
         "agent_type": {
             "required": False,
             "choices": ['none', 'smis', 'vvol', 'openstack', 'openstackv2'],
-            "type": "str",
-            "default": 'none'
+            "type": "str"
         },
         "expiry_after": {
             "required": False,
