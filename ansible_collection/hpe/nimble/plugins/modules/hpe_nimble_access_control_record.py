@@ -146,7 +146,7 @@ def create_acr(
         if vol_resp is None:
             return (False, False, f"Volume name '{volume}' is not present on array.")
 
-        acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
+        acr_resp = client_obj.access_control_records.get(initiator_group_name=initiator_group)
         if utils.is_null_or_empty(acr_resp) is False:
             changed_attrs_dict, params = utils.remove_unchanged_or_null_args(acr_resp, **kwargs)
         else:
@@ -155,34 +155,36 @@ def create_acr(
             acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
                                                                 vol_id=vol_resp.attrs.get("id"),
                                                                 **params)
-            return (True, True, f"Successfully created access control record for volume '{volume}'.")
+            return (True, True, f"Successfully created access control record for volume '{volume}' with initiator group '{initiator_group}''.")
         else:
-            # check the state. if it is set to present ,we pass else if it is 'create' then we will fail
+            # if state is set to present, we pass
             if state == "present":
-                return (True, False, f"Access control record is already present for volume '{volume}'.")
-        return (False, False, f"Access control record for volume '{volume}' cannot be created as it is already present.")
+                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.")
+        return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot be created as it is already present.")
     except Exception as ex:
         return (False, False, f"Access control record creation failed | {ex}")
 
 
 def delete_acr(
         client_obj,
+        initiator_group,
         volume):
 
     if utils.is_null_or_empty(volume):
         return (False, False, "Access control record deletion failed. No volume name Provided.")
+    if utils.is_null_or_empty(initiator_group):
+        return (False, False, "Access control record deletion failed. No initiator group provided.")
 
     try:
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
             return (False, False, f"Volume name '{volume}' is not present on array.")
-
-        acr_resp = client_obj.access_control_records.get(id=None, vol_name=volume)
+        acr_resp = client_obj.access_control_records.get(vol_name=volume, initiator_group_name=initiator_group)
         if acr_resp is not None:
-            acr_resp = client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
-            return (True, True, f"Successfully deleted access control record for volume '{volume}'.")
+            client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
+            return (True, True, f"Successfully deleted access control record for initiator group '{initiator_group}' associated with volume '{volume}'.")
         else:
-            return (True, False, f"Access control record for volume '{volume}' Cannot be deleted as it is not present.")
+            return (True, False, f"No access control record for initiator group '{initiator_group}' associated with volume '{volume}' found.")
     except Exception as ex:
         return (False, False, f"Access control record deletion failed | {ex}")
 
@@ -199,8 +201,7 @@ def main():
             "required": False,
             "choices": ['volume', 'snapshot', 'both', 'pe', 'vvol_volume', 'vvol_snapshot'],
             "type": "str",
-            "no_log": False,
-            "default": "both"
+            "no_log": False
         },
         "chap_user": {
             "required": False,
@@ -240,7 +241,9 @@ def main():
     }
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    module = AnsibleModule(argument_spec=fields)
+    required_if = [('state', 'absent', ['initiator_group', 'volume'])]
+
+    module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
@@ -286,7 +289,7 @@ def main():
             pe_ids=pe_ids)
 
     elif state == "absent":
-        return_status, changed, msg = delete_acr(client_obj, volume)
+        return_status, changed, msg = delete_acr(client_obj, initiator_group, volume)
 
     if return_status:
         module.exit_json(return_status=return_status, changed=changed, msg=msg)

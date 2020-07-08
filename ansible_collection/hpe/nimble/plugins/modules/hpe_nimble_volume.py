@@ -204,8 +204,6 @@ options:
     - present
     - absent
     - create
-    - online
-    - offline
     - restore
     required: True
     type: str
@@ -447,33 +445,6 @@ def restore_volume(client_obj, vol_name, snapshot_to_restore=None):
         return (False, False, f"Volume restore failed '{ex}'", {})
 
 
-def change_volume_state(
-        client_obj,
-        vol_name,
-        online):
-
-    if utils.is_null_or_empty(vol_name):
-        return (False, False, "Change volume state failed as volume name is null.", {})
-    try:
-        resp = client_obj.volumes.get(id=None, name=vol_name)
-        changed_attrs_dict = {}
-        if utils.is_null_or_empty(resp) is False:
-            if resp.attrs.get("online") == online:
-                return (True, False, f"Volume '{vol_name}' online state is already set to '{online}'.", {})
-            elif online is True:
-                resp = client_obj.volumes.online(resp.attrs.get("id"))
-                changed_attrs_dict['online'] = "True"
-                return (True, True, f"Successfully changed volume '{vol_name}' state to online.", changed_attrs_dict)
-            elif online is False:
-                resp = client_obj.volumes.offline(resp.attrs.get("id"))
-                changed_attrs_dict['online'] = "False"
-                return (True, True, f"Successfully changed volume '{vol_name}' state to offline.", changed_attrs_dict)
-        else:
-            return (False, False, f"Could not find volume '{vol_name}'.", {})
-    except Exception as ex:
-        return (False, False, f"Change volume state failed | '{ex}'", {})
-
-
 # given a snapshot name,create a clone.
 # return code
 # SUCCESS = 0
@@ -576,8 +547,6 @@ def main():
             "choices": ['present',
                         'absent',
                         'create',
-                        'online',
-                        'offline',
                         'restore'
                         ],
             "type": "str"
@@ -587,18 +556,15 @@ def main():
             "type": "str"
         },
         "size": {
-            "type": "int",
-            "default": 100
+            "type": "int"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "perf_policy": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "limit": {
             "required": False,
@@ -606,13 +572,11 @@ def main():
         },
         "online": {
             "required": False,
-            "type": "bool",
-            "default": True
+            "type": "bool"
         },
         "owned_by_group": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "multi_initiator": {
             "required": False,
@@ -621,49 +585,40 @@ def main():
         "iscsi_target_scope": {
             "required": False,
             "choices": ['volume', 'group'],
-            "type": "str",
-            "default": 'volume'
+            "type": "str"
         },
         "pool": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "read_only": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "block_size": {
             "required": False,
-            "type": "int",
-            "default": 4096
+            "type": "int"
         },
         "clone": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "agent_type": {
             "required": False,
             "choices": ['none', 'smis', 'vvol', 'openstack', 'openstackv2'],
-            "type": "str",
-            "default": 'none'
+            "type": "str"
         },
         "destination": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "cache_pinned": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "thinly_provisioned": {
             "required": False,
-            "type": "bool",
-            "default": True
+            "type": "bool"
         },
         "encryption_cipher": {
             "required": False,
@@ -680,8 +635,7 @@ def main():
         },
         "dedupe": {
             "required": False,
-            "type": "bool",
-            "default": False
+            "type": "bool"
         },
         "limit_iops": {
             "required": False,
@@ -693,23 +647,19 @@ def main():
         },
         "parent": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "snapshot": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "volcoll": {
             "required": False,
-            "type": "str",
-            "default": None
+            "type": "str"
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "default": None
+            "type": "dict"
         },
         "force": {
             "required": False,
@@ -857,12 +807,6 @@ def main():
                     dedupe_enabled=dedupe,
                     limit_iops=limit_iops,
                     limit_mbps=limit_mbps)
-
-    elif state == "offline":
-        return_status, changed, msg, changed_attrs_dict = change_volume_state(client_obj, vol_name, False)
-
-    elif state == "online":
-        return_status, changed, msg, changed_attrs_dict = change_volume_state(client_obj, vol_name, True)
 
     elif state == "absent":
         return_status, changed, msg, changed_attrs_dict = delete_volume(client_obj, vol_name)

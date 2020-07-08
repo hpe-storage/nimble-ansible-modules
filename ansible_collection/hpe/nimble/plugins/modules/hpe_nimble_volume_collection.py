@@ -451,8 +451,7 @@ def main():
         "name": {
             "required": True,
             "type": "str",
-            "no_log": False,
-            "default": None
+            "no_log": False
         },
         "description": {
             "required": False,
@@ -463,15 +462,13 @@ def main():
             "choices": ['periodic_snapshot', 'synchronous'],
             "required": False,
             "type": "str",
-            "no_log": False,
-            "default": 'periodic_snapshot'
+            "no_log": False
         },
         "app_sync": {
             "choices": ['none', 'vss', 'vmware', 'generic'],
             "required": False,
             "type": "str",
-            "no_log": False,
-            "default": 'none'
+            "no_log": False
         },
         "app_server": {
             "required": False,
@@ -527,8 +524,7 @@ def main():
         "is_standalone_volcoll": {
             "required": False,
             "type": "bool",
-            "no_log": False,
-            "default": False
+            "no_log": False
         },
         "metadata": {
             "required": False,
@@ -573,7 +569,6 @@ def main():
         "no_reverse": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         },
         "override_upstream_down": {
