@@ -236,13 +236,13 @@ def get_pe_id(client_obj, pe_name):
         return resp.attrs.get("id")
 
 
-def get_snapshot_id(client_obj, snap_name):
-    if is_null_or_empty(snap_name):
+def get_snapshot_id(client_obj, vol_name, snap_name):
+    if is_null_or_empty(vol_name) or is_null_or_empty(snap_name):
         return None
     else:
-        resp = client_obj.snapshots.get(name=snap_name)
+        resp = client_obj.snapshots.get(vol_name=vol_name, name=snap_name)
         if resp is None:
-            raise Exception(f"Invalid value for snapshot: {snap_name}")
+            raise Exception(f"No snapshot with name '{snap_name}' found for volume: {vol_name}.")
         return resp.attrs.get("id")
 
 
@@ -280,4 +280,13 @@ def get_downstream_partner_id(client_obj, downstream_partner):
         resp = client_obj.replication_partners.get(name=downstream_partner)
         if resp is None:
             raise Exception(f"Invalid value for downstream partner: {downstream_partner}")
+        return resp.attrs.get("id")
+
+def get_initiator_group_id(client_obj, ig_name):
+    if is_null_or_empty(ig_name):
+        return None
+    else:
+        resp = client_obj.initiator_groups.get(name=ig_name)
+        if resp is None:
+            raise Exception(f"Invalid value for initiator group: {ig_name}")
         return resp.attrs.get("id")
