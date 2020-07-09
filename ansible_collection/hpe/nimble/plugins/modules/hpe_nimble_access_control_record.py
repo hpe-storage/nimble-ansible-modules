@@ -287,7 +287,7 @@ def main():
             chap_user_id=utils.get_chap_user_id(client_obj, chap_user),
             lun=lun,
             pe_id=utils.get_pe_id(client_obj, protocol_endpoint),
-            snap_id=utils.get_snapshot_id(volume, snapshot),
+            snap_id=utils.get_snapshot_id(client_obj, volume, snapshot),
             initiator_group_id=utils.get_initiator_group_id(client_obj, initiator_group),
             vol_id=utils.get_vol_id(client_obj, volume),
             pe_ids=pe_ids)
