@@ -137,7 +137,7 @@ def create_acr(
         params = utils.remove_null_args(**kwargs)
         # check if params has atleast 2 params. vol_id is mandatory along with any of below.
         if params.__len__() < 2:
-            return (False, False, "Access control record creation failed. Please provide one of them: initiator_group or snapshot or protocol endpoint.")
+            return (False, False, "Access control record creation failed. Please provide one of them: initiator group or snapshot or protocol endpoint.")
 
         if 'snap_id' in params:
             resp = client_obj.snapshots.get(vol_name=volume, id=params['snap_id'])
@@ -171,7 +171,7 @@ def delete_acr(
     params = utils.remove_null_args(**kwargs)
 
     if params.__len__() != 1:
-        return (False, False, "Access control record deletion failed. Please provide one of them: initiator_group or snapshot or protocol endpoint.")
+        return (False, False, "Access control record deletion failed. Please provide one of them: initiator group or snapshot or protocol endpoint.")
 
     try:
         vol_resp = client_obj.volumes.get(id=None, name=volume)
