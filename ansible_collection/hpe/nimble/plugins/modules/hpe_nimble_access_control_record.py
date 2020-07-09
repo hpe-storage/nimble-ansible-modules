@@ -72,7 +72,8 @@ options:
     required: False
     type: str
     description:
-    - Name of the snapshot this access control record applies to.
+    - Name of the snapshot this access control record applies to. If this record applies to a VVol snapshot, this attribute is required.
+      Otherwise, this attribute is not meaningful and should not be specified.
   state:
     required: True
     choices:
@@ -112,6 +113,7 @@ EXAMPLES = r'''
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
+    initiator_group: "{{ initiator_group }}"
     state: "absent" # fail if volume does not exist
 
 '''
@@ -127,64 +129,60 @@ import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 def create_acr(
         client_obj,
-        initiator_group,
-        volume,
         state,
+        volume,
         **kwargs):
 
-    if utils.is_null_or_empty(initiator_group):
-        return (False, False, "Access control record creation failed. No initiator group provided.")
-    if utils.is_null_or_empty(volume):
-        return (False, False, "Access control record creation failed. No volume name provided.")
-
     try:
-        # see if the igroup is already present
-        ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group)
-        if ig_resp is None:
-            return (False, False, f"Initiator Group '{initiator_group}' is not present on array.")
-        vol_resp = client_obj.volumes.get(id=None, name=volume)
-        if vol_resp is None:
-            return (False, False, f"Volume name '{volume}' is not present on array.")
+        params = utils.remove_null_args(**kwargs)
+        # check if params has atleast 2 params. vol_id is mandatory along with any of below.
+        if params.__len__() < 2:
+            return (False, False, "Access control record creation failed. Please provide one of them: initiator_group or snapshot or protocol endpoint.")
 
-        acr_resp = client_obj.access_control_records.get(initiator_group_name=initiator_group)
-        if utils.is_null_or_empty(acr_resp) is False:
-            changed_attrs_dict, params = utils.remove_unchanged_or_null_args(acr_resp, **kwargs)
-        else:
-            params = utils.remove_null_args(**kwargs)
-        if acr_resp is None or acr_resp.attrs.get("initiator_group_id") != ig_resp.attrs.get("id"):
-            acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
-                                                                vol_id=vol_resp.attrs.get("id"),
-                                                                **params)
-            return (True, True, f"Successfully created access control record for volume '{volume}' with initiator group '{initiator_group}''.")
-        else:
-            # if state is set to present, we pass
-            if state == "present":
-                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.")
-        return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot be created as it is already present.")
+        if 'snap_id' in params:
+            resp = client_obj.snapshots.get(vol_name=volume, id=params['snap_id'])
+            obj_type = 'snapshot'
+        elif 'pe_id' in params:
+            resp = client_obj.protocol_endpoints.get(id=params['pe_id'])
+            obj_type = 'protocol endpoint'
+        elif 'initiator_group_id' in params:
+            resp = client_obj.initiator_groups.get(id=params['initiator_group_id'])
+            obj_type = 'initiator group'
+        client_obj.access_control_records.create(**params)
+
+        return (True, True, f"Successfully created access control record for {obj_type} '{resp.attrs.get('name')}' associated with volume '{volume}'.")
     except Exception as ex:
+        if 'SM_eexist' in str(ex):
+            msg = f"Access control record is already present for {obj_type} '{resp.attrs.get('name')}' associated with volume '{volume}'."
+            if state == "present":
+                return (True, False, msg)
+            else:
+                return (False, False, msg)
         return (False, False, f"Access control record creation failed | {ex}")
 
 
 def delete_acr(
         client_obj,
-        initiator_group,
-        volume):
+        volume,
+        **kwargs):
 
     if utils.is_null_or_empty(volume):
-        return (False, False, "Access control record deletion failed. No volume name Provided.")
-    if utils.is_null_or_empty(initiator_group):
-        return (False, False, "Access control record deletion failed. No initiator group provided.")
+        return (False, False, "Access control record deletion failed. No volume name provided.")
+    params = utils.remove_null_args(**kwargs)
+
+    if params.__len__() != 1:
+        return (False, False, "Access control record deletion failed. Please provide one of them: initiator_group or snapshot or protocol endpoint.")
 
     try:
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
             return (False, False, f"Volume name '{volume}' is not present on array.")
-        acr_resp = client_obj.access_control_records.get(vol_name=volume, initiator_group_name=initiator_group)
+        acr_resp = client_obj.access_control_records.get(vol_name=volume, **params)
         if acr_resp is not None:
             client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
-            return (True, True, f"Successfully deleted access control record for initiator group '{initiator_group}' associated with volume '{volume}'.")
+            return (True, True, f"Successfully deleted access control record associated with volume '{volume}' for {params}.")
         else:
-            return (True, False, f"No access control record for initiator group '{initiator_group}' associated with volume '{volume}' found.")
+            return (True, False, f"No access control record associated with volume '{volume}' for {params} found.")
     except Exception as ex:
         return (False, False, f"Access control record deletion failed | {ex}")
 
@@ -214,7 +212,7 @@ def main():
             "no_log": False
         },
         "volume": {
-            "required": False,
+            "required": True,
             "type": "str",
             "no_log": False
         },
@@ -241,7 +239,7 @@ def main():
     }
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    required_if = [('state', 'absent', ['initiator_group', 'volume'])]
+    required_if = [('state', 'absent', ['volume'])]
 
     module = AnsibleModule(argument_spec=fields, required_if=required_if)
     if client is None:
@@ -278,18 +276,24 @@ def main():
     if state == "create" or state == "present":
         return_status, changed, msg = create_acr(
             client_obj,
-            initiator_group,
-            volume,
             state,
+            volume,
             apply_to=apply_to,
             chap_user_id=utils.get_chap_user_id(client_obj, chap_user),
             lun=lun,
             pe_id=utils.get_pe_id(client_obj, protocol_endpoint),
-            snap_id=utils.get_snapshot_id(client_obj, snapshot),
+            snap_id=utils.get_snapshot_id(volume, snapshot),
+            initiator_group_id=utils.get_initiator_group_id(client_obj, initiator_group),
+            vol_id=utils.get_vol_id(client_obj, volume),
             pe_ids=pe_ids)
 
     elif state == "absent":
-        return_status, changed, msg = delete_acr(client_obj, initiator_group, volume)
+        return_status, changed, msg = delete_acr(
+            client_obj,
+            volume,
+            initiator_group_name=initiator_group,
+            pe_name=protocol_endpoint,
+            snap_name=snapshot)
 
     if return_status:
         module.exit_json(return_status=return_status, changed=changed, msg=msg)
