@@ -144,7 +144,7 @@ EXAMPLES = r'''
     volcoll: "{{ volcoll | mandatory}}"
     description: "{{ description }}"
 
-- name: Delete Snapshot collection collection  (must be offline)
+- name: Delete snapshot collection (must be offline)
   hpe_nimble_snapshot_collection:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
