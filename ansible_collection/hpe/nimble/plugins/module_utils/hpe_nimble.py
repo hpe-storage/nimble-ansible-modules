@@ -152,7 +152,7 @@ def get_vol_id(client_obj, vol_name):
     else:
         resp = client_obj.volumes.get(name=vol_name)
         if resp is None:
-            raise Exception(f"Invalid value for volume: {vol_name}")
+            raise Exception(f"Invalid value for volume {vol_name}")
         return resp.attrs.get("id")
 
 
@@ -162,7 +162,7 @@ def get_volcoll_id(client_obj, volcoll_name):
     else:
         resp = client_obj.volume_collections.get(name=volcoll_name)
         if resp is None:
-            raise Exception(f"Invalid value for volcoll: {volcoll_name}")
+            raise Exception(f"Invalid value for volcoll {volcoll_name}")
         return resp.attrs.get("id")
 
 
@@ -172,7 +172,7 @@ def get_owned_by_group_id(client_obj, owned_by_group_name):
     else:
         resp = client_obj.groups.get(name=owned_by_group_name)
         if resp is None:
-            raise Exception(f"Invalid value for owned by group: {owned_by_group_name}")
+            raise Exception(f"Invalid value for owned by group {owned_by_group_name}")
         return resp.attrs.get("id")
 
 
@@ -182,7 +182,7 @@ def get_pool_id(client_obj, pool_name):
     else:
         resp = client_obj.pools.get(name=pool_name)
         if resp is None:
-            raise Exception(f"Invalid value for pool: {pool_name}")
+            raise Exception(f"Invalid value for pool {pool_name}")
         return resp.attrs.get("id")
 
 
@@ -192,7 +192,7 @@ def get_folder_id(client_obj, folder_name):
     else:
         resp = client_obj.folders.get(name=folder_name)
         if resp is None:
-            raise Exception(f"Invalid value for folder: {folder_name}")
+            raise Exception(f"Invalid value for folder {folder_name}")
         return resp.attrs.get("id")
 
 
@@ -212,7 +212,7 @@ def get_prottmpl_id(client_obj, prottmpl_name):
     else:
         resp = client_obj.protection_templates.get(name=prottmpl_name)
         if resp is None:
-            raise Exception(f"Invalid value for protection template: {prottmpl_name}")
+            raise Exception(f"Invalid value for protection template {prottmpl_name}")
         return resp.attrs.get("id")
 
 
@@ -222,7 +222,7 @@ def get_chap_user_id(client_obj, chap_user_name):
     else:
         resp = client_obj.chap_users.get(name=chap_user_name)
         if resp is None:
-            raise Exception(f"Invalid value for chap user: {chap_user_name}")
+            raise Exception(f"Invalid value for chap user {chap_user_name}")
         return resp.attrs.get("id")
 
 
@@ -232,17 +232,17 @@ def get_pe_id(client_obj, pe_name):
     else:
         resp = client_obj.protocol_endpoints.get(name=pe_name)
         if resp is None:
-            raise Exception(f"Invalid value for protection endpoint: {pe_name}")
+            raise Exception(f"Invalid value for protection endpoint {pe_name}")
         return resp.attrs.get("id")
 
 
-def get_snapshot_id(client_obj, snap_name):
-    if is_null_or_empty(snap_name):
+def get_snapshot_id(client_obj, vol_name, snap_name):
+    if is_null_or_empty(vol_name) or is_null_or_empty(snap_name):
         return None
     else:
-        resp = client_obj.snapshots.get(name=snap_name)
+        resp = client_obj.snapshots.get(vol_name=vol_name, name=snap_name)
         if resp is None:
-            raise Exception(f"Invalid value for snapshot: {snap_name}")
+            raise Exception(f"No snapshot with name '{snap_name}' found for volume {vol_name}.")
         return resp.attrs.get("id")
 
 
@@ -252,7 +252,7 @@ def get_replication_partner_id(client_obj, replication_partner_name):
     else:
         resp = client_obj.replication_partners.get(name=replication_partner_name)
         if resp is None:
-            raise Exception(f"Invalid value for replication partner: {replication_partner_name}")
+            raise Exception(f"Invalid value for replication partner {replication_partner_name}")
         return resp.attrs.get("id")
 
 
@@ -269,7 +269,7 @@ def get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name):
         elif prot_template_name is not None:
             resp = get_prottmpl_id(client_obj, prot_template_name)
             if resp is None:
-                raise Exception(f"Invalid value for protection template: {prot_template_name}")
+                raise Exception(f"Invalid value for protection template {prot_template_name}")
         return resp
 
 
@@ -279,5 +279,14 @@ def get_downstream_partner_id(client_obj, downstream_partner):
     else:
         resp = client_obj.replication_partners.get(name=downstream_partner)
         if resp is None:
-            raise Exception(f"Invalid value for downstream partner: {downstream_partner}")
+            raise Exception(f"Invalid value for downstream partner {downstream_partner}")
+        return resp.attrs.get("id")
+
+def get_initiator_group_id(client_obj, ig_name):
+    if is_null_or_empty(ig_name):
+        return None
+    else:
+        resp = client_obj.initiator_groups.get(name=ig_name)
+        if resp is None:
+            raise Exception(f"Invalid value for initiator group {ig_name}")
         return resp.attrs.get("id")
