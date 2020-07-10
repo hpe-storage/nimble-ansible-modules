@@ -105,7 +105,7 @@ EXAMPLES = r'''
 
 # if state is create, then create user, fails if it exist or cannot create
 # if state is present, then create user if not present, else success
-- name: Create User
+- name: Create user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -114,7 +114,7 @@ EXAMPLES = r'''
     description: "{{ description }}"
     state: "{{ state | default('present') }}"
 
-- name: Delete User
+- name: Delete user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -122,7 +122,7 @@ EXAMPLES = r'''
     name: "{{ name }}"
     state: "absent"
 
-- name: Unlock User
+- name: Unlock user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -222,7 +222,7 @@ def unlock_user(
         client_obj.users.unlock(id=user_resp.attrs.get("id"))
         return (True, True, f"Unlocked user '{user_name}' successfully.", {})
     except Exception as ex:
-        return (False, False, f"Unlock User failed | {ex}", {})
+        return (False, False, f"Unlock user failed | {ex}", {})
 
 
 def main():

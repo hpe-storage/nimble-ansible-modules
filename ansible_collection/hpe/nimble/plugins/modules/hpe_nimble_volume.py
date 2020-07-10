@@ -217,7 +217,8 @@ options:
     required: False
     type: str
     description:
-    - Name of volume collection of which this volume is a member.
+    - Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from
+      volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
 extends_documentation_fragment: hpe_nimble
 short_description: Manage HPE Nimble Storage volumes.
 version_added: 2.9
