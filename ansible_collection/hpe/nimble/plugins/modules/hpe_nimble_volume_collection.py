@@ -21,7 +21,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage volume collections on HPE Nimble Storage group.
 module: hpe_nimble_volume_collection
 options:
@@ -88,6 +88,11 @@ options:
     default: none
     description:
     - Application synchronization.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing volume collection.
   demote:
     required: False
     type: bool
@@ -206,7 +211,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # if state is create , then create a volcoll if not present. Fails if already present.
-# if state is "present", then create a volcoll if not present. Succeed if it already exists.
+# if state is present, then create a volcoll if not present. Succeed if it already exists.
 - name: Create volume collection if not present
 hpe_nimble_volume_collection:
   hostname: "{{ hostname }}"
@@ -453,6 +458,11 @@ def main():
             "type": "str",
             "no_log": False
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "description": {
             "required": False,
             "type": "str",
@@ -589,6 +599,7 @@ def main():
     state = module.params["state"]
     prot_template = module.params["prot_template"]
     volcoll_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     replication_type = module.params["replication_type"]
     app_sync = module.params["app_sync"]
@@ -685,6 +696,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_volcoll(
                 client_obj,
                 volcoll_resp,
+                name=change_name,
                 description=description,
                 app_sync=app_sync,
                 app_server=app_server,

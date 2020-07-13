@@ -22,7 +22,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage HPE Nimble Storage initiator groups.
 module: hpe_nimble_initiator_group
 options:
@@ -39,6 +39,11 @@ options:
     type: str
     description:
     - Application identifier of initiator group.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing initiator group.
   description:
     required: False
     type: str
@@ -47,7 +52,6 @@ options:
   fc_initiators:
     required: False
     type: list
-    default: None
     description:
     - List of FC initiators. When create/update fc_initiators, WWPN is required.
   fc_tdz_ports:
@@ -70,7 +74,6 @@ options:
   metadata:
     required: False
     type: dict
-    default: None
     description:
     - Key-value pairs that augment an initiator group's attributes. List of key-value pairs. Keys must be unique and non-empty.
   name:
@@ -229,6 +232,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -279,7 +287,8 @@ def main():
         },
         "metadata": {
             "required": False,
-            "type": "dict"
+            "type": "dict",
+            "no_log": False
         }
     }
 
@@ -295,6 +304,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     initiator_group_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     access_protocol = module.params["access_protocol"]
     host_type = module.params["host_type"]
@@ -339,6 +349,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_igroup(
                 client_obj,
                 ig_resp,
+                name=change_name,
                 description=description,
                 host_type=host_type,
                 fc_tdz_ports=fc_tdz_ports,

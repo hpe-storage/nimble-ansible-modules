@@ -21,8 +21,8 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
-description: description: Manage snapshot collections on HPE Nimble Storage group.
+  - Alok Ranjan (@ar-india)
+description: Manage snapshot collections on HPE Nimble Storage group.
 module: hpe_nimble_snapshot_collection
 options:
   agent_type:
@@ -36,6 +36,11 @@ options:
     default: False
     description:
     - Allow applications to write to created snapshot(s). Mandatory and must be set to 'true' for VSS application synchronized snapshots.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing snapshot collection.
   description:
     required: False
     type: str
@@ -79,7 +84,6 @@ options:
   name:
     required: True
     type: str
-    default: None
     description:
     - Name for snapshot collection.
   replicate_to:
@@ -133,7 +137,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # if state is create , then create a snapshot collection if not present. Fails if already present.
-# if state is "present", then create a snapshot collection if not present. Succeeds if it already exists
+# if state is present, then create a snapshot collection if not present. Succeeds if it already exists
 - name: Create snapshot collection if not present
   hpe_nimble_snapshot_collection:
     hostname: "{{ hostname }}"
@@ -228,6 +232,11 @@ def main():
                         'create'
                         ],
             "type": "str"
+        },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
         },
         "name": {
             "required": True,
@@ -324,6 +333,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     snapcoll_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     volcoll = module.params["volcoll"]
     is_external_trigger = module.params["is_external_trigger"]
@@ -378,6 +388,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_snapcoll(
                 client_obj,
                 snapcoll_resp,
+                name=change_name,
                 description=description,
                 replicate_to=replicate_to,
                 expiry_after=expiry_after,

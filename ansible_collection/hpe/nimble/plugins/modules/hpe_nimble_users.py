@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage users on HPE Nimble Storage group.
 module: hpe_nimble_users
 options:
@@ -33,6 +33,11 @@ options:
     type: str
     description:
     - Authorization password for changing password.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing user.
   description:
     required: False
     type: str
@@ -105,7 +110,7 @@ EXAMPLES = r'''
 
 # if state is create, then create user, fails if it exist or cannot create
 # if state is present, then create user if not present, else success
-- name: Create User
+- name: Create user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -114,7 +119,7 @@ EXAMPLES = r'''
     description: "{{ description }}"
     state: "{{ state | default('present') }}"
 
-- name: Delete User
+- name: Delete user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -122,7 +127,7 @@ EXAMPLES = r'''
     name: "{{ name }}"
     state: "absent"
 
-- name: Unlock User
+- name: Unlock user
   hpe_nimble_users:
     hostname: "{{ hostname }}"
     username: "{{ username }}"
@@ -222,7 +227,7 @@ def unlock_user(
         client_obj.users.unlock(id=user_resp.attrs.get("id"))
         return (True, True, f"Unlocked user '{user_name}' successfully.", {})
     except Exception as ex:
-        return (False, False, f"Unlock User failed | {ex}", {})
+        return (False, False, f"Unlock user failed | {ex}", {})
 
 
 def main():
@@ -235,6 +240,11 @@ def main():
                         'absent'
                         ],
             "type": "str"
+        },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
         },
         "name": {
             "required": True,
@@ -310,6 +320,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     user_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     role = module.params["role"]
     user_password = module.params["user_password"]
@@ -351,6 +362,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_user(
                 client_obj,
                 user_name,
+                name=change_name,
                 user_password=user_password,
                 description=description,
                 role=role,
