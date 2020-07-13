@@ -21,7 +21,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage volume collections on HPE Nimble Storage group.
 module: hpe_nimble_volume_collection
 options:
@@ -92,7 +92,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing volume collection.
+    - Change name of the existing volume collection.
   demote:
     required: False
     type: bool
@@ -211,7 +211,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # if state is create , then create a volcoll if not present. Fails if already present.
-# if state is "present", then create a volcoll if not present. Succeed if it already exists.
+# if state is present, then create a volcoll if not present. Succeed if it already exists.
 - name: Create volume collection if not present
 hpe_nimble_volume_collection:
   hostname: "{{ hostname }}"

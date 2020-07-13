@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage volumes on HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
@@ -66,7 +66,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing source volume.
+    - Change name of the existing source volume.
   clone:
     required: False
     type: bool
@@ -232,7 +232,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # If state is "create", then create a volume if not present. Fails if already present.
-# If state is "present", then create a volume if not present. Succeeds if it already exists.
+# if state is present, then create a volume if not present. Succeeds if it already exists.
 - name: Create volume if not present
   hpe_nimble_volume:
     hostname: "{{ hostname }}"

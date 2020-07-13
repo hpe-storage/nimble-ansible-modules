@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage shelves on HPE Nimble Storage group.
 module: hpe_nimble_shelf
 options:

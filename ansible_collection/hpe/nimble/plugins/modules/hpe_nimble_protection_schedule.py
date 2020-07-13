@@ -22,7 +22,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: Manage protection schedule on HPE Nimble Storage group.
+description: Manage protection schedules on HPE Nimble Storage group.
 module: hpe_nimble_protection_schedule
 options:
   at_time:
@@ -62,15 +62,14 @@ options:
   name:
     required: True
     type: str
-    default: None
     description:
     - Name of snapshot schedule to create.
   num_retain:
     required: False
     type: int
     description:
-    - Number of snapshots to retain. If replication is enabled on this schedule the array will always
-      retain the latest replicated snapshot, which may exceed the specified retention value. This is necessary to ensure efficient replication performance.
+    - Number of snapshots to retain. If replication is enabled on this schedule the array will always retain the latest
+      replicated snapshot, which may exceed the specified retention value. This is necessary to ensure efficient replication performance.
   num_retain_replica:
     required: False
     type: int
@@ -80,7 +79,6 @@ options:
   period:
     required: False
     type: int
-    default: 1
     description:
     - Repeat interval for snapshots with respect to the period_unit. For example,
       a value of 2 with the 'period_unit' of 'hours' results in one snapshot every 2 hours.
@@ -140,9 +138,9 @@ options:
   state:
     required: True
     choices:
-        - present
-        - absent
-        - create
+      - present
+      - absent
+      - create
     type: str
     description:
     - Choice for protection schedule operations
@@ -167,9 +165,9 @@ options:
       takeover on a different array as it will lead to irreconcilable conflicts. This limitation is cleared once the Group management service backup array has
       successfully synchronized after reconnection.
   volcoll_or_prottmpl_type:
-      choices:
-        - protection_template
-        - volume_collection
+    choices:
+      - protection_template
+      - volume_collection
     required: False
     type: str
     description:
@@ -180,14 +178,14 @@ options:
     description:
     - Name of the volume collection in which this protection schedule is attached to.
 extends_documentation_fragment: hpe_nimble
-short_description: Manage HPE Nimble Storage protection schedule.
+short_description: Manage HPE Nimble Storage protection schedules.
 version_added: 2.9
 '''
 
 EXAMPLES = r'''
 
 # if state is create , then create a protection schedule if not present. Fails if already present.
-# if state is "present", then create a protection schedule if not present. Succeed if it already exists.
+# if state is present, then create a protection schedule if not present. Succeed if it already exists.
 - name: Create protection schedule if not present
   hpe_nimble_protection_schedule:
     hostname: "{{ hostname }}"

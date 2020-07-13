@@ -21,8 +21,8 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
-description: Manage protection template on HPE Nimble Storage group.
+  - Alok Ranjan (@ar-india)
+description: Manage protection templates on HPE Nimble Storage group.
 module: hpe_nimble_protection_template
 options:
   agent_hostname:
@@ -86,7 +86,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing protection template.
+    - Change name of the existing protection template.
   description:
     required: False
     type: str
@@ -95,7 +95,7 @@ options:
   name:
     required: True
     type: str
-    default: None
+    
     description:
     - Name of protection template.
   state:
@@ -124,14 +124,14 @@ options:
     - Application VMware vCenter username. String of up to 80 alphanumeric characters, beginning with a letter.
       It can include ampersand (@), backslash (\), dash (-), period (.), and underscore (_).
 extends_documentation_fragment: hpe_nimble
-short_description: Manage HPE Nimble Storage protection template.
+short_description: Manage HPE Nimble Storage protection templates.
 version_added: 2.9
 '''
 
 EXAMPLES = r'''
 
 # if state is create , then create a protection template if not present. Fails if already present.
-# if state is "present", then create a protection template if not present. Succeed if it already exists.
+# if state is present, then create a protection template if not present. Succeed if it already exists.
 - name: Create protection template if not present
   hpe_nimble_protection_template:
     hostname: "{{ hostname }}"
@@ -166,7 +166,7 @@ def create_prot_template(
         **kwargs):
 
     if utils.is_null_or_empty(prot_template_name):
-        return (False, False, "Create protection template failed as volume collection is not present.", {})
+        return (False, False, "Create protection template failed as protection template name is not present.", {})
     try:
         prot_template_resp = client_obj.protection_templates.get(id=None, name=prot_template_name)
         if utils.is_null_or_empty(prot_template_resp):

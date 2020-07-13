@@ -22,7 +22,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage HPE Nimble Storage initiator groups.
 module: hpe_nimble_initiator_group
 options:
@@ -43,7 +43,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing initiator group.
+    - Change name of the existing initiator group.
   description:
     required: False
     type: str
@@ -52,7 +52,6 @@ options:
   fc_initiators:
     required: False
     type: list
-    default: None
     description:
     - List of FC initiators. When create/update fc_initiators, WWPN is required.
   fc_tdz_ports:
@@ -75,7 +74,6 @@ options:
   metadata:
     required: False
     type: dict
-    default: None
     description:
     - Key-value pairs that augment an initiator group's attributes. List of key-value pairs. Keys must be unique and non-empty.
   name:
@@ -289,7 +287,8 @@ def main():
         },
         "metadata": {
             "required": False,
-            "type": "dict"
+            "type": "dict",
+            "no_log": False
         }
     }
 

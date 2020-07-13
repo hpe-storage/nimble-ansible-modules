@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: On HPE Nimble Storage array - Create or delete access control record for volume.
 module: hpe_nimble_access_control_record
 options:
@@ -75,7 +75,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # If state is "create", create access control record for given volume, fails if it exist.
-# If state is "present", create access control record if not already present.
+# if state is present, create access control record if not already present.
 - name: Create access control record for volume
   hpe_nimble_access_control_record:
     hostname: "{{ hostname }}"

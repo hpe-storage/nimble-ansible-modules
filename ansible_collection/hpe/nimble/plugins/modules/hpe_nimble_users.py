@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage users on HPE Nimble Storage group.
 module: hpe_nimble_users
 options:
@@ -37,7 +37,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing user.
+    - Change name of the existing user.
   description:
     required: False
     type: str

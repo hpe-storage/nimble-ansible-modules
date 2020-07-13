@@ -21,8 +21,8 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
-description: description: Manage snapshot collections on HPE Nimble Storage group.
+  - Alok Ranjan (@ar-india)
+description: Manage snapshot collections on HPE Nimble Storage group.
 module: hpe_nimble_snapshot_collection
 options:
   agent_type:
@@ -40,7 +40,7 @@ options:
     required: False
     type: str
     description:
-    - Change the name of existing snapshot collection.
+    - Change name of the existing snapshot collection.
   description:
     required: False
     type: str
@@ -84,7 +84,6 @@ options:
   name:
     required: True
     type: str
-    default: None
     description:
     - Name for snapshot collection.
   replicate_to:
@@ -138,7 +137,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # if state is create , then create a snapshot collection if not present. Fails if already present.
-# if state is "present", then create a snapshot collection if not present. Succeeds if it already exists
+# if state is present, then create a snapshot collection if not present. Succeeds if it already exists
 - name: Create snapshot collection if not present
   hpe_nimble_snapshot_collection:
     hostname: "{{ hostname }}"
