@@ -62,6 +62,11 @@ options:
     type: bool
     description:
     - Indicate caching the volume is enabled.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing source volume.
   clone:
     required: False
     type: bool
@@ -554,7 +559,13 @@ def main():
         },
         "name": {
             "required": True,
-            "type": "str"
+            "type": "str",
+            "no_log": False
+        },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
         },
         "size": {
             "type": "int"
@@ -689,6 +700,7 @@ def main():
 
     state = module.params["state"]
     vol_name = module.params["name"]
+    change_name = module.params["change_name"]
     size = module.params["size"]
     description = module.params["description"]
     perf_policy = module.params["perf_policy"]
@@ -785,6 +797,7 @@ def main():
                 return_status, changed, msg, changed_attrs_dict = update_volume(
                     client_obj,
                     vol_resp,
+                    name=change_name,
                     volcoll_name=volcoll,
                     size=size,
                     description=description,

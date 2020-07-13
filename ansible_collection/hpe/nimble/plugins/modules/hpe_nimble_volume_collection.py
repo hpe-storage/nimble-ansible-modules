@@ -88,6 +88,11 @@ options:
     default: none
     description:
     - Application synchronization.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing volume collection.
   demote:
     required: False
     type: bool
@@ -453,6 +458,11 @@ def main():
             "type": "str",
             "no_log": False
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "description": {
             "required": False,
             "type": "str",
@@ -589,6 +599,7 @@ def main():
     state = module.params["state"]
     prot_template = module.params["prot_template"]
     volcoll_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     replication_type = module.params["replication_type"]
     app_sync = module.params["app_sync"]
@@ -685,6 +696,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_volcoll(
                 client_obj,
                 volcoll_resp,
+                name=change_name,
                 description=description,
                 app_sync=app_sync,
                 app_server=app_server,

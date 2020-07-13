@@ -36,6 +36,11 @@ options:
     default: False
     description:
     - Allow applications to write to created snapshot(s). Mandatory and must be set to 'true' for VSS application synchronized snapshots.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing snapshot collection.
   description:
     required: False
     type: str
@@ -229,6 +234,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -324,6 +334,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     snapcoll_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     volcoll = module.params["volcoll"]
     is_external_trigger = module.params["is_external_trigger"]
@@ -378,6 +389,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_snapcoll(
                 client_obj,
                 snapcoll_resp,
+                name=change_name,
                 description=description,
                 replicate_to=replicate_to,
                 expiry_after=expiry_after,

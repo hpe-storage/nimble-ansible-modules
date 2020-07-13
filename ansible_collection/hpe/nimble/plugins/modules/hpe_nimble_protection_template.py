@@ -82,6 +82,11 @@ options:
     default: none
     description:
     - Application synchronization.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing protection template.
   description:
     required: False
     type: str
@@ -220,6 +225,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -299,6 +309,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     prot_template_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     app_sync = module.params["app_sync"]
     app_server = module.params["app_server"]
@@ -349,6 +360,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_prot_template(
                 client_obj,
                 prot_template_resp,
+                name=change_name,
                 description=description,
                 app_sync=app_sync,
                 app_server=app_server,

@@ -32,6 +32,11 @@ options:
     description:
     - Time of day when snapshot should be taken. In case repeat frequency specifies more than one snapshot
       in a day then the until_time option specifies until what time of day to take snapshots.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing protection schedule.
   days:
     required: False
     type: str
@@ -278,6 +283,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -397,6 +407,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     prot_schedule_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     volcoll_or_prottmpl_type = module.params["volcoll_or_prottmpl_type"]
     volcoll_name = module.params["volcoll_name"]
@@ -464,6 +475,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_prot_schedule(
                 client_obj,
                 prot_schedule_resp,
+                name=change_name,
                 description=description,
                 period=period,
                 period_unit=period_unit,

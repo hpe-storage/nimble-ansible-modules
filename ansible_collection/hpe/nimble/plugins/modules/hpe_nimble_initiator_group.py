@@ -39,6 +39,11 @@ options:
     type: str
     description:
     - Application identifier of initiator group.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing initiator group.
   description:
     required: False
     type: str
@@ -229,6 +234,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -295,6 +305,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     initiator_group_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     access_protocol = module.params["access_protocol"]
     host_type = module.params["host_type"]
@@ -339,6 +350,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_igroup(
                 client_obj,
                 ig_resp,
+                name=change_name,
                 description=description,
                 host_type=host_type,
                 fc_tdz_ports=fc_tdz_ports,

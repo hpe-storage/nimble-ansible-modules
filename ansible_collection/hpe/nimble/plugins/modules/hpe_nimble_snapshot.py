@@ -42,6 +42,11 @@ options:
     type: str
     description:
     - Application identifier of snapshot.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing snapshot.
   description:
     required: False
     type: str
@@ -226,6 +231,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -289,6 +299,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     snapshot_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     vol_name = module.params["volume"]
     online = module.params["online"]
@@ -331,6 +342,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_snapshot(
                 client_obj,
                 snap_resp,
+                name=change_name,
                 description=description,
                 online=online,
                 expiry_after=expiry_after,

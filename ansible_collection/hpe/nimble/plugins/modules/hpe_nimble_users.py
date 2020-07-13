@@ -33,6 +33,11 @@ options:
     type: str
     description:
     - Authorization password for changing password.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change the name of existing user.
   description:
     required: False
     type: str
@@ -236,6 +241,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -310,6 +320,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     user_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     role = module.params["role"]
     user_password = module.params["user_password"]
@@ -351,6 +362,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_user(
                 client_obj,
                 user_name,
+                name=change_name,
                 user_password=user_password,
                 description=description,
                 role=role,
