@@ -21,7 +21,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage snapshots on HPE Nimble Storage group.
 module: hpe_nimble_snapshot
 options:
@@ -42,6 +42,11 @@ options:
     type: str
     description:
     - Application identifier of snapshot.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing snapshot.
   description:
     required: False
     type: str
@@ -61,13 +66,11 @@ options:
   metadata:
     required: False
     type: dict
-    default: None
     description:
     - Key-value pairs that augment a snapshot's attributes. List of key-value pairs. Keys must be unique and non-empty.
   name:
     required: True
     type: str
-    default: None
     description:
     - Name of snapshot.
   online:
@@ -88,7 +91,6 @@ options:
   volume:
     required: True
     type: str
-    default: None
     description:
     - Parent volume name.
   writable:
@@ -105,7 +107,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # if state is create , then create a snapshot if not present. Fails if already present.
-# if state is "present", then create a snapshot if not present. Succeeds if it already exists.
+# if state is present, then create a snapshot if not present. Succeeds if it already exists.
 - name: Create snapshot if not present
   hpe_nimble_snapshot:
     hostname: "{{ hostname }}"
@@ -226,6 +228,11 @@ def main():
                         ],
             "type": "str"
         },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
+        },
         "name": {
             "required": True,
             "type": "str",
@@ -289,6 +296,7 @@ def main():
     password = module.params["password"]
     state = module.params["state"]
     snapshot_name = module.params["name"]
+    change_name = module.params["change_name"]
     description = module.params["description"]
     vol_name = module.params["volume"]
     online = module.params["online"]
@@ -331,6 +339,7 @@ def main():
             return_status, changed, msg, changed_attrs_dict = update_snapshot(
                 client_obj,
                 snap_resp,
+                name=change_name,
                 description=description,
                 online=online,
                 expiry_after=expiry_after,

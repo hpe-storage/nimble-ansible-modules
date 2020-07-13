@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ranjanal)
+  - Alok Ranjan (@ar-india)
 description: Manage volumes on HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
@@ -62,6 +62,11 @@ options:
     type: bool
     description:
     - Indicate caching the volume is enabled.
+  change_name:
+    required: False
+    type: str
+    description:
+    - Change name of the existing source volume.
   clone:
     required: False
     type: bool
@@ -217,7 +222,8 @@ options:
     required: False
     type: str
     description:
-    - Name of volume collection of which this volume is a member.
+    - Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from
+      volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
 extends_documentation_fragment: hpe_nimble
 short_description: Manage HPE Nimble Storage volumes.
 version_added: 2.9
@@ -226,7 +232,7 @@ version_added: 2.9
 EXAMPLES = r'''
 
 # If state is "create", then create a volume if not present. Fails if already present.
-# If state is "present", then create a volume if not present. Succeeds if it already exists.
+# if state is present, then create a volume if not present. Succeeds if it already exists.
 - name: Create volume if not present
   hpe_nimble_volume:
     hostname: "{{ hostname }}"
@@ -553,7 +559,13 @@ def main():
         },
         "name": {
             "required": True,
-            "type": "str"
+            "type": "str",
+            "no_log": False
+        },
+        "change_name": {
+            "required": False,
+            "type": "str",
+            "no_log": False
         },
         "size": {
             "type": "int"
@@ -688,6 +700,7 @@ def main():
 
     state = module.params["state"]
     vol_name = module.params["name"]
+    change_name = module.params["change_name"]
     size = module.params["size"]
     description = module.params["description"]
     perf_policy = module.params["perf_policy"]
@@ -784,6 +797,7 @@ def main():
                 return_status, changed, msg, changed_attrs_dict = update_volume(
                     client_obj,
                     vol_resp,
+                    name=change_name,
                     volcoll_name=volcoll,
                     size=size,
                     description=description,
