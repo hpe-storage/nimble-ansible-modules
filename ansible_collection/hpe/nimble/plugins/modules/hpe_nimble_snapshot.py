@@ -208,11 +208,8 @@ def delete_snapshot(
         if utils.is_null_or_empty(snap_resp):
             return (False, False, f"Snapshot '{snapshot_name}' cannot be deleted as it is not present in given volume '{vol_name}'.", {})
         else:
-            snap_resp = client_obj.snapshots.delete(id=snap_resp.attrs.get("id"))
-            # confirm
-            snap_resp = client_obj.snapshots.get(id=None, vol_name=vol_name, name=snapshot_name)
-            if utils.is_null_or_empty(snap_resp):
-                return (True, True, f"Deleted snapshot '{snapshot_name}' successfully.", {})
+            client_obj.snapshots.delete(id=snap_resp.attrs.get("id"))
+            return (True, True, f"Deleted snapshot '{snapshot_name}' successfully.", {})
     except Exception as ex:
         return (False, False, f"Snapshot deletion failed | {ex}", {})
 

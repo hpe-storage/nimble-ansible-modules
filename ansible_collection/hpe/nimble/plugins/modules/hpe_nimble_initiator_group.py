@@ -135,30 +135,6 @@ except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
-def is_initiator_present(
-        ig_resp,
-        iqn_or_wwpn_name,
-        access_protocol):
-
-    if utils.is_null_or_empty(ig_resp) or utils.is_null_or_empty(iqn_or_wwpn_name) or utils.is_null_or_empty(access_protocol):
-        return None
-    if access_protocol == "iscsi":
-        initiators_list = ig_resp.attrs.get("iscsi_initiators")
-    elif access_protocol == "fc":
-        initiators_list = ig_resp.attrs.get("fc_initiators")
-    else:
-        initiators_list = None
-
-    if utils.is_null_or_empty(initiators_list) is True:
-        return False
-    for initiator_obj in initiators_list:
-        if access_protocol == "iscsi" and iqn_or_wwpn_name == initiator_obj['iqn']:
-            return True
-        elif access_protocol == "fc" and iqn_or_wwpn_name == initiator_obj['wwpn']:
-            return True
-    return False
-
-
 def create_igroup(
         client_obj,
         initiator_group_name,

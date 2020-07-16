@@ -32,6 +32,7 @@ options:
     required: False
     choices:
     - volume
+    - snapshot
     - both
     type: str
     default: both
@@ -127,16 +128,18 @@ def create_acr(
         if vol_resp is None:
             return (False, False, f"Volume name '{volume}' is not present on array.")
 
-        acr_resp = client_obj.access_control_records.get(initiator_group_name=initiator_group)
+        acr_resp = client_obj.access_control_records.get(vol_name=volume, initiator_group_name=initiator_group, apply_to=kwargs['apply_to'])
         if utils.is_null_or_empty(acr_resp) is False:
             changed_attrs_dict, params = utils.remove_unchanged_or_null_args(acr_resp, **kwargs)
         else:
             params = utils.remove_null_args(**kwargs)
-        if acr_resp is None or acr_resp.attrs.get("initiator_group_id") != ig_resp.attrs.get("id"):
+        if acr_resp is None or changed_attrs_dict.__len__() > 0:
             acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
                                                                 vol_id=vol_resp.attrs.get("id"),
                                                                 **params)
-            return (True, True, f"Successfully created access control record for volume '{volume}' with initiator group '{initiator_group}'.")
+            params['volume'] = volume
+            params['initiator_group'] = initiator_group
+            return (True, True, f"Successfully created access control record with attributes: {params}.")
         else:
             # if state is set to present, we pass
             if state == "present":
@@ -159,9 +162,10 @@ def delete_acr(
     params = utils.remove_null_args(**kwargs)
 
     try:
-        acr_resp = client_obj.access_control_records.get(vol_name=volume, initiator_group_name=initiator_group, **params)
-        if acr_resp is not None:
-            client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
+        acr_list_resp = client_obj.access_control_records.list(vol_name=volume, initiator_group_name=initiator_group, **params)
+        if acr_list_resp is not None and acr_list_resp.__len__() > 0:
+            for acr_resp in acr_list_resp:
+                client_obj.access_control_records.delete(acr_resp.attrs.get("id"))
             return (True, True, f"Successfully deleted access control record for initiator group '{initiator_group}' associated with volume '{volume}'.")
         else:
             return (True, False, f"No access control record for initiator group '{initiator_group}' associated with volume '{volume}' found.")
@@ -179,7 +183,7 @@ def main():
         },
         "apply_to": {
             "required": False,
-            "choices": ['volume', 'both'],
+            "choices": ['volume', 'snapshot', 'both'],
             "type": "str",
             "no_log": False
         },
