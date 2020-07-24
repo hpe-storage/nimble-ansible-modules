@@ -416,7 +416,7 @@ def delete_volume(client_obj, vol_name):
             client_obj.volumes.delete(id=vol_resp.attrs.get("id"))
             return (True, True, f"Deleted volume '{vol_name}' successfully.", {})
     except Exception as ex:
-        return (False, False, f"Volume deletion failed '{ex}'", {})
+        return (False, False, f"Volume deletion for {vol_name} failed '{ex}'", {})
 
 
 def restore_volume(client_obj, vol_name, snapshot_to_restore=None):

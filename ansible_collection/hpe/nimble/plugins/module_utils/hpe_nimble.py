@@ -98,6 +98,9 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
             found_changed_list = False
             if len(value) == 0:
                 continue
+            if len(value) != len(server_value):
+                changed_attrs_dict[key] = value
+                continue
             # check if the list has dictionary to compare
             for entry_to_check in value:
                 if type(entry_to_check) is dict:

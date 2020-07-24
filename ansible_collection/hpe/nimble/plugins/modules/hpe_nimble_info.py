@@ -804,10 +804,10 @@ def fetch_config_subset(info_subset):
                 continue
             temp_dict[key] = resp
         # prepare
-        result['arrays'] = generate_dict('full_name', temp_dict['arrays'])
-        result['groups'] = generate_dict('name', temp_dict['groups'])
-        result['pools'] = generate_dict('name', temp_dict['pools'])
-        result['network_configs'] = generate_dict('name', temp_dict['network_configs'])
+        result['arrays'] = generate_dict('arrays', temp_dict['arrays'])['arrays']
+        result['groups'] = generate_dict('groups', temp_dict['groups'])['groups']
+        result['pools'] = generate_dict('pools', temp_dict['pools'])['pools']
+        result['network_configs'] = generate_dict('network_configs', temp_dict['network_configs'])['network_configs']
         toreturn['config'] = result
         return (toreturn)
     except Exception:
@@ -854,7 +854,7 @@ def fetch_minimum_subset(info_subset):
         result['volumes'] = len(temp_dict['volumes'])
         result['volume_collections'] = len(temp_dict['volume_collections'])
         result['users'] = len(temp_dict['users'])
-        result['software versions'] = temp_dict['software_versions'][-1].attrs.get('version')
+        result['software versions'] = temp_dict['software_versions'][-1].attrs.get('version')  # get the latest
         result['snapshot_collections'] = len(temp_dict['snapshot_collections'])
         result['snapshots'] = temp_dict['groups'][-1].attrs.get('num_snaps')
         result['protocol_endpoints'] = len(temp_dict['protocol_endpoints'])
@@ -864,8 +864,8 @@ def fetch_minimum_subset(info_subset):
         result['folders'] = len(temp_dict['folders'])
         result['disks'] = len(temp_dict['disks'])
         result['folders'] = len(temp_dict['folders'])
-        result['arrays'] = generate_dict('full_name', temp_dict['arrays'])
-        result['groups'] = generate_dict('name', temp_dict['groups'])
+        result['arrays'] = generate_dict('arrays', temp_dict['arrays'])['arrays']
+        result['groups'] = generate_dict('groups', temp_dict['groups'])['groups']
         toreturn['default'] = result
         return (toreturn)
     except Exception as ex:
@@ -889,7 +889,7 @@ def fetch_snapshots_for_all_subset(subset, client_obj):
             snap_list = client_obj.snapshots.list(detail=subset['detail'], vol_name=vol_name, limit=subset['limit'])
             if snap_list is not None and snap_list.__len__() > 0:
                 total_snap.extend(snap_list)
-                if total_snap.__len__() >= subset['limit']:
+                if subset['limit'] is not None and total_snap.__len__() >= subset['limit']:
                     total_snap = total_snap[0:subset['limit']]
                     break
         result['snapshots'] = generate_dict('name', total_snap)
@@ -1005,11 +1005,6 @@ def get_subset_info(
 def main():
 
     fields = {
-        "state": {
-            "required": True,
-            "choices": ['info'],
-            "type": "str"
-        },
         "gather_subset": {
             "required": False,
             "type": "list",
@@ -1027,7 +1022,6 @@ def main():
     username = module.params["username"]
     password = module.params["password"]
     gather_subset = module.params["gather_subset"]
-    state = module.params["state"]
 
     if (username is None or password is None or hostname is None):
         module.fail_json(
@@ -1040,16 +1034,10 @@ def main():
     )
     # defaults
     return_status = changed = False
-    msg = "No task to run."
-
-    # States
-    if state == "info":
-        return_status, changed, msg, result_dict = get_subset_info(
-            client_obj,
-            gather_subset)
+    return_status, changed, msg, result_dict = get_subset_info(client_obj, gather_subset)
 
     if return_status:
-        if not utils.is_null_or_empty(result_dict) and result_dict.__len__() > 0:
+        if utils.is_null_or_empty(result_dict) is False and result_dict.__len__() > 0:
             module.exit_json(return_status=return_status,
                              changed=changed,
                              message=msg,
