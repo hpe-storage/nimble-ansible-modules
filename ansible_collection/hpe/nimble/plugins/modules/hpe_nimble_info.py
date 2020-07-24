@@ -864,7 +864,7 @@ def fetch_snapshots_for_all_subset(subset, client_obj):
                 if subset['limit'] is not None and total_snap.__len__() >= subset['limit']:
                     total_snap = total_snap[0:subset['limit']]
                     break
-        result['snapshots'] = generate_dict('name', total_snap)
+        result['snapshots'] = generate_dict('snapshots', total_snap)['snapshots']
         return result
 
 
