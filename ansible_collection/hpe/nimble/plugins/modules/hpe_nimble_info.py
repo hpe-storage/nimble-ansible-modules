@@ -31,11 +31,6 @@ description:
     and volume counts. Additional information can be collected based on the configured set of arguements.
 module: hpe_nimble_info
 options:
-  state:
-    type: str
-    description:
-        - Returns subset info.
-    choices: ['info']
   gather_subset:
     required: False
     type: str
