@@ -167,8 +167,6 @@ def update_igroup(
     try:
         ig_name = ig_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(ig_resp, **kwargs)
-        # in case of deletion of initiator or wwpn the number of initiators given will always be less than one present on server.
-        # hence, check for that and if it is true. then simply update the iscsi initiator or wwpn
         if changed_attrs_dict.__len__() > 0:
             ig_resp = client_obj.initiator_groups.update(id=ig_resp.attrs.get("id"), **params)
             return (True, True, f"Initiator group '{ig_name}' already present. Modified the following fields :", changed_attrs_dict)
