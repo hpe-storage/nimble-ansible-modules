@@ -26,9 +26,9 @@ DOCUMENTATION = r'''
 author:
   - Alok Ranjan (@ar-india)
 description:
-  - Collect information from a HPE Nimble Storage array running the NimOs operating system. By default, the module will collect basic
+  - Collect information from a HPE Nimble Storage array. By default, the module will collect basic
     information including array, groups config, protection template, protection schedules, snapshots, snapshot collection, volume collection
-    and volume counts. Additional information can be collected based on the configured set of arguements.
+    and volume counts. Additional information can be collected based on the configured set of arguments.
 module: hpe_nimble_info
 options:
   gather_subset:
@@ -74,12 +74,13 @@ options:
         "volumes",
         "volume_collections"
       - NOTE:-
-      - Each subset except all, minimum and config also supports four types of subset options.
-        'All' subset just supports limit and detail as subset options.
+      - Each subset except all, minimum and config supports four types of subset options.
+      - Subset 'all' just supports limit and detail as subset options.
+      - Subset 'config' and 'minimum' does not support any subset options.
 
-      - subset options:-
+      - Subset options:-
       - fields - A string representing which attributes to display for a given subset.
-      - limit - An integer value which represents how many items to show for a given subset.
+      - limit - An integer value which represents how many latest items to show for a given subset.
       - detail - A bool flag when set to true fetches everything for a given subset. Default is True.
       - query - A Key-Value pair to query.
 extends_documentation_fragment: hpe_nimble
@@ -660,7 +661,7 @@ def raise_subset_mutually_exclusive_ex():
     raise Exception(msg)
 
 
-def prepare_subset_list(info_subset, gather_subset):
+def parse_subset_list(info_subset, gather_subset):
     valid_subset_list = []
     try:
         if gather_subset is None or type(gather_subset) is not list:
@@ -963,7 +964,7 @@ def get_subset_info(
     result_dict = []
     try:
         info_subset = intialize_info_subset(client_obj)
-        valid_subset_list = prepare_subset_list(info_subset, gather_subset)
+        valid_subset_list = parse_subset_list(info_subset, gather_subset)
         if valid_subset_list is not None and valid_subset_list.__len__() > 0:
             # we got subset list to work on. get the details of these subset
             result_dict = fetch_subset(valid_subset_list, info_subset)

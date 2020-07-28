@@ -29,7 +29,7 @@ options:
     required: False
     type: list
     description:
-    - List of arrays in the pool with detailed information. When create/update array list, only arrays' ID is required.
+    - List of arrays in the pool with detailed information. To create or update array list, only array ID is required.
   change_name:
     required: False
     type: str
@@ -53,7 +53,7 @@ options:
     description:
     - Forcibly delete the specified pool even if it contains deleted volumes whose space is being reclaimed.
       Forcibly remove an array from array_list via an update operation even if the array is not reachable.
-      There should no volumes currently in the pool for the forced update operation to succeed.
+      There should no volumes in the pool for the force update operation to succeed.
   is_default:
     required: False
     type: bool
@@ -138,11 +138,11 @@ def create_pool(
             pool_resp = client_obj.pools.create(name=pool_name,
                                                 **params)
             if pool_resp is not None:
-                return (True, True, "Created pool '%s' successfully." % pool_name, {})
+                return (True, True, f"Created pool '{pool_name}' successfully.", {})
         else:
-            return (False, False, "Pool '%s' cannot be created as it is already present." % pool_name, {})
-    except Exception as e:
-        return (False, False, "Pool creation failed | %s" % e, {})
+            return (False, False, f"Pool '{pool_name}' cannot be created as it is already present.", {})
+    except Exception as ex:
+        return (False, False, f"Pool creation failed | {ex}", {})
 
 
 def update_pool(
@@ -158,12 +158,12 @@ def update_pool(
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(pool_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             pool_resp = client_obj.pools.update(id=pool_resp.attrs.get("id"), **params)
-            return (True, True, "Pool '%s' already present. Modified the following fields:" % pool_name, changed_attrs_dict)
+            return (True, True, f"Pool '{pool_name}' already present. Modified the following fields:", changed_attrs_dict)
         else:
-            return (True, False, "Pool '%s' already present." % pool_name, {})
+            return (True, False, f"Pool '{pool_name}' already present.", {})
 
-    except Exception as e:
-        return (False, False, "Pool update failed | %s" % e, {})
+    except Exception as ex:
+        return (False, False, f"Pool update failed | {ex}", {})
 
 
 def delete_pool(
@@ -176,12 +176,12 @@ def delete_pool(
     try:
         pool_resp = client_obj.pools.get(id=None, name=pool_name)
         if utils.is_null_or_empty(pool_resp):
-            return (False, False, "Cannot delete pool '%s' as it is not present." % (pool_name), {})
+            return (False, False, f"Cannot delete pool '{pool_name}' as it is not present.", {})
         else:
             pool_resp = client_obj.pools.delete(id=pool_resp.attrs.get("id"))
-            return (True, True, "Deleted pool '%s' successfully." % pool_name, {})
-    except Exception as e:
-        return (False, False, "Pool deletion failed | %s" % e, {})
+            return (True, True, f"Deleted pool '{pool_name}' successfully.", {})
+    except Exception as ex:
+        return (False, False, f"Pool deletion failed | {ex}", {})
 
 
 def merge_pool(
@@ -198,18 +198,18 @@ def merge_pool(
     try:
         pool_resp = client_obj.pools.get(id=None, name=pool_name)
         if utils.is_null_or_empty(pool_resp):
-            return (False, False, "Merge pools failed as source pool '%s' is not present." % pool_name, {})
+            return (False, False, f"Merge pools failed as source pool '{pool_name}' is not present.", {})
 
         target_pool_resp = client_obj.pools.get(id=None, name=target)
         if utils.is_null_or_empty(target_pool_resp):
-            return (False, False, "Merge pools failed as target pool '%s' is not present." % target, {})
+            return (False, False, f"Merge pools failed as target pool '{target}' is not present.", {})
 
         client_obj.pools.merge(id=pool_resp.attrs.get("id"),
                                target_pool_id=target_pool_resp.attrs.get("id"),
                                force=force)
-        return (True, True, "Merged target pool '%s' to pool '%s' successfully." % (target, pool_name), {})
-    except Exception as e:
-        return (False, False, "Merge pool failed | %s" % e, {})
+        return (True, True, f"Merged target pool '{target}' to pool '{pool_name}' successfully.", {})
+    except Exception as ex:
+        return (False, False, f"Merge pool failed | {ex}", {})
 
 
 def main():
