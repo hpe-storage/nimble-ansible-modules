@@ -1,0 +1,1003 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Desired State Configuration &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/user_guide/windows_dsc.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Windows performance" href="windows_performance.html" />
+    <link rel="prev" title="Using Ansible and Windows" href="windows_usage.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Ansible Quickstart Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_concepts.html">Ansible concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_inventory.html">How to build your inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_dynamic_inventory.html">Working with dynamic inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_patterns.html">Patterns: targeting hosts and groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_adhoc.html">Introduction to ad-hoc commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_details.html">Connection methods and details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line_tools.html">Working with command line tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="playbooks.html">Working With Playbooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="become.html">Understanding privilege escalation: become</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vault.html">Ansible Vault</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample_setup.html">Sample Ansible setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Working With Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/plugins.html">Working With Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_bsd.html">Ansible and BSD</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="windows.html">Windows Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="windows_setup.html">Setting up a Windows Host</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windows_winrm.html">Windows Remote Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windows_usage.html">Using Ansible and Windows</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Desired State Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-desired-state-configuration">What is Desired State Configuration?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#host-requirements">Host Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-use-dsc">Why Use DSC?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-use-dsc">How to Use DSC?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-dsc-resources">Custom DSC Resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="windows_performance.html">Windows performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="windows_faq.html">Windows Frequently Asked Questions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collections_using.html">Using collections</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="windows.html">Windows Guides</a> &raquo;</li>
+        
+      <li>Desired State Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/user_guide/windows_dsc.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="desired-state-configuration">
+<h1>Desired State Configuration<a class="headerlink" href="#desired-state-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="topics">
+<p class="topic-title first">Topics</p>
+<ul class="simple">
+<li><a class="reference internal" href="#what-is-desired-state-configuration" id="id1">What is Desired State Configuration?</a></li>
+<li><a class="reference internal" href="#host-requirements" id="id2">Host Requirements</a></li>
+<li><a class="reference internal" href="#why-use-dsc" id="id3">Why Use DSC?</a></li>
+<li><a class="reference internal" href="#how-to-use-dsc" id="id4">How to Use DSC?</a><ul>
+<li><a class="reference internal" href="#property-types" id="id5">Property Types</a><ul>
+<li><a class="reference internal" href="#pscredential" id="id6">PSCredential</a></li>
+<li><a class="reference internal" href="#ciminstance-type" id="id7">CimInstance Type</a></li>
+<li><a class="reference internal" href="#hashtable-type" id="id8">HashTable Type</a></li>
+<li><a class="reference internal" href="#arrays" id="id9">Arrays</a></li>
+<li><a class="reference internal" href="#datetime" id="id10">DateTime</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#run-as-another-user" id="id11">Run As Another User</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-dsc-resources" id="id12">Custom DSC Resources</a><ul>
+<li><a class="reference internal" href="#finding-custom-dsc-resources" id="id13">Finding Custom DSC Resources</a></li>
+<li><a class="reference internal" href="#installing-a-custom-resource" id="id14">Installing a Custom Resource</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples" id="id15">Examples</a><ul>
+<li><a class="reference internal" href="#extract-a-zip-file" id="id16">Extract a zip file</a></li>
+<li><a class="reference internal" href="#create-a-directory" id="id17">Create a directory</a></li>
+<li><a class="reference internal" href="#interact-with-azure" id="id18">Interact with Azure</a></li>
+<li><a class="reference internal" href="#setup-iis-website" id="id19">Setup IIS Website</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="what-is-desired-state-configuration">
+<h2><a class="toc-backref" href="#id1">What is Desired State Configuration?</a><a class="headerlink" href="#what-is-desired-state-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Desired State Configuration, or DSC, is a tool built into PowerShell that can
+be used to define a Windows host setup through code. The overall purpose of DSC
+is the same as Ansible, it is just executed in a different manner. Since
+Ansible 2.4, the <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> module has been added and can be used to leverage
+existing DSC resources when interacting with a Windows host.</p>
+<p>More details on DSC can be viewed at <a class="reference external" href="https://docs.microsoft.com/en-us/powershell/scripting/dsc/overview/overview">DSC Overview</a>.</p>
+</div>
+<div class="section" id="host-requirements">
+<h2><a class="toc-backref" href="#id2">Host Requirements</a><a class="headerlink" href="#host-requirements" title="Permalink to this headline">¶</a></h2>
+<p>To use the <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> module, a Windows host must have PowerShell v5.0 or
+newer installed. All supported hosts, except for Windows Server 2008 (non R2) can be
+upgraded to PowerShell v5.</p>
+<p>Once the PowerShell requirements have been met, using DSC is as simple as
+creating a task with the <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> module.</p>
+</div>
+<div class="section" id="why-use-dsc">
+<h2><a class="toc-backref" href="#id3">Why Use DSC?</a><a class="headerlink" href="#why-use-dsc" title="Permalink to this headline">¶</a></h2>
+<p>DSC and Ansible modules have a common goal which is to define and ensure the state of a
+resource. Because of
+this, resources like the DSC <a class="reference external" href="https://docs.microsoft.com/en-us/powershell/scripting/dsc/reference/resources/windows/fileresource">File resource</a>
+and Ansible <code class="docutils literal notranslate"><span class="pre">win_file</span></code> can be used to achieve the same result. Deciding which to use depends
+on the scenario.</p>
+<p>Reasons for using an Ansible module over a DSC resource:</p>
+<ul class="simple">
+<li>The host does not support PowerShell v5.0, or it cannot easily be upgraded</li>
+<li>The DSC resource does not offer a feature present in an Ansible module. For example
+win_regedit can manage the <code class="docutils literal notranslate"><span class="pre">REG_NONE</span></code> property type, while the DSC
+<code class="docutils literal notranslate"><span class="pre">Registry</span></code> resource cannot</li>
+<li>DSC resources have limited check mode support, while some Ansible modules have
+better checks</li>
+<li>DSC resources do not support diff mode, while some Ansible modules do</li>
+<li>Custom resources require further installation steps to be run on the host
+beforehand, while Ansible modules are built-in to Ansible</li>
+<li>There are bugs in a DSC resource where an Ansible module works</li>
+</ul>
+<p>Reasons for using a DSC resource over an Ansible module:</p>
+<ul class="simple">
+<li>The Ansible module does not support a feature present in a DSC resource</li>
+<li>There is no Ansible module available</li>
+<li>There are bugs in an existing Ansible module</li>
+</ul>
+<p>In the end, it doesn’t matter whether the task is performed with DSC or an
+Ansible module; what matters is that the task is performed correctly and the
+playbooks are still readable. If you have more experience with DSC over Ansible
+and it does the job, just use DSC for that task.</p>
+</div>
+<div class="section" id="how-to-use-dsc">
+<h2><a class="toc-backref" href="#id4">How to Use DSC?</a><a class="headerlink" href="#how-to-use-dsc" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> module takes in a free-form of options so that it changes
+according to the resource it is managing. A list of built in resources can be
+found at <a class="reference external" href="https://docs.microsoft.com/en-us/powershell/scripting/dsc/resources/resources">resources</a>.</p>
+<p>Using the <a class="reference external" href="https://docs.microsoft.com/en-us/powershell/scripting/dsc/reference/resources/windows/registryresource">Registry</a>
+resource as an example, this is the DSC definition as documented by Microsoft:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">Registry</span> <span class="no">[string]</span> <span class="c">#ResourceName</span>
+<span class="p">{</span>
+    <span class="n">Key</span> <span class="p">=</span> <span class="no">[string]</span>
+    <span class="n">ValueName</span> <span class="p">=</span> <span class="no">[string]</span>
+    <span class="p">[</span> <span class="n">Ensure</span> <span class="p">=</span> <span class="no">[string]</span> <span class="p">{</span> <span class="n">Enable</span> <span class="p">|</span> <span class="n">Disable</span> <span class="p">}</span>  <span class="p">]</span>
+    <span class="p">[</span> <span class="n">Force</span> <span class="p">=</span>  <span class="no">[bool]   ]</span>
+    <span class="p">[</span> <span class="n">Hex</span> <span class="p">=</span> <span class="no">[bool] ]</span>
+    <span class="p">[</span> <span class="n">DependsOn</span> <span class="p">=</span> <span class="no">[string[]] ]</span>
+    <span class="p">[</span> <span class="n">ValueData</span> <span class="p">=</span> <span class="no">[string[]] ]</span>
+    <span class="p">[</span> <span class="n">ValueType</span> <span class="p">=</span> <span class="no">[string]</span> <span class="p">{</span> <span class="n">Binary</span> <span class="p">|</span> <span class="n">Dword</span> <span class="p">|</span> <span class="n">ExpandString</span> <span class="p">|</span> <span class="n">MultiString</span> <span class="p">|</span> <span class="n">Qword</span> <span class="p">|</span> <span class="n">String</span> <span class="p">}</span>  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When defining the task, <code class="docutils literal notranslate"><span class="pre">resource_name</span></code> must be set to the DSC resource being
+used - in this case the <code class="docutils literal notranslate"><span class="pre">resource_name</span></code> should be set to <code class="docutils literal notranslate"><span class="pre">Registry</span></code>. The
+<code class="docutils literal notranslate"><span class="pre">module_version</span></code> can refer to a specific version of the DSC resource
+installed; if left blank it will default to the latest version. The other
+options are parameters that are used to define the resource, such as <code class="docutils literal notranslate"><span class="pre">Key</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ValueName</span></code>. While the options in the task are not case sensitive,
+keeping the case as-is is recommended because it makes it easier to distinguish DSC
+resource options from Ansible’s <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> options.</p>
+<p>This is what the Ansible task version of the above DSC Registry resource would look like:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Use win_dsc module with the Registry DSC resource</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Registry</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+    <span class="l l-Scalar l-Scalar-Plain">Key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">HKEY_LOCAL_MACHINE\SOFTWARE\ExampleKey</span>
+    <span class="l l-Scalar l-Scalar-Plain">ValueName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">TestValue</span>
+    <span class="l l-Scalar l-Scalar-Plain">ValueData</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">TestData</span>
+</pre></div>
+</div>
+<p>Starting in Ansible 2.8, the <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code> module automatically validates the
+input options from Ansible with the DSC definition. This means Ansible will
+fail if the option name is incorrect, a mandatory option is not set, or the
+value is not a valid choice. When running Ansible with a verbosity level of 3
+or more (<code class="docutils literal notranslate"><span class="pre">-vvv</span></code>), the return value will contain the possible invocation
+options based on the <code class="docutils literal notranslate"><span class="pre">resource_name</span></code> specified. Here is an example of the
+invocation output for the above <code class="docutils literal notranslate"><span class="pre">Registry</span></code> task:</p>
+<div class="highlight-ansible-output notranslate"><div class="highlight"><pre><span></span><span class="k">changed</span><span class="p">:</span> <span class="p">[</span><span class="nv">2016</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nt">&quot;changed&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;invocation&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;module_args&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;DependsOn&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;Ensure&quot;</span><span class="p">:</span> <span class="s">&quot;Present&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Force&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;Hex&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;Key&quot;</span><span class="p">:</span> <span class="s">&quot;HKEY_LOCAL_MACHINE\\SOFTWARE\\ExampleKey&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;PsDscRunAsCredential_password&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;PsDscRunAsCredential_username&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;ValueData&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;TestData&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;ValueName&quot;</span><span class="p">:</span> <span class="s">&quot;TestValue&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;ValueType&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;module_version&quot;</span><span class="p">:</span> <span class="s">&quot;latest&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;resource_name&quot;</span><span class="p">:</span> <span class="s">&quot;Registry&quot;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;module_version&quot;</span><span class="p">:</span> <span class="s">&quot;1.1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;reboot_required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;verbose_set&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&quot;Perform operation &#39;Invoke CimMethod&#39; with following parameters, &#39;&#39;methodName&#39; = ResourceSet,&#39;className&#39; = MSFT_DSCLocalConfigurationManager,&#39;namespaceName&#39; = root/Microsoft/Windows/DesiredStateConfiguration&#39;.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;An LCM method call arrived from computer SERVER2016 with user sid S-1-5-21-3088887838-4058132883-1884671576-1105.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ Start  Set      ]  [[Registry]DirectResourceAccess]&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]:                            [[Registry]DirectResourceAccess] (SET) Create registry key &#39;HKLM:\\SOFTWARE\\ExampleKey&#39;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]:                            [[Registry]DirectResourceAccess] (SET) Set registry key value &#39;HKLM:\\SOFTWARE\\ExampleKey\\TestValue&#39; to &#39;TestData&#39; of type &#39;String&#39;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ End    Set      ]  [[Registry]DirectResourceAccess]  in 0.1930 seconds.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ End    Set      ]    in  0.2720 seconds.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Operation &#39;Invoke CimMethod&#39; complete.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Time taken for configuration job to complete is 0.402 seconds&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;verbose_test&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&quot;Perform operation &#39;Invoke CimMethod&#39; with following parameters, &#39;&#39;methodName&#39; = ResourceTest,&#39;className&#39; = MSFT_DSCLocalConfigurationManager,&#39;namespaceName&#39; = root/Microsoft/Windows/DesiredStateConfiguration&#39;.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;An LCM method call arrived from computer SERVER2016 with user sid S-1-5-21-3088887838-4058132883-1884671576-1105.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ Start  Test     ]  [[Registry]DirectResourceAccess]&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]:                            [[Registry]DirectResourceAccess] Registry key &#39;HKLM:\\SOFTWARE\\ExampleKey&#39; does not exist&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ End    Test     ]  [[Registry]DirectResourceAccess] False in 0.2510 seconds.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;[SERVER2016]: LCM:  [ End    Set      ]    in  0.3310 seconds.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Operation &#39;Invoke CimMethod&#39; complete.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Time taken for configuration job to complete is 0.475 seconds&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">invocation.module_args</span></code> key shows the actual values that were set as
+well as other possible values that were not set. Unfortunately this will not
+show the default value for a DSC property, only what was set from the Ansible
+task. Any <code class="docutils literal notranslate"><span class="pre">*_password</span></code> option will be masked in the output for security
+reasons, if there are any other sensitive module options, set <code class="docutils literal notranslate"><span class="pre">no_log:</span> <span class="pre">True</span></code>
+on the task to stop all task output from being logged.</p>
+<div class="section" id="property-types">
+<h3><a class="toc-backref" href="#id5">Property Types</a><a class="headerlink" href="#property-types" title="Permalink to this headline">¶</a></h3>
+<p>Each DSC resource property has a type that is associated with it. Ansible
+will try to convert the defined options to the correct type during execution.
+For simple types like <code class="docutils literal notranslate"><span class="pre">[string]</span></code> and <code class="docutils literal notranslate"><span class="pre">[bool]</span></code> this is a simple operation,
+but complex types like <code class="docutils literal notranslate"><span class="pre">[PSCredential]</span></code> or arrays (like <code class="docutils literal notranslate"><span class="pre">[string[]]</span></code>) this
+require certain rules.</p>
+<div class="section" id="pscredential">
+<h4><a class="toc-backref" href="#id6">PSCredential</a><a class="headerlink" href="#pscredential" title="Permalink to this headline">¶</a></h4>
+<p>A <code class="docutils literal notranslate"><span class="pre">[PSCredential]</span></code> object is used to store credentials in a secure way, but
+Ansible has no way to serialize this over JSON. To set a DSC PSCredential property,
+the definition of that parameter should have two entries that are suffixed with
+<code class="docutils literal notranslate"><span class="pre">_username</span></code> and <code class="docutils literal notranslate"><span class="pre">_password</span></code> for the username and password respectively.
+For example:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">PsDscRunAsCredential_username</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_user</span> <span class="cp">}}</span><span class="s">&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">PsDscRunAsCredential_password</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_password</span> <span class="cp">}}</span><span class="s">&#39;</span>
+
+<span class="l l-Scalar l-Scalar-Plain">SourceCredential_username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">AdminUser</span>
+<span class="l l-Scalar l-Scalar-Plain">SourceCredential_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PasswordForAdminUser</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On versions of Ansible older than 2.8, you should set <code class="docutils literal notranslate"><span class="pre">no_log:</span> <span class="pre">yes</span></code>
+on the task definition in Ansible to ensure any credentials used are not
+stored in any log file or console output.</p>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">[PSCredential]</span></code> is defined with <code class="docutils literal notranslate"><span class="pre">EmbeddedInstance(&quot;MSFT_Credential&quot;)</span></code> in
+a DSC resource MOF definition.</p>
+</div>
+<div class="section" id="ciminstance-type">
+<h4><a class="toc-backref" href="#id7">CimInstance Type</a><a class="headerlink" href="#ciminstance-type" title="Permalink to this headline">¶</a></h4>
+<p>A <code class="docutils literal notranslate"><span class="pre">[CimInstance]</span></code> object is used by DSC to store a dictionary object based on
+a custom class defined by that resource. Defining a value that takes in a
+<code class="docutils literal notranslate"><span class="pre">[CimInstance]</span></code> in YAML is the same as defining a dictionary in YAML.
+For example, to define a <code class="docutils literal notranslate"><span class="pre">[CimInstance]</span></code> value in Ansible:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># [CimInstance]AuthenticationInfo == MSFT_xWebAuthenticationInformation</span>
+<span class="l l-Scalar l-Scalar-Plain">AuthenticationInfo</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">Anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+  <span class="l l-Scalar l-Scalar-Plain">Basic</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">Digest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+  <span class="l l-Scalar l-Scalar-Plain">Windows</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+</pre></div>
+</div>
+<p>In the above example, the CIM instance is a representation of the class
+<a class="reference external" href="https://github.com/dsccommunity/xWebAdministration/blob/master/source/DSCResources/MSFT_xWebSite/MSFT_xWebSite.schema.mof">MSFT_xWebAuthenticationInformation</a>.
+This class accepts four boolean variables, <code class="docutils literal notranslate"><span class="pre">Anonymous</span></code>, <code class="docutils literal notranslate"><span class="pre">Basic</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Digest</span></code>, and <code class="docutils literal notranslate"><span class="pre">Windows</span></code>. The keys to use in a <code class="docutils literal notranslate"><span class="pre">[CimInstance]</span></code> depend on
+the class it represents. Please read through the documentation of the resource
+to determine the keys that can be used and the types of each key value. The
+class definition is typically located in the <code class="docutils literal notranslate"><span class="pre">&lt;resource</span> <span class="pre">name&gt;.schema.mof</span></code>.</p>
+</div>
+<div class="section" id="hashtable-type">
+<h4><a class="toc-backref" href="#id8">HashTable Type</a><a class="headerlink" href="#hashtable-type" title="Permalink to this headline">¶</a></h4>
+<p>A <code class="docutils literal notranslate"><span class="pre">[HashTable]</span></code> object is also a dictionary but does not have a strict set of
+keys that can/need to be defined. Like a <code class="docutils literal notranslate"><span class="pre">[CimInstance]</span></code>, define it like a
+normal dictionary value in YAML. A <code class="docutils literal notranslate"><span class="pre">[HashTable]]</span></code> is defined with
+<code class="docutils literal notranslate"><span class="pre">EmbeddedInstance(&quot;MSFT_KeyValuePair&quot;)</span></code> in a DSC resource MOF definition.</p>
+</div>
+<div class="section" id="arrays">
+<h4><a class="toc-backref" href="#id9">Arrays</a><a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h4>
+<p>Simple type arrays like <code class="docutils literal notranslate"><span class="pre">[string[]]</span></code> or <code class="docutils literal notranslate"><span class="pre">[UInt32[]]</span></code> are defined as a list
+or as a comma separated string which are then cast to their type. Using a list
+is recommended because the values are not manually parsed by the <code class="docutils literal notranslate"><span class="pre">win_dsc</span></code>
+module before being passed to the DSC engine. For example, to define a simple
+type array in Ansible:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># [string[]]</span>
+<span class="l l-Scalar l-Scalar-Plain">ValueData</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">entry1, entry2, entry3</span>
+<span class="l l-Scalar l-Scalar-Plain">ValueData</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">entry1</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">entry2</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">entry3</span>
+
+<span class="c1"># [UInt32[]]</span>
+<span class="l l-Scalar l-Scalar-Plain">ReturnCode</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0,3010</span>
+<span class="l l-Scalar l-Scalar-Plain">ReturnCode</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">3010</span>
+</pre></div>
+</div>
+<p>Complex type arrays like <code class="docutils literal notranslate"><span class="pre">[CimInstance[]]</span></code> (array of dicts), can be defined
+like this example:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># [CimInstance[]]BindingInfo == MSFT_xWebBindingInformation</span>
+<span class="l l-Scalar l-Scalar-Plain">BindingInfo</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Protocol</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https</span>
+  <span class="l l-Scalar l-Scalar-Plain">Port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
+  <span class="l l-Scalar l-Scalar-Plain">CertificateStoreName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">My</span>
+  <span class="l l-Scalar l-Scalar-Plain">CertificateThumbprint</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C676A89018C4D5902353545343634F35E6B3A659</span>
+  <span class="l l-Scalar l-Scalar-Plain">HostName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">DSCTest</span>
+  <span class="l l-Scalar l-Scalar-Plain">IPAddress</span><span class="p p-Indicator">:</span> <span class="s">&#39;*&#39;</span>
+  <span class="l l-Scalar l-Scalar-Plain">SSLFlags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Protocol</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
+  <span class="l l-Scalar l-Scalar-Plain">Port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+  <span class="l l-Scalar l-Scalar-Plain">IPAddress</span><span class="p p-Indicator">:</span> <span class="s">&#39;*&#39;</span>
+</pre></div>
+</div>
+<p>The above example, is an array with two values of the class <a class="reference external" href="https://github.com/dsccommunity/xWebAdministration/blob/master/source/DSCResources/MSFT_xWebSite/MSFT_xWebSite.schema.mof">MSFT_xWebBindingInformation</a>.
+When defining a <code class="docutils literal notranslate"><span class="pre">[CimInstance[]]</span></code>, be sure to read the resource documentation
+to find out what keys to use in the definition.</p>
+</div>
+<div class="section" id="datetime">
+<h4><a class="toc-backref" href="#id10">DateTime</a><a class="headerlink" href="#datetime" title="Permalink to this headline">¶</a></h4>
+<p>A <code class="docutils literal notranslate"><span class="pre">[DateTime]</span></code> object is a DateTime string representing the date and time in
+the <a class="reference external" href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a> date time format. The
+value for a <code class="docutils literal notranslate"><span class="pre">[DateTime]</span></code> field should be quoted in YAML to ensure the string
+is properly serialized to the Windows host. Here is an example of how to define
+a <code class="docutils literal notranslate"><span class="pre">[DateTime]</span></code> value in Ansible:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># As UTC-0 (No timezone)</span>
+<span class="l l-Scalar l-Scalar-Plain">DateTime</span><span class="p p-Indicator">:</span> <span class="s">&#39;2019-02-22T13:57:31.2311892+00:00&#39;</span>
+
+<span class="c1"># As UTC+4</span>
+<span class="l l-Scalar l-Scalar-Plain">DateTime</span><span class="p p-Indicator">:</span> <span class="s">&#39;2019-02-22T17:57:31.2311892+04:00&#39;</span>
+
+<span class="c1"># As UTC-4</span>
+<span class="l l-Scalar l-Scalar-Plain">DateTime</span><span class="p p-Indicator">:</span> <span class="s">&#39;2019-02-22T09:57:31.2311892-04:00&#39;</span>
+</pre></div>
+</div>
+<p>All the values above are equal to a UTC date time of February 22nd 2019 at
+1:57pm with 31 seconds and 2311892 milliseconds.</p>
+</div>
+</div>
+<div class="section" id="run-as-another-user">
+<h3><a class="toc-backref" href="#id11">Run As Another User</a><a class="headerlink" href="#run-as-another-user" title="Permalink to this headline">¶</a></h3>
+<p>By default, DSC runs each resource as the SYSTEM account and not the account
+that Ansible use to run the module. This means that resources that are dynamically
+loaded based on a user profile, like the <code class="docutils literal notranslate"><span class="pre">HKEY_CURRENT_USER</span></code> registry hive,
+will be loaded under the <code class="docutils literal notranslate"><span class="pre">SYSTEM</span></code> profile. The parameter
+<code class="docutils literal notranslate"><span class="pre">PsDscRunAsCredential</span></code> is a parameter that can be set for every DSC resource
+force the DSC engine to run under a different account. As
+<code class="docutils literal notranslate"><span class="pre">PsDscRunAsCredential</span></code> has a type of <code class="docutils literal notranslate"><span class="pre">PSCredential</span></code>, it is defined with the
+<code class="docutils literal notranslate"><span class="pre">_username</span></code> and <code class="docutils literal notranslate"><span class="pre">_password</span></code> suffix.</p>
+<p>Using the Registry resource type as an example, this is how to define a task
+to access the <code class="docutils literal notranslate"><span class="pre">HKEY_CURRENT_USER</span></code> hive of the Ansible user:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Use win_dsc with PsDscRunAsCredential to run as a different user</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Registry</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+    <span class="l l-Scalar l-Scalar-Plain">Key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">HKEY_CURRENT_USER\ExampleKey</span>
+    <span class="l l-Scalar l-Scalar-Plain">ValueName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">TestValue</span>
+    <span class="l l-Scalar l-Scalar-Plain">ValueData</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">TestData</span>
+    <span class="l l-Scalar l-Scalar-Plain">PsDscRunAsCredential_username</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_user</span> <span class="cp">}}</span><span class="s">&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">PsDscRunAsCredential_password</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_password</span> <span class="cp">}}</span><span class="s">&#39;</span>
+  <span class="l l-Scalar l-Scalar-Plain">no_log</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="custom-dsc-resources">
+<h2><a class="toc-backref" href="#id12">Custom DSC Resources</a><a class="headerlink" href="#custom-dsc-resources" title="Permalink to this headline">¶</a></h2>
+<p>DSC resources are not limited to the built-in options from Microsoft. Custom
+modules can be installed to manage other resources that are not usually available.</p>
+<div class="section" id="finding-custom-dsc-resources">
+<h3><a class="toc-backref" href="#id13">Finding Custom DSC Resources</a><a class="headerlink" href="#finding-custom-dsc-resources" title="Permalink to this headline">¶</a></h3>
+<p>You can use the
+<a class="reference external" href="https://www.powershellgallery.com/">PSGallery</a> to find custom resources, along with documentation on how to install them  on a Windows host.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Find-DscResource</span></code> cmdlet can also be used to find custom resources. For example:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Find all DSC resources in the configured repositories</span>
+<span class="n">Find-DscResource</span>
+
+<span class="c"># Find all DSC resources that relate to SQL</span>
+<span class="n">Find-DscResource</span> <span class="n">-ModuleName</span> <span class="s2">&quot;*sql*&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">DSC resources developed by Microsoft that start with <code class="docutils literal notranslate"><span class="pre">x</span></code>, means the
+resource is experimental and comes with no support.</p>
+</div>
+</div>
+<div class="section" id="installing-a-custom-resource">
+<h3><a class="toc-backref" href="#id14">Installing a Custom Resource</a><a class="headerlink" href="#installing-a-custom-resource" title="Permalink to this headline">¶</a></h3>
+<p>There are three ways that a DSC resource can be installed on a host:</p>
+<ul class="simple">
+<li>Manually with the <code class="docutils literal notranslate"><span class="pre">Install-Module</span></code> cmdlet</li>
+<li>Using the <code class="docutils literal notranslate"><span class="pre">win_psmodule</span></code> Ansible module</li>
+<li>Saving the module manually and copying it another host</li>
+</ul>
+<p>This is an example of installing the <code class="docutils literal notranslate"><span class="pre">xWebAdministration</span></code> resources using
+<code class="docutils literal notranslate"><span class="pre">win_psmodule</span></code>:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Install xWebAdministration DSC resource</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_psmodule</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xWebAdministration</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+</pre></div>
+</div>
+<p>Once installed, the win_dsc module will be able to use the resource by referencing it
+with the <code class="docutils literal notranslate"><span class="pre">resource_name</span></code> option.</p>
+<p>The first two methods above only work when the host has access to the internet.
+When a host does not have internet access, the module must first be installed
+using the methods above on another host with internet access and then copied
+across. To save a module to a local filepath, the following PowerShell cmdlet
+can be run:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">Save-Module -Name xWebAdministration -Path C:\temp</span>
+</pre></div>
+</div>
+<p>This will create a folder called <code class="docutils literal notranslate"><span class="pre">xWebAdministration</span></code> in <code class="docutils literal notranslate"><span class="pre">C:\temp</span></code> which
+can be copied to any host. For PowerShell to see this offline resource, it must
+be copied to a directory set in the <code class="docutils literal notranslate"><span class="pre">PSModulePath</span></code> environment variable.
+In most cases the path <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\WindowsPowerShell\Module</span></code> is set
+through this variable, but the <code class="docutils literal notranslate"><span class="pre">win_path</span></code> module can be used to add different
+paths.</p>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id15">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="extract-a-zip-file">
+<h3><a class="toc-backref" href="#id16">Extract a zip file</a><a class="headerlink" href="#extract-a-zip-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Extract a zip file</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Archive</span>
+    <span class="l l-Scalar l-Scalar-Plain">Destination</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\temp\output</span>
+    <span class="l l-Scalar l-Scalar-Plain">Path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\temp\zip.zip</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-a-directory">
+<h3><a class="toc-backref" href="#id17">Create a directory</a><a class="headerlink" href="#create-a-directory" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create file with some text</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">File</span>
+    <span class="l l-Scalar l-Scalar-Plain">DestinationPath</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\temp\file</span>
+    <span class="l l-Scalar l-Scalar-Plain">Contents</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">|</span>
+        <span class="no">Hello</span>
+        <span class="no">World</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+    <span class="l l-Scalar l-Scalar-Plain">Type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">File</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create directory that is hidden is set with the System attribute</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">File</span>
+    <span class="l l-Scalar l-Scalar-Plain">DestinationPath</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\temp\hidden-directory</span>
+    <span class="l l-Scalar l-Scalar-Plain">Attributes</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Hidden,System</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+    <span class="l l-Scalar l-Scalar-Plain">Type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Directory</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="interact-with-azure">
+<h3><a class="toc-backref" href="#id18">Interact with Azure</a><a class="headerlink" href="#interact-with-azure" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Install xAzure DSC resources</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_psmodule</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xAzure</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create virtual machine in Azure</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xAzureVM</span>
+    <span class="l l-Scalar l-Scalar-Plain">ImageName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-201409.01-en.us-127GB.vhd</span>
+    <span class="l l-Scalar l-Scalar-Plain">Name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">DSCHOST01</span>
+    <span class="l l-Scalar l-Scalar-Plain">ServiceName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ServiceName</span>
+    <span class="l l-Scalar l-Scalar-Plain">StorageAccountName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageAccountName</span>
+    <span class="l l-Scalar l-Scalar-Plain">InstanceSize</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Medium</span>
+    <span class="l l-Scalar l-Scalar-Plain">Windows</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+    <span class="l l-Scalar l-Scalar-Plain">Credential_username</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_user</span> <span class="cp">}}</span><span class="s">&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Credential_password</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">ansible_password</span> <span class="cp">}}</span><span class="s">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup-iis-website">
+<h3><a class="toc-backref" href="#id19">Setup IIS Website</a><a class="headerlink" href="#setup-iis-website" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Install xWebAdministration module</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_psmodule</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xWebAdministration</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Install IIS features that are required</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">WindowsFeature</span>
+    <span class="l l-Scalar l-Scalar-Plain">Name</span><span class="p p-Indicator">:</span> <span class="s">&#39;</span><span class="cp">{{</span> <span class="nv">item</span> <span class="cp">}}</span><span class="s">&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Present</span>
+  <span class="l l-Scalar l-Scalar-Plain">loop</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Web-Server</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Web-Asp-Net45</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup web content</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">File</span>
+    <span class="l l-Scalar l-Scalar-Plain">DestinationPath</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\inetpub\IISSite\index.html</span>
+    <span class="l l-Scalar l-Scalar-Plain">Type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">File</span>
+    <span class="l l-Scalar l-Scalar-Plain">Contents</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">|</span>
+      <span class="no">&lt;html&gt;</span>
+      <span class="no">&lt;head&gt;&lt;title&gt;IIS Site&lt;/title&gt;&lt;/head&gt;</span>
+      <span class="no">&lt;body&gt;This is the body&lt;/body&gt;</span>
+      <span class="no">&lt;/html&gt;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Ensure</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create new website</span>
+  <span class="l l-Scalar l-Scalar-Plain">win_dsc</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">resource_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xWebsite</span>
+    <span class="l l-Scalar l-Scalar-Plain">Name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">NewIISSite</span>
+    <span class="l l-Scalar l-Scalar-Plain">State</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Started</span>
+    <span class="l l-Scalar l-Scalar-Plain">PhysicalPath</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C:\inetpub\IISSite\index.html</span>
+    <span class="l l-Scalar l-Scalar-Plain">BindingInfo</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Protocol</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https</span>
+      <span class="l l-Scalar l-Scalar-Plain">Port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8443</span>
+      <span class="l l-Scalar l-Scalar-Plain">CertificateStoreName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">My</span>
+      <span class="l l-Scalar l-Scalar-Plain">CertificateThumbprint</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">C676A89018C4D5902353545343634F35E6B3A659</span>
+      <span class="l l-Scalar l-Scalar-Plain">HostName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">DSCTest</span>
+      <span class="l l-Scalar l-Scalar-Plain">IPAddress</span><span class="p p-Indicator">:</span> <span class="s">&#39;*&#39;</span>
+      <span class="l l-Scalar l-Scalar-Plain">SSLFlags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Protocol</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
+      <span class="l l-Scalar l-Scalar-Plain">Port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+      <span class="l l-Scalar l-Scalar-Plain">IPAddress</span><span class="p p-Indicator">:</span> <span class="s">&#39;*&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">AuthenticationInfo</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">Anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+      <span class="l l-Scalar l-Scalar-Plain">Basic</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">Digest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+      <span class="l l-Scalar l-Scalar-Plain">Windows</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="playbooks_intro.html#playbooks-intro"><span class="std std-ref">Intro to Playbooks</span></a></dt>
+<dd>An introduction to playbooks</dd>
+<dt><a class="reference internal" href="playbooks_best_practices.html#playbooks-best-practices"><span class="std std-ref">Tips and tricks</span></a></dt>
+<dd>Best practices advice</dd>
+<dt><a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/list_of_windows_modules.html#windows-modules" title="(in Ansible v2.9)"><span class="xref std std-ref">List of Windows Modules</span></a></dt>
+<dd>Windows specific module list, all implemented in PowerShell</dd>
+<dt><a class="reference external" href="https://groups.google.com/group/ansible-project">User Mailing List</a></dt>
+<dd>Have a question?  Stop by the google group!</dd>
+<dt><a class="reference external" href="http://irc.freenode.net">irc.freenode.net</a></dt>
+<dd>#ansible IRC chat channel</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="windows_performance.html" class="btn btn-neutral float-right" title="Windows performance"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="windows_usage.html" class="btn btn-neutral" title="Using Ansible and Windows"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

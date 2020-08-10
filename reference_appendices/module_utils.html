@@ -1,0 +1,756 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ansible Reference: Module Utilities &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/reference_appendices/module_utils.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Special Variables" href="special_variables.html" />
+    <link rel="prev" title="Glossary" href="glossary.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ansible Reference: Module Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ansiblemodule">AnsibleModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic">Basic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Ansible Reference: Module Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/reference_appendices/module_utils.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ansible-reference-module-utilities">
+<span id="module-utils"></span><span id="ansible-module-utils"></span><h1>Ansible Reference: Module Utilities<a class="headerlink" href="#ansible-reference-module-utilities" title="Permalink to this headline">¶</a></h1>
+<p>This page documents utilities intended to be helpful when writing
+Ansible modules in Python.</p>
+<div class="section" id="ansiblemodule">
+<h2>AnsibleModule<a class="headerlink" href="#ansiblemodule" title="Permalink to this headline">¶</a></h2>
+<p>To use this functionality, include <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">ansible.module_utils.basic</span> <span class="pre">import</span> <span class="pre">AnsibleModule</span></code> in your module.</p>
+<dl class="class">
+<dt id="ansible.module_utils.basic.AnsibleModule">
+<em class="property">class </em><code class="descclassname">ansible.module_utils.basic.</code><code class="descname">AnsibleModule</code><span class="sig-paren">(</span><em>argument_spec</em>, <em>bypass_checks=False</em>, <em>no_log=False</em>, <em>mutually_exclusive=None</em>, <em>required_together=None</em>, <em>required_one_of=None</em>, <em>add_file_common_args=False</em>, <em>supports_check_mode=False</em>, <em>required_if=None</em>, <em>required_by=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Common code for quickly building an ansible module in Python
+(although you can write modules with anything that can return JSON).</p>
+<p>See <a class="reference internal" href="../dev_guide/developing_modules_general.html#developing-modules-general"><span class="std std-ref">Ansible module development: getting started</span></a> for a general introduction
+and <a class="reference internal" href="../dev_guide/developing_program_flow_modules.html#developing-program-flow-modules"><span class="std std-ref">Ansible module architecture</span></a> for more detailed explanation.</p>
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.add_path_info">
+<code class="descname">add_path_info</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.add_path_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>for results that are files, supplement the info about the file
+in the return path with stats about the file path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.atomic_move">
+<code class="descname">atomic_move</code><span class="sig-paren">(</span><em>src</em>, <em>dest</em>, <em>unsafe_writes=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.atomic_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>atomically move src to dest, copying attributes from dest, returns true on success
+it uses os.rename to ensure this as it is an atomic operation, rest of the function is
+to work around limitations, corner cases and ensure selinux context is saved if possible</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.backup_local">
+<code class="descname">backup_local</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.backup_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a date-marked backup of the specified file, return True or False on success or failure</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.boolean">
+<code class="descname">boolean</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.boolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the argument to a boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.digest_from_file">
+<code class="descname">digest_from_file</code><span class="sig-paren">(</span><em>filename</em>, <em>algorithm</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.digest_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return hex digest of local file for a digest_method specified by name, or None if file is not present.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.exit_json">
+<code class="descname">exit_json</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.exit_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>return from the module, without error</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.fail_json">
+<code class="descname">fail_json</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.fail_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>return from the module, with an error message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.get_bin_path">
+<code class="descname">get_bin_path</code><span class="sig-paren">(</span><em>arg</em>, <em>required=False</em>, <em>opt_dirs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.get_bin_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find system executable in PATH.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arg</strong> – The executable to find.</li>
+<li><strong>required</strong> – if executable is not found and required is <code class="docutils literal notranslate"><span class="pre">True</span></code>, fail_json</li>
+<li><strong>opt_dirs</strong> – optional list of directories to search in addition to <code class="docutils literal notranslate"><span class="pre">PATH</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">if found return full path; otherwise return None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.is_executable">
+<code class="descname">is_executable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.is_executable" title="Permalink to this definition">¶</a></dt>
+<dd><p>is the given path executable?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – The path of the file to check.</td>
+</tr>
+</tbody>
+</table>
+<p>Limitations:</p>
+<ul class="simple">
+<li>Does not account for FSACLs.</li>
+<li>Most times we really want to know “Can the current user execute this
+file”.  This function does not tell us that, only if any execute bit is set.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.is_special_selinux_path">
+<code class="descname">is_special_selinux_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.is_special_selinux_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple containing (True, selinux_context) if the given path is on a
+NFS or other ‘special’ fs  mount point, otherwise the return will be (False, None).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.load_file_common_arguments">
+<code class="descname">load_file_common_arguments</code><span class="sig-paren">(</span><em>params</em>, <em>path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.load_file_common_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>many modules deal with files, this encapsulates common
+options that the file module accepts such that it is directly
+available to all modules and they can share code.</p>
+<p>Allows to overwrite the path/dest module argument by providing path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.md5">
+<code class="descname">md5</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return MD5 hex digest of local file using digest_from_file().</p>
+<dl class="docutils">
+<dt>Do not use this function unless you have no other choice for:</dt>
+<dd><ol class="first last arabic simple">
+<li>Optional backwards compatibility</li>
+<li>Compatibility with a third party protocol</li>
+</ol>
+</dd>
+</dl>
+<p>This function will not work on systems complying with FIPS-140-2.</p>
+<p>Most uses of this function can use the module.sha1 function instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.preserved_copy">
+<code class="descname">preserved_copy</code><span class="sig-paren">(</span><em>src</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.preserved_copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a file with preserved ownership, permissions and context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.run_command">
+<code class="descname">run_command</code><span class="sig-paren">(</span><em>args</em>, <em>check_rc=False</em>, <em>close_fds=True</em>, <em>executable=None</em>, <em>data=None</em>, <em>binary_data=False</em>, <em>path_prefix=None</em>, <em>cwd=None</em>, <em>use_unsafe_shell=False</em>, <em>prompt_regex=None</em>, <em>environ_update=None</em>, <em>umask=None</em>, <em>encoding='utf-8'</em>, <em>errors='surrogate_or_strict'</em>, <em>expand_user_and_vars=True</em>, <em>pass_fds=None</em>, <em>before_communicate_callback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.run_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a command, returns rc, stdout, and stderr.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – is the command to run
+* If args is a list, the command will be run with shell=False.
+* If args is a string and use_unsafe_shell=False it will split args to a list and run with shell=False
+* If args is a string and use_unsafe_shell=True it runs with shell=True.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw check_rc:</th><td class="field-body">Whether to call fail_json in case of non zero RC.
+Default False</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Kw close_fds:</th><td class="field-body">See documentation for subprocess.Popen(). Default True</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw executable:</th><td class="field-body">See documentation for subprocess.Popen(). Default None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Kw data:</th><td class="field-body">If given, information to write to the stdin of the command</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw binary_data:</th><td class="field-body">If False, append a newline to the data.  Default False</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Kw path_prefix:</th><td class="field-body">If given, additional path to find the command in.
+This adds to the PATH environment variable so helper commands in
+the same directory can also be found</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw cwd:</th><td class="field-body">If given, working directory to run the command inside</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Kw use_unsafe_shell:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">See <cite>args</cite> parameter.  Default False</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Kw prompt_regex:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">Regex string (not a compiled regex) which can be
+used to detect prompts in the stdout which would otherwise cause
+the execution to hang (especially if no input data is specified)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Kw environ_update:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">dictionary to <em>update</em> os.environ with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw umask:</th><td class="field-body">Umask to be used when running the command. Default None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Kw encoding:</th><td class="field-body">Since we return native strings, on python3 we need to
+know the encoding to use to transform from bytes to text.  If you
+want to always get bytes back, use encoding=None.  The default is
+“utf-8”.  This does not affect transformation of strings given as
+args.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw errors:</th><td class="field-body">Since we return native strings, on python3 we need to
+transform stdout and stderr from bytes to text.  If the bytes are
+undecodable in the <code class="docutils literal notranslate"><span class="pre">encoding</span></code> specified, then use this error
+handler to deal with them.  The default is <code class="docutils literal notranslate"><span class="pre">surrogate_or_strict</span></code>
+which means that the bytes will be decoded using the
+surrogateescape error handler if available (available on all
+python3 versions we support) otherwise a UnicodeError traceback
+will be raised.  This does not affect transformations of strings
+given as args.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Kw expand_user_and_vars:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">When <code class="docutils literal notranslate"><span class="pre">use_unsafe_shell=False</span></code> this argument
+dictates whether <code class="docutils literal notranslate"><span class="pre">~</span></code> is expanded in paths and environment variables
+are expanded before running the command. When <code class="docutils literal notranslate"><span class="pre">True</span></code> a string such as
+<code class="docutils literal notranslate"><span class="pre">$SHELL</span></code> will be expanded regardless of escaping. When <code class="docutils literal notranslate"><span class="pre">False</span></code> and
+<code class="docutils literal notranslate"><span class="pre">use_unsafe_shell=False</span></code> no path or variable expansion will be done.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kw pass_fds:</th><td class="field-body">When running on Python 3 this argument
+dictates which file descriptors should be passed
+to an underlying <code class="docutils literal notranslate"><span class="pre">Popen</span></code> constructor. On Python 2, this will
+set <code class="docutils literal notranslate"><span class="pre">close_fds</span></code> to False.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Kw before_communicate_callback:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">This function will be called
+after <code class="docutils literal notranslate"><span class="pre">Popen</span></code> object will be created
+but before communicating to the process.
+(<code class="docutils literal notranslate"><span class="pre">Popen</span></code> object will be passed to callback as a first argument)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A 3-tuple of return code (integer), stdout (native string),
+and stderr (native string).  On python2, stdout and stderr are both
+byte strings.  On python3, stdout and stderr are text strings converted
+according to the encoding and errors parameters.  If you want byte
+strings on python3, use encoding=None to turn decoding to text off.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.sha1">
+<code class="descname">sha1</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.sha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA1 hex digest of local file using digest_from_file().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ansible.module_utils.basic.AnsibleModule.sha256">
+<code class="descname">sha256</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.AnsibleModule.sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-256 hex digest of local file using digest_from_file().</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="basic">
+<h2>Basic<a class="headerlink" href="#basic" title="Permalink to this headline">¶</a></h2>
+<p>To use this functionality, include <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">ansible.module_utils.basic</span></code> in your module.</p>
+<span class="target" id="module-ansible.module_utils.basic"></span><dl class="exception">
+<dt id="ansible.module_utils.basic.AnsibleFallbackNotFound">
+<em class="property">exception </em><code class="descclassname">ansible.module_utils.basic.</code><code class="descname">AnsibleFallbackNotFound</code><a class="headerlink" href="#ansible.module_utils.basic.AnsibleFallbackNotFound" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.env_fallback">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">env_fallback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.env_fallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load value from environment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.get_all_subclasses">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Deprecated</strong>: Use ansible.module_utils.common._utils.get_all_subclasses instead</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.get_platform">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">get_platform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.get_platform" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Deprecated</strong> Use <a class="reference external" href="https://docs.python.org/3/library/platform.html#platform.system" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">platform.system()</span></code></a> directly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of the platform the module is running on in a native string</td>
+</tr>
+</tbody>
+</table>
+<p>Returns a native string that labels the platform (“Linux”, “Solaris”, etc). Currently, this is
+the result of calling <a class="reference external" href="https://docs.python.org/3/library/platform.html#platform.system" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">platform.system()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.heuristic_log_sanitize">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">heuristic_log_sanitize</code><span class="sig-paren">(</span><em>data</em>, <em>no_log_values=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.heuristic_log_sanitize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove strings that look like passwords from log messages</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.load_platform_subclass">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">load_platform_subclass</code><span class="sig-paren">(</span><em>cls</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.load_platform_subclass" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Deprecated</strong>: Use ansible.module_utils.common.sys_info.get_platform_subclass instead</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ansible.module_utils.basic.remove_values">
+<code class="descclassname">ansible.module_utils.basic.</code><code class="descname">remove_values</code><span class="sig-paren">(</span><em>value</em>, <em>no_log_strings</em><span class="sig-paren">)</span><a class="headerlink" href="#ansible.module_utils.basic.remove_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove strings in no_log_strings from value.  If value is a container
+type, then remove a lot more</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="special_variables.html" class="btn btn-neutral float-right" title="Special Variables"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="glossary.html" class="btn btn-neutral" title="Glossary"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

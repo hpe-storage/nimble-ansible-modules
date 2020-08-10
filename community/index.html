@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ansible Community Guide &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/community/index.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Community Code of Conduct" href="code_of_conduct.html" />
+    <link rel="prev" title="Using collections" href="../user_guide/collections_using.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ansible Community Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#going-deeper">Going deeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-ansible-repo">Working with the Ansible repo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#traditional-table-of-contents">Traditional Table of Contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code_of_conduct.html">Community Code of Conduct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="how_can_I_help.html">How can I help?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporting_bugs_and_features.html">Reporting Bugs And Requesting Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_contributions.html">Contributing to the Ansible Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="communication.html">Communicating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="development_process.html">The Ansible Development Cycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_license_agreement.html">Contributors License Agreement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triage_process.html">Triage Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="other_tools_and_programs.html">Other Tools And Programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dev_guide/style_guide/index.html">Ansible style guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="committer_guidelines.html">Committers Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainers.html">Module Maintainer Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_managers.html">Release Manager Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="github_admins.html">GitHub Admins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Ansible Community Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/community/index.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ansible-community-guide">
+<span id="id1"></span><h1>Ansible Community Guide<a class="headerlink" href="#ansible-community-guide" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to the Ansible Community Guide!</p>
+<p>The purpose of this guide is to teach you everything you need to know about being a contributing member of the Ansible community. All types of contributions are welcome, and necessary to Ansible’s continued success.</p>
+<p>This page outlines the most common situations and questions that bring readers to this section. If you prefer a traditional table of contents, there’s one at the bottom of the page.</p>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>I’m new to the community. Where can I find the Ansible <a class="reference internal" href="code_of_conduct.html#code-of-conduct"><span class="std std-ref">Community Code of Conduct</span></a>?</li>
+<li>I’d like to know what I’m agreeing to when I contribute to Ansible. Does Ansible have a <a class="reference internal" href="contributor_license_agreement.html#contributor-license-agreement"><span class="std std-ref">Contributors License Agreement</span></a>?</li>
+<li>I’d like to contribute but I’m not sure how. Are there <a class="reference internal" href="how_can_I_help.html#how-can-i-help"><span class="std std-ref">easy ways to contribute</span></a>?</li>
+<li>I want to talk to other Ansible users. How do I find an <a class="reference external" href="https://www.meetup.com/topics/ansible/">Ansible Meetup near me</a>?</li>
+<li>I have a question. Which <a class="reference internal" href="communication.html#communication"><span class="std std-ref">Ansible email lists and IRC channels</span></a> will help me find answers?</li>
+<li>I want to learn more about Ansible. What can I do?<ul>
+<li><a class="reference external" href="https://www.ansible.com/resources/ebooks">Read books</a>.</li>
+<li><a class="reference external" href="https://www.ansible.com/products/training-certification">Get certified</a>.</li>
+<li><a class="reference external" href="https://www.ansible.com/community/events">Attend events</a>.</li>
+<li><a class="reference external" href="https://www.ansible.com/resources/get-started">Review getting started guides</a>.</li>
+<li><a class="reference external" href="https://www.ansible.com/resources/videos">Watch videos</a> - includes Ansible Automates, AnsibleFest &amp; webinar recordings.</li>
+</ul>
+</li>
+<li>I’d like updates about new Ansible versions. How are <a class="reference external" href="https://groups.google.com/forum/#!forum/ansible-announce">new releases announced</a>?</li>
+<li>I want to use the current release. How do I know which <a class="reference internal" href="../reference_appendices/release_and_maintenance.html#release-schedule"><span class="std std-ref">releases are current</span></a>?</li>
+</ul>
+</div>
+<div class="section" id="going-deeper">
+<h2>Going deeper<a class="headerlink" href="#going-deeper" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>I think Ansible is broken. How do I <a class="reference internal" href="reporting_bugs_and_features.html#reporting-bugs"><span class="std std-ref">report a bug</span></a>?</li>
+<li>I need functionality that Ansible doesn’t offer. How do I <a class="reference internal" href="reporting_bugs_and_features.html#request-features"><span class="std std-ref">request a feature</span></a>?</li>
+<li>I’m waiting for a particular feature. How do I see what’s <a class="reference internal" href="../roadmap/index.html#roadmaps"><span class="std std-ref">planned for future Ansible Releases</span></a>?</li>
+<li>I have a specific Ansible interest or expertise (for example, VMware, Linode, and so on.). How do I get involved in a <a class="reference internal" href="communication.html#working-group-list"><span class="std std-ref">working group</span></a>?</li>
+<li>I’d like to participate in conversations about features and fixes. How do I review GitHub issues and pull requests?</li>
+<li>I found a typo or another problem on docs.ansible.com. How can I <a class="reference internal" href="documentation_contributions.html#community-documentation-contributions"><span class="std std-ref">improve the documentation</span></a>?</li>
+</ul>
+</div>
+<div class="section" id="working-with-the-ansible-repo">
+<h2>Working with the Ansible repo<a class="headerlink" href="#working-with-the-ansible-repo" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>I want to code my first changes to Ansible. How do I <a class="reference internal" href="../dev_guide/developing_modules_general.html#environment-setup"><span class="std std-ref">set up my Python development environment</span></a>?</li>
+<li>I’d like to get more efficient as a developer. How can I find <a class="reference internal" href="other_tools_and_programs.html#other-tools-and-programs"><span class="std std-ref">editors, linters, and other tools</span></a> that will support my Ansible development efforts?</li>
+<li>I want my PR to meet Ansible’s guidelines. Where can I find  guidance on <a class="reference internal" href="../dev_guide/index.html#developer-guide"><span class="std std-ref">coding in Ansible</span></a>?</li>
+<li>I want to learn more about Ansible roadmaps, releases, and projects. How do I find information on <a class="reference internal" href="development_process.html#community-development-process"><span class="std std-ref">the development cycle</span></a>?</li>
+<li>I’d like to connect Ansible to a new API or other resource. How do I <a class="reference internal" href="../dev_guide/developing_modules_in_groups.html#developing-modules-in-groups"><span class="std std-ref">contribute a group of related modules</span></a>?</li>
+<li>My pull request is marked <code class="docutils literal notranslate"><span class="pre">needs_rebase</span></code>. How do I <a class="reference internal" href="../dev_guide/developing_rebasing.html#rebase-guide"><span class="std std-ref">rebase my PR</span></a>?</li>
+<li>I’m using an older version of Ansible and want a bug fixed in my version that’s already been fixed on the <code class="docutils literal notranslate"><span class="pre">devel</span></code> branch. How do I <a class="reference internal" href="development_process.html#backport-process"><span class="std std-ref">backport a bugfix PR</span></a>?</li>
+<li>I have an open pull request with a failing test. How do I learn about Ansible’s <a class="reference internal" href="../dev_guide/testing.html#developing-testing"><span class="std std-ref">testing (CI) process</span></a>?</li>
+<li>I’m ready to step up as a module maintainer. What are the <a class="reference internal" href="maintainers.html#maintainers"><span class="std std-ref">guidelines for maintainers</span></a>?</li>
+<li>A module I maintain is obsolete. How do I <a class="reference internal" href="../dev_guide/module_lifecycle.html#deprecating-modules"><span class="std std-ref">deprecate a module</span></a>?</li>
+</ul>
+</div>
+<div class="section" id="traditional-table-of-contents">
+<h2>Traditional Table of Contents<a class="headerlink" href="#traditional-table-of-contents" title="Permalink to this headline">¶</a></h2>
+<p>If you prefer to read the entire Community Guide, here’s a list of the pages in order:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Community Code of Conduct</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_of_conduct.html#anti-harassment-policy">Anti-harassment policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_of_conduct.html#policy-violations">Policy violations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how_can_I_help.html">How can I help?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#become-a-power-user">Become a power user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#ask-and-answer-questions-online">Ask and answer questions online</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#review-fix-and-maintain-the-documentation">Review, fix, and maintain the documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#participate-in-your-local-meetup">Participate in your local meetup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#file-and-verify-issues">File and verify issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#review-and-submit-pull-requests">Review and submit pull requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#become-a-module-maintainer">Become a module maintainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#join-a-working-group">Join a working group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#teach-ansible-to-others">Teach Ansible to others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_can_I_help.html#social-media">Social media</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reporting_bugs_and_features.html">Reporting Bugs And Requesting Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reporting_bugs_and_features.html#reporting-a-bug">Reporting a bug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting_bugs_and_features.html#requesting-a-feature">Requesting a feature</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_contributions.html">Contributing to the Ansible Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation_contributions.html#editing-docs-directly-on-github">Editing docs directly on GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_contributions.html#reviewing-open-prs-and-issues">Reviewing open PRs and issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_contributions.html#opening-a-new-issue-and-or-pr">Opening a new issue and/or PR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_contributions.html#verifying-your-documentation-pr">Verifying your documentation PR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_contributions.html#joining-the-documentation-working-group">Joining the documentation working group</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communicating</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#mailing-list-information">Mailing list information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#irc-channels">IRC channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communication.html#ansible-tower-support-questions">Ansible Tower support questions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development_process.html">The Ansible Development Cycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development_process.html#macro-development-roadmaps-releases-and-projects">Macro development: roadmaps, releases, and projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_process.html#micro-development-the-lifecycle-of-a-pr">Micro development: the lifecycle of a PR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_process.html#making-your-pr-merge-worthy">Making your PR merge-worthy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_process.html#backporting-merged-prs">Backporting merged PRs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributor_license_agreement.html">Contributors License Agreement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="triage_process.html">Triage Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other_tools_and_programs.html">Other Tools And Programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="other_tools_and_programs.html#popular-editors">Popular Editors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_tools_and_programs.html#development-tools">Development Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_tools_and_programs.html#tools-for-validating-playbooks">Tools for Validating Playbooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_tools_and_programs.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/style_guide/index.html">Ansible style guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev_guide/style_guide/index.html#linguistic-guidelines">Linguistic guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev_guide/style_guide/index.html#restructuredtext-guidelines">reStructuredText guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev_guide/style_guide/index.html#more-resources">More resources</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Guidelines for specific types of contributors</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="committer_guidelines.html">Committers Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintainers.html">Module Maintainer Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_managers.html">Release Manager Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="github_admins.html">GitHub Admins</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="code_of_conduct.html" class="btn btn-neutral float-right" title="Community Code of Conduct"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../user_guide/collections_using.html" class="btn btn-neutral" title="Using collections"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

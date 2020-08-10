@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tags &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using Vault in playbooks" href="playbooks_vault.html" />
+    <link rel="prev" title="Interactive input: prompts" href="playbooks_prompts.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Ansible Quickstart Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_concepts.html">Ansible concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_inventory.html">How to build your inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_dynamic_inventory.html">Working with dynamic inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_patterns.html">Patterns: targeting hosts and groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_adhoc.html">Introduction to ad-hoc commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_details.html">Connection methods and details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line_tools.html">Working with command line tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="playbooks.html">Working With Playbooks</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="playbooks_intro.html">Intro to Playbooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_best_practices.html">Tips and tricks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_reuse.html">Re-using Ansible artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_reuse_roles.html">Roles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_variables.html">Using Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_templating.html">Templating (Jinja2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_conditionals.html">Conditionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_loops.html">Loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_blocks.html">Blocks</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="playbooks_special_topics.html">Advanced Playbooks Features</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="become.html">Understanding privilege escalation: become</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_async.html">Asynchronous actions and polling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_checkmode.html">Check Mode (“Dry Run”)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_debugger.html">Playbook Debugger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_delegation.html">Delegation, Rolling Updates, and Local Actions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_environment.html">Setting the Environment (and Working With Proxies)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_environment.html#working-with-language-specific-version-managers">Working With Language-Specific Version Managers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_error_handling.html">Error handling in playbooks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_advanced_syntax.html">Advanced Syntax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../plugins/plugins.html">Working With Plugins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_prompts.html">Interactive input: prompts</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Tags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_vault.html">Using Vault in playbooks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_startnstep.html">Start and Step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_lookups.html">Lookups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_module_defaults.html">Module defaults</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_strategies.html">Controlling playbook execution: strategies and more</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide_rolling_upgrade.html">Playbook Example: Continuous Delivery and Rolling Upgrades</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="become.html">Understanding privilege escalation: become</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vault.html">Ansible Vault</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample_setup.html">Sample Ansible setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Working With Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/plugins.html">Working With Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_bsd.html">Ansible and BSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows.html">Windows Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections_using.html">Using collections</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="playbooks.html">Working With Playbooks</a> &raquo;</li>
+        
+          <li><a href="playbooks_special_topics.html">Advanced Playbooks Features</a> &raquo;</li>
+        
+      <li>Tags</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/user_guide/playbooks_tags.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tags">
+<span id="id1"></span><h1>Tags<a class="headerlink" href="#tags" title="Permalink to this headline">¶</a></h1>
+<p>If you have a large playbook, it may be useful to run only specific parts of it instead of running the entire playbook. You can do this with Ansible tags. Using tags to execute or skip selected tasks is a two-step process:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Add tags to your tasks, either individually or with tag inheritance from a block, play, role, or import</li>
+<li>Select or skip tags when you run your playbook</li>
+</ol>
+</div></blockquote>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#adding-tags-with-the-tags-keyword" id="id2">Adding tags with the tags keyword</a><ul>
+<li><a class="reference internal" href="#adding-tags-to-individual-tasks" id="id3">Adding tags to individual tasks</a></li>
+<li><a class="reference internal" href="#adding-tags-to-includes" id="id4">Adding tags to includes</a></li>
+<li><a class="reference internal" href="#tag-inheritance-adding-tags-to-multiple-tasks" id="id5">Tag inheritance: adding tags to multiple tasks</a><ul>
+<li><a class="reference internal" href="#adding-tags-to-blocks" id="id6">Adding tags to blocks</a></li>
+<li><a class="reference internal" href="#adding-tags-to-plays" id="id7">Adding tags to plays</a></li>
+<li><a class="reference internal" href="#adding-tags-to-roles" id="id8">Adding tags to roles</a></li>
+<li><a class="reference internal" href="#adding-tags-to-imports" id="id9">Adding tags to imports</a></li>
+<li><a class="reference internal" href="#tag-inheritance-for-includes-blocks-and-the-apply-keyword" id="id10">Tag inheritance for includes: blocks and the <code class="docutils literal notranslate"><span class="pre">apply</span></code> keyword</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#special-tags-always-and-never" id="id11">Special tags: always and never</a></li>
+<li><a class="reference internal" href="#selecting-or-skipping-tags-when-you-run-a-playbook" id="id12">Selecting or skipping tags when you run a playbook</a><ul>
+<li><a class="reference internal" href="#previewing-the-results-of-using-tags" id="id13">Previewing the results of using tags</a></li>
+<li><a class="reference internal" href="#selectively-running-tagged-tasks-in-re-usable-files" id="id14">Selectively running tagged tasks in re-usable files</a></li>
+<li><a class="reference internal" href="#configuring-tags-globally" id="id15">Configuring tags globally</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="adding-tags-with-the-tags-keyword">
+<h2><a class="toc-backref" href="#id2">Adding tags with the tags keyword</a><a class="headerlink" href="#adding-tags-with-the-tags-keyword" title="Permalink to this headline">¶</a></h2>
+<p>You can add tags to a single task or include. You can also add tags to multiple tasks by defining them at the level of a block, play, role, or import. The keyword <code class="docutils literal notranslate"><span class="pre">tags</span></code> addresses all these use cases. The <code class="docutils literal notranslate"><span class="pre">tags</span></code> keyword always defines tags and adds them to tasks; it does not select or skip tasks for execution. You can only select or skip tasks based on tags at the command line when you run a playbook. See <a class="reference internal" href="#using-tags"><span class="std std-ref">Selecting or skipping tags when you run a playbook</span></a> for more details.</p>
+<div class="section" id="adding-tags-to-individual-tasks">
+<h3><a class="toc-backref" href="#id3">Adding tags to individual tasks</a><a class="headerlink" href="#adding-tags-to-individual-tasks" title="Permalink to this headline">¶</a></h3>
+<p>At the simplest level, you can apply one or more tags to an individual task. You can add tags to tasks in playbooks, in task files, or within a role. Here is an example that tags two tasks with different tags:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">install the servers</span>
+  <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">httpd</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">memcached</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">packages</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">webservers</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">configure the service</span>
+  <span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">templates/src.j2</span>
+    <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/foo.conf</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">configuration</span>
+</pre></div>
+</div>
+<p>You can apply the same tag to more than one individual task. This example tags several tasks with the same tag, “ntp”:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="c1"># file: roles/common/tasks/main.yml</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is installed</span>
+  <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is configured</span>
+  <span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp.conf.j2</span>
+    <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ntp.conf</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ntpd</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntpd is running and enabled</span>
+  <span class="l l-Scalar l-Scalar-Plain">service</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntpd</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">started</span>
+    <span class="l l-Scalar l-Scalar-Plain">enabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure file sharing is installed</span>
+  <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nfs-utils</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nfs-util-lib</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">filesharing</span>
+</pre></div>
+</div>
+<p>If you ran these four tasks in a playbook with <code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">ntp</span></code>, Ansible would run the three tasks tagged <code class="docutils literal notranslate"><span class="pre">ntp</span></code> and skip the one task that does not have that tag.</p>
+</div>
+<div class="section" id="adding-tags-to-includes">
+<span id="tags-on-includes"></span><h3><a class="toc-backref" href="#id4">Adding tags to includes</a><a class="headerlink" href="#adding-tags-to-includes" title="Permalink to this headline">¶</a></h3>
+<p>You can apply tags to dynamic includes in a playbook. As with tags on an individual task, tags on an <code class="docutils literal notranslate"><span class="pre">include_*</span></code> task apply only to the include itself, not to any tasks within the included file or role. If you add <code class="docutils literal notranslate"><span class="pre">mytag</span></code> to a dynamic include, then run that playbook with <code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">mytag</span></code>, Ansible runs the include itself, runs any tasks within the included file or role tagged with <code class="docutils literal notranslate"><span class="pre">mytag</span></code>, and skips any tasks within the included file or role without that tag. See <a class="reference internal" href="#selective-reuse"><span class="std std-ref">Selectively running tagged tasks in re-usable files</span></a> for more details.</p>
+<p>You add tags to includes the same way you add tags to any other task:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="c1"># file: roles/common/tasks/main.yml</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dynamic re-use of database tasks</span>
+  <span class="l l-Scalar l-Scalar-Plain">include_tasks</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db.yml</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+</pre></div>
+</div>
+<p>You can add a tag only to the dynamic include of a role. In this example, the <code class="docutils literal notranslate"><span class="pre">foo</span></code> tag will <cite>not</cite> apply to tasks inside the <code class="docutils literal notranslate"><span class="pre">bar</span></code> role:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">webservers</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">include_role</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+</pre></div>
+</div>
+<p>With plays, blocks, the <code class="docutils literal notranslate"><span class="pre">role</span></code> keyword, and static imports, Ansible applies tag inheritance, adding the tags you define to every task inside the play, block, role, or imported file. However, tag inheritance does <em>not</em> apply to dynamic re-use with <code class="docutils literal notranslate"><span class="pre">include_role</span></code> and <code class="docutils literal notranslate"><span class="pre">include_tasks</span></code>. With dynamic re-use (includes), the tags you define apply only to the include itself. If you need tag inheritance, use a static import. If you cannot use an import because the rest of your playbook uses includes, see <a class="reference internal" href="#apply-keyword"><span class="std std-ref">Tag inheritance for includes: blocks and the apply keyword</span></a> for ways to work around this behavior.</p>
+</div>
+<div class="section" id="tag-inheritance-adding-tags-to-multiple-tasks">
+<span id="tag-inheritance"></span><h3><a class="toc-backref" href="#id5">Tag inheritance: adding tags to multiple tasks</a><a class="headerlink" href="#tag-inheritance-adding-tags-to-multiple-tasks" title="Permalink to this headline">¶</a></h3>
+<p>If you want to apply the same tag or tags to multiple tasks without adding a <code class="docutils literal notranslate"><span class="pre">tags</span></code> line to every task, you can define the tags at the level of your play or block, or when you add a role or import a file. Ansible applies the tags down the dependency chain to all child tasks. With roles and imports, Ansible appends the tags set by the <code class="docutils literal notranslate"><span class="pre">roles</span></code> section or import to any tags set on individual tasks or blocks within the role or imported file. This is called tag inheritance. Tag inheritance is convenient, because you do not have to tag every task. However, the tags still apply to the tasks individually.</p>
+<div class="section" id="adding-tags-to-blocks">
+<h4><a class="toc-backref" href="#id6">Adding tags to blocks</a><a class="headerlink" href="#adding-tags-to-blocks" title="Permalink to this headline">¶</a></h4>
+<p>If you want to apply a tag to many, but not all, of the tasks in your play, use a <a class="reference internal" href="playbooks_blocks.html#playbooks-blocks"><span class="std std-ref">block</span></a> and define the tags at that level. For example, we could edit the NTP example shown above to use a block:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># myrole/tasks/main.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is installed</span>
+    <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+      <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is configured</span>
+    <span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp.conf.j2</span>
+      <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ntp.conf</span>
+    <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ntpd</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntpd is running and enabled</span>
+    <span class="l l-Scalar l-Scalar-Plain">service</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntpd</span>
+      <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">started</span>
+      <span class="l l-Scalar l-Scalar-Plain">enabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure file sharing is installed</span>
+  <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nfs-utils</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nfs-util-lib</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">filesharing</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-tags-to-plays">
+<h4><a class="toc-backref" href="#id7">Adding tags to plays</a><a class="headerlink" href="#adding-tags-to-plays" title="Permalink to this headline">¶</a></h4>
+<p>If all the tasks in a play should get the same tag, you can add the tag at the level of the play. For example, if you had a play with only the NTP tasks, you could tag the entire play:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is installed</span>
+    <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp</span>
+      <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntp is configured</span>
+    <span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntp.conf.j2</span>
+      <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ntp.conf</span>
+    <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ntpd</span>
+
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">be sure ntpd is running and enabled</span>
+    <span class="l l-Scalar l-Scalar-Plain">service</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ntpd</span>
+      <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">started</span>
+      <span class="l l-Scalar l-Scalar-Plain">enabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">fileservers</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">filesharing</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-tags-to-roles">
+<h4><a class="toc-backref" href="#id8">Adding tags to roles</a><a class="headerlink" href="#adding-tags-to-roles" title="Permalink to this headline">¶</a></h4>
+<p>There are three ways to add tags to roles:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Add the same tag or tags to all tasks in the role by setting tags under <code class="docutils literal notranslate"><span class="pre">roles</span></code>. See examples in this section.</li>
+<li>Add the same tag or tags to all tasks in the role by setting tags on a static <code class="docutils literal notranslate"><span class="pre">import_role</span></code> in your playbook. See examples in <a class="reference internal" href="#tags-on-imports"><span class="std std-ref">Adding tags to imports</span></a>.</li>
+<li>Add a tag or tags to to individual tasks or blocks within the role itself. This is the only approach that allows you to select or skip some tasks within the role. To select or skip tasks within the role, you must have tags set on individual tasks or blocks, use the dynamic <code class="docutils literal notranslate"><span class="pre">include_role</span></code> in your playbook, and add the same tag or tags to the include. When you use this approach, and then run your playbook with <code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">foo</span></code>, Ansible runs the include itself plus any tasks in the role that also have the tag <code class="docutils literal notranslate"><span class="pre">foo</span></code>. See <a class="reference internal" href="#tags-on-includes"><span class="std std-ref">Adding tags to includes</span></a> for details.</li>
+</ol>
+</div></blockquote>
+<p>When you incorporate a role in your playbook statically with the <code class="docutils literal notranslate"><span class="pre">roles</span></code> keyword, Ansible adds any tags you define to all the tasks in the role. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">role</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">webserver</span>
+    <span class="l l-Scalar l-Scalar-Plain">vars</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5000</span>
+    <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span> <span class="nv">web</span><span class="p p-Indicator">,</span> <span class="nv">foo</span> <span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">webservers</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">role</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">baz</span>
+    <span class="c1"># using YAML shorthand, this is equivalent to:</span>
+    <span class="c1"># - { role: foo, tags: [&quot;bar&quot;, &quot;baz&quot;] }</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-tags-to-imports">
+<span id="tags-on-imports"></span><h4><a class="toc-backref" href="#id9">Adding tags to imports</a><a class="headerlink" href="#adding-tags-to-imports" title="Permalink to this headline">¶</a></h4>
+<p>You can also apply a tag or tags to all the tasks imported by the static <code class="docutils literal notranslate"><span class="pre">import_role</span></code> and <code class="docutils literal notranslate"><span class="pre">import_tasks</span></code> statements:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">webservers</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">import_role</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">baz</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">import_tasks</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">foo.yml</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span> <span class="nv">web</span><span class="p p-Indicator">,</span> <span class="nv">foo</span> <span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tag-inheritance-for-includes-blocks-and-the-apply-keyword">
+<span id="apply-keyword"></span><h4><a class="toc-backref" href="#id10">Tag inheritance for includes: blocks and the <code class="docutils literal notranslate"><span class="pre">apply</span></code> keyword</a><a class="headerlink" href="#tag-inheritance-for-includes-blocks-and-the-apply-keyword" title="Permalink to this headline">¶</a></h4>
+<p>By default, Ansible does not apply <a class="reference internal" href="#tag-inheritance"><span class="std std-ref">tag inheritance</span></a> to dynamic re-use with <code class="docutils literal notranslate"><span class="pre">include_role</span></code> and <code class="docutils literal notranslate"><span class="pre">include_tasks</span></code>. If you add tags to an include, they apply only to the include itself, not to any tasks in the included file or role. This allows you to execute selected tasks within a role or task file - see <a class="reference internal" href="#selective-reuse"><span class="std std-ref">Selectively running tagged tasks in re-usable files</span></a> when you run your playbook.</p>
+<p>If you want tag inheritance, you probably want to use imports. However, using both includes and imports in a single playbook can lead to difficult-to-diagnose bugs. For this reason, if your playbook uses <code class="docutils literal notranslate"><span class="pre">include_*</span></code> to re-use roles or tasks, and you need tag inheritance on one include, Ansible offers two workarounds. You can use the <code class="docutils literal notranslate"><span class="pre">apply</span></code> keyword:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">applies the db tag to the include and to all tasks in db.yaml</span>
+  <span class="l l-Scalar l-Scalar-Plain">include_tasks</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db.yml</span>
+    <span class="c1"># adds &#39;db&#39; tag to tasks within db.yml</span>
+    <span class="l l-Scalar l-Scalar-Plain">apply</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+  <span class="c1"># adds &#39;db&#39; tag to this &#39;include_tasks&#39; itself</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+</pre></div>
+</div>
+<p>Or you can use a block:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">include_tasks</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db.yml</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="special-tags-always-and-never">
+<span id="special-tags"></span><h2><a class="toc-backref" href="#id11">Special tags: always and never</a><a class="headerlink" href="#special-tags-always-and-never" title="Permalink to this headline">¶</a></h2>
+<p>Ansible reserves two tag names for special behavior: always and never. If you assign the <code class="docutils literal notranslate"><span class="pre">always</span></code> tag to a task or play, Ansible will always run that task or play, unless you specifically skip it (<code class="docutils literal notranslate"><span class="pre">--skip-tags</span> <span class="pre">always</span></code>).</p>
+<p>For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&quot;Always</span><span class="nv"> </span><span class="s">runs&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&quot;runs</span><span class="nv"> </span><span class="s">when</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">tag1&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tag1</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ul class="last simple">
+<li>Fact gathering is tagged with ‘always’ by default. It is only skipped if
+you apply a tag and then use a different tag in <code class="docutils literal notranslate"><span class="pre">--tags</span></code> or the same
+tag in <code class="docutils literal notranslate"><span class="pre">--skip-tags</span></code>.</li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.5.</span></p>
+</div>
+<p>If you assign the <code class="docutils literal notranslate"><span class="pre">never</span></code> tag to a task or play, Ansible will skip that task or play unless you specifically request it (<code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">never</span></code>).</p>
+<p>For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Rarely-used debug task</span>
+    <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">msg=&quot;{{ showmevar }}&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span> <span class="nv">never</span><span class="p p-Indicator">,</span> <span class="nv">debug</span> <span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>The rarely-used debug task in the example above only runs when you specifically request the <code class="docutils literal notranslate"><span class="pre">debug</span></code> or <code class="docutils literal notranslate"><span class="pre">never</span></code> tags.</p>
+</div>
+<div class="section" id="selecting-or-skipping-tags-when-you-run-a-playbook">
+<span id="using-tags"></span><h2><a class="toc-backref" href="#id12">Selecting or skipping tags when you run a playbook</a><a class="headerlink" href="#selecting-or-skipping-tags-when-you-run-a-playbook" title="Permalink to this headline">¶</a></h2>
+<p>Once you have added tags to your tasks, includes, blocks, plays, roles, and imports, you can selectively execute or skip tasks based on their tags when you run <a class="reference internal" href="../cli/ansible-playbook.html#ansible-playbook"><span class="std std-ref">ansible-playbook</span></a>. Ansible runs or skips all tasks with tags that match the tags you pass at the command line. If you have added a tag at the block or play level, with <code class="docutils literal notranslate"><span class="pre">roles</span></code>, or with an import, that tag applies to every task within the block, play, role, or imported role or file. If you have a role with lots of tags and you want to call subsets of the role at different times, either <a class="reference internal" href="#selective-reuse"><span class="std std-ref">use it with dynamic includes</span></a>, or split the role into multiple roles.</p>
+<p><a class="reference internal" href="../cli/ansible-playbook.html#ansible-playbook"><span class="std std-ref">ansible-playbook</span></a> offers five tag-related command-line options:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">all</span></code> - run all tasks, ignore tags (default behavior)</li>
+<li><code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">[tag1,</span> <span class="pre">tag2]</span></code> - run only tasks with the tags <code class="docutils literal notranslate"><span class="pre">tag1</span></code> and <code class="docutils literal notranslate"><span class="pre">tag2</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">--skip-tags</span> <span class="pre">[tag3,</span> <span class="pre">tag4]</span></code> - run all tasks except those with the tags <code class="docutils literal notranslate"><span class="pre">tag3</span></code> and <code class="docutils literal notranslate"><span class="pre">tag4</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">tagged</span></code> - run only tasks with at least one tag</li>
+<li><code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">untagged</span></code> - run only tasks with no tags</li>
+</ul>
+<p>For example, to run only tasks and blocks tagged <code class="docutils literal notranslate"><span class="pre">configuration</span></code> and <code class="docutils literal notranslate"><span class="pre">packages</span></code> in a very long playbook:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ansible-playbook example.yml --tags <span class="s2">&quot;configuration,packages&quot;</span>
+</pre></div>
+</div>
+<p>To run all tasks except those tagged <code class="docutils literal notranslate"><span class="pre">packages</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ansible-playbook example.yml --skip-tags <span class="s2">&quot;packages&quot;</span>
+</pre></div>
+</div>
+<div class="section" id="previewing-the-results-of-using-tags">
+<h3><a class="toc-backref" href="#id13">Previewing the results of using tags</a><a class="headerlink" href="#previewing-the-results-of-using-tags" title="Permalink to this headline">¶</a></h3>
+<p>When you run a role or playbook, you might not know or remember which tasks have which tags, or which tags exist at all. Ansible offers two command-line flags for <a class="reference internal" href="../cli/ansible-playbook.html#ansible-playbook"><span class="std std-ref">ansible-playbook</span></a> that help you manage tagged playbooks:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">--list-tags</span></code> - generate a list of available tags</li>
+<li><code class="docutils literal notranslate"><span class="pre">--list-tasks</span></code> - when used with <code class="docutils literal notranslate"><span class="pre">--tags</span> <span class="pre">tagname</span></code> or <code class="docutils literal notranslate"><span class="pre">--skip-tags</span> <span class="pre">tagname</span></code>, generate a preview of tagged tasks</li>
+</ul>
+<p>For example, if you do not know whether the tag for configuration tasks is <code class="docutils literal notranslate"><span class="pre">config</span></code> or <code class="docutils literal notranslate"><span class="pre">conf</span></code> in a playbook, role, or tasks file, you can display all available tags without running any tasks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ansible-playbook example.yml --list-tags
+</pre></div>
+</div>
+<p>If you do not know which tasks have the tags <code class="docutils literal notranslate"><span class="pre">configuration</span></code> and <code class="docutils literal notranslate"><span class="pre">packages</span></code>, you can pass those tags and add <code class="docutils literal notranslate"><span class="pre">--list-tasks</span></code>. Ansible lists the tasks but does not execute any of them.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ansible-playbook example.yml --tags <span class="s2">&quot;configuration,packages&quot;</span> --list-tasks
+</pre></div>
+</div>
+<p>These command-line flags have one limitation: they cannot show tags or tasks within dynamically included files or roles. See <a class="reference internal" href="playbooks_reuse.html#dynamic-vs-static"><span class="std std-ref">Comparing includes and imports: dynamic vs. static</span></a> for more information on differences between static imports and dynamic includes.</p>
+</div>
+<div class="section" id="selectively-running-tagged-tasks-in-re-usable-files">
+<span id="selective-reuse"></span><h3><a class="toc-backref" href="#id14">Selectively running tagged tasks in re-usable files</a><a class="headerlink" href="#selectively-running-tagged-tasks-in-re-usable-files" title="Permalink to this headline">¶</a></h3>
+<p>If you have a role or a tasks file with tags defined at the task or block level, you can selectively run or skip those tagged tasks in a playbook if you use a dynamic include instead of a static import. You must use the same tag on the included tasks and on the include statement itself. For example you might create a file with some tagged and some untagged tasks:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># mixed.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">task with no tags</span>
+  <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">this task has no tags</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">tagged task</span>
+  <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">this task is tagged with mytag</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">mytag</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">First block task with mytag</span>
+    <span class="l l-Scalar l-Scalar-Plain">...</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Second block task with mytag</span>
+    <span class="l l-Scalar l-Scalar-Plain">...</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mytag</span>
+</pre></div>
+</div>
+<p>And you might include the tasks file above in a playbook:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># myplaybook.yml</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">include_tasks</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">mixed.yml</span>
+    <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">mytag</span>
+</pre></div>
+</div>
+<p>When you run the playbook with <code class="docutils literal notranslate"><span class="pre">ansible-playbook</span> <span class="pre">-i</span> <span class="pre">hosts</span> <span class="pre">myplaybook.yml</span> <span class="pre">--tags</span> <span class="pre">&quot;mytag&quot;</span></code>, Ansible skips the task with no tags, runs the tagged individual task, and runs the two tasks in the block.</p>
+</div>
+<div class="section" id="configuring-tags-globally">
+<h3><a class="toc-backref" href="#id15">Configuring tags globally</a><a class="headerlink" href="#configuring-tags-globally" title="Permalink to this headline">¶</a></h3>
+<p>If you run or skip certain tags by default, you can use the <a class="reference internal" href="../reference_appendices/config.html#tags-run"><span class="std std-ref">TAGS_RUN</span></a> and <a class="reference internal" href="../reference_appendices/config.html#tags-skip"><span class="std std-ref">TAGS_SKIP</span></a> options in Ansible configuration to set those defaults.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="playbooks_intro.html#playbooks-intro"><span class="std std-ref">Intro to Playbooks</span></a></dt>
+<dd>An introduction to playbooks</dd>
+<dt><a class="reference internal" href="playbooks_reuse_roles.html#playbooks-reuse-roles"><span class="std std-ref">Roles</span></a></dt>
+<dd>Playbook organization by roles</dd>
+<dt><a class="reference external" href="https://groups.google.com/group/ansible-devel">User Mailing List</a></dt>
+<dd>Have a question?  Stop by the google group!</dd>
+<dt><a class="reference external" href="http://irc.freenode.net">irc.freenode.net</a></dt>
+<dd>#ansible IRC chat channel</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="playbooks_vault.html" class="btn btn-neutral float-right" title="Using Vault in playbooks"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="playbooks_prompts.html" class="btn btn-neutral" title="Interactive input: prompts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

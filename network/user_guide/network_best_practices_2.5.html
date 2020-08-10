@@ -1,0 +1,956 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ansible Network Examples &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/network/user_guide/network_best_practices_2.5.html"/>
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Network Debug and Troubleshooting Guide" href="network_debug_troubleshooting.html" />
+    <link rel="prev" title="Ansible Network FAQ" href="faq.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Network Automation Advanced Topics</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="network_resource_modules.html">Network resource modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html">Ansible Network FAQ</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ansible Network Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#groups-and-variables-in-an-inventory-file">Groups and variables in an inventory file</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ansible-vault-for-password-encryption">Ansible vault for password encryption</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-inventory-variables">Common inventory variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#privilege-escalation">Privilege escalation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jump-hosts">Jump hosts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-collecting-facts-and-creating-backup-files-with-a-playbook">Example 1: collecting facts and creating backup files with a playbook</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-creating-the-inventory">Step 1: Creating the inventory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-creating-the-playbook">Step 2: Creating the playbook</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-running-the-playbook">Step 3: Running the playbook</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-examining-the-playbook-results">Step 4: Examining the playbook results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-simplifying-playbooks-with-network-agnostic-modules">Example 2: simplifying playbooks with network agnostic modules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sample-playbook-with-platform-specific-modules">Sample playbook with platform-specific modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplified-playbook-with-cli-command-network-agnostic-module">Simplified playbook with <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> network agnostic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-multiple-prompts-with-the-cli-command">Using multiple prompts with the  <code class="docutils literal notranslate"><span class="pre">cli_command</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-notes">Implementation Notes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#demo-variables">Demo variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-running-configuration">Get running configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="network_debug_troubleshooting.html">Network Debug and Troubleshooting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="network_working_with_command_output.html">Working with command output and prompts in network modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform_index.html">Platform Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Network Automation Advanced Topics</a> &raquo;</li>
+        
+      <li>Ansible Network Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/network/user_guide/network_best_practices_2.5.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ansible-network-examples">
+<span id="network-best-practices"></span><h1>Ansible Network Examples<a class="headerlink" href="#ansible-network-examples" title="Permalink to this headline">¶</a></h1>
+<p>This document describes some examples of using Ansible to manage your network infrastructure.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#prerequisites" id="id2">Prerequisites</a></li>
+<li><a class="reference internal" href="#groups-and-variables-in-an-inventory-file" id="id3">Groups and variables in an inventory file</a><ul>
+<li><a class="reference internal" href="#ansible-vault-for-password-encryption" id="id4">Ansible vault for password encryption</a></li>
+<li><a class="reference internal" href="#common-inventory-variables" id="id5">Common inventory variables</a></li>
+<li><a class="reference internal" href="#privilege-escalation" id="id6">Privilege escalation</a></li>
+<li><a class="reference internal" href="#jump-hosts" id="id7">Jump hosts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-1-collecting-facts-and-creating-backup-files-with-a-playbook" id="id8">Example 1: collecting facts and creating backup files with a playbook</a><ul>
+<li><a class="reference internal" href="#step-1-creating-the-inventory" id="id9">Step 1: Creating the inventory</a></li>
+<li><a class="reference internal" href="#step-2-creating-the-playbook" id="id10">Step 2: Creating the playbook</a></li>
+<li><a class="reference internal" href="#step-3-running-the-playbook" id="id11">Step 3: Running the playbook</a></li>
+<li><a class="reference internal" href="#step-4-examining-the-playbook-results" id="id12">Step 4: Examining the playbook results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-2-simplifying-playbooks-with-network-agnostic-modules" id="id13">Example 2: simplifying playbooks with network agnostic modules</a><ul>
+<li><a class="reference internal" href="#sample-playbook-with-platform-specific-modules" id="id14">Sample playbook with platform-specific modules</a></li>
+<li><a class="reference internal" href="#simplified-playbook-with-cli-command-network-agnostic-module" id="id15">Simplified playbook with <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> network agnostic module</a></li>
+<li><a class="reference internal" href="#using-multiple-prompts-with-the-cli-command" id="id16">Using multiple prompts with the  <code class="docutils literal notranslate"><span class="pre">cli_command</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#implementation-notes" id="id17">Implementation Notes</a><ul>
+<li><a class="reference internal" href="#demo-variables" id="id18">Demo variables</a></li>
+<li><a class="reference internal" href="#get-running-configuration" id="id19">Get running configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting" id="id20">Troubleshooting</a></li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id2">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>This example requires the following:</p>
+<ul class="simple">
+<li><strong>Ansible 2.5</strong> (or higher) installed. See <a class="reference internal" href="../../installation_guide/intro_installation.html#intro-installation-guide"><span class="std std-ref">Installing Ansible</span></a> for more information.</li>
+<li>One or more network devices that are compatible with Ansible.</li>
+<li>Basic understanding of YAML <a class="reference internal" href="../../reference_appendices/YAMLSyntax.html#yaml-syntax"><span class="std std-ref">YAML Syntax</span></a>.</li>
+<li>Basic understanding of Jinja2 templates. See <a class="reference internal" href="../../user_guide/playbooks_templating.html#playbooks-templating"><span class="std std-ref">Templating (Jinja2)</span></a> for more information.</li>
+<li>Basic Linux command line use.</li>
+<li>Basic knowledge of network switch &amp; router configurations.</li>
+</ul>
+</div>
+<div class="section" id="groups-and-variables-in-an-inventory-file">
+<h2><a class="toc-backref" href="#id3">Groups and variables in an inventory file</a><a class="headerlink" href="#groups-and-variables-in-an-inventory-file" title="Permalink to this headline">¶</a></h2>
+<p>An <code class="docutils literal notranslate"><span class="pre">inventory</span></code> file is a YAML or INI-like configuration file that defines the mapping of hosts into groups.</p>
+<p>In our example, the inventory file defines the groups <code class="docutils literal notranslate"><span class="pre">eos</span></code>, <code class="docutils literal notranslate"><span class="pre">ios</span></code>, <code class="docutils literal notranslate"><span class="pre">vyos</span></code> and a “group of groups” called <code class="docutils literal notranslate"><span class="pre">switches</span></code>. Further details about subgroups and inventory files can be found in the <a class="reference internal" href="../../user_guide/intro_inventory.html#subgroups"><span class="std std-ref">Ansible inventory Group documentation</span></a>.</p>
+<p>Because Ansible is a flexible tool, there are a number of ways to specify connection information and credentials. We recommend using the <code class="docutils literal notranslate"><span class="pre">[my_group:vars]</span></code> capability in your inventory file. Here’s what it would look like if you specified your SSH passwords (encrypted with Ansible Vault) among your variables:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[all:vars]</span>
+<span class="c1"># these defaults can be overridden for any group in the [group:vars] section</span>
+<span class="na">ansible_connection</span><span class="o">=</span><span class="s">network_cli</span>
+<span class="na">ansible_user</span><span class="o">=</span><span class="s">ansible</span>
+
+<span class="k">[switches:children]</span>
+<span class="na">eos</span>
+<span class="na">ios</span>
+<span class="na">vyos</span>
+
+<span class="k">[eos]</span>
+<span class="na">veos01 ansible_host</span><span class="o">=</span><span class="s">veos-01.example.net</span>
+<span class="na">veos02 ansible_host</span><span class="o">=</span><span class="s">veos-02.example.net</span>
+<span class="na">veos03 ansible_host</span><span class="o">=</span><span class="s">veos-03.example.net</span>
+<span class="na">veos04 ansible_host</span><span class="o">=</span><span class="s">veos-04.example.net</span>
+
+<span class="k">[eos:vars]</span>
+<span class="na">ansible_become</span><span class="o">=</span><span class="s">yes</span>
+<span class="na">ansible_become_method</span><span class="o">=</span><span class="s">enable</span>
+<span class="na">ansible_network_os</span><span class="o">=</span><span class="s">eos</span>
+<span class="na">ansible_user</span><span class="o">=</span><span class="s">my_eos_user</span>
+<span class="na">ansible_password</span><span class="o">=</span> <span class="s">!vault |</span>
+<span class="s">                  $ANSIBLE_VAULT;1.1;AES256</span>
+<span class="s">                  37373735393636643261383066383235363664386633386432343236663533343730353361653735</span>
+<span class="s">                  6131363539383931353931653533356337353539373165320a316465383138636532343463633236</span>
+<span class="s">                  37623064393838353962386262643230303438323065356133373930646331623731656163623333</span>
+<span class="s">                  3431353332343530650a373038366364316135383063356531633066343434623631303166626532</span>
+<span class="s">                  9562</span>
+
+<span class="k">[ios]</span>
+<span class="na">ios01 ansible_host</span><span class="o">=</span><span class="s">ios-01.example.net</span>
+<span class="na">ios02 ansible_host</span><span class="o">=</span><span class="s">ios-02.example.net</span>
+<span class="na">ios03 ansible_host</span><span class="o">=</span><span class="s">ios-03.example.net</span>
+
+<span class="k">[ios:vars]</span>
+<span class="na">ansible_become</span><span class="o">=</span><span class="s">yes</span>
+<span class="na">ansible_become_method</span><span class="o">=</span><span class="s">enable</span>
+<span class="na">ansible_network_os</span><span class="o">=</span><span class="s">ios</span>
+<span class="na">ansible_user</span><span class="o">=</span><span class="s">my_ios_user</span>
+<span class="na">ansible_password</span><span class="o">=</span> <span class="s">!vault |</span>
+<span class="s">                  $ANSIBLE_VAULT;1.1;AES256</span>
+<span class="s">                  34623431313336343132373235313066376238386138316466636437653938623965383732373130</span>
+<span class="s">                  3466363834613161386538393463663861636437653866620a373136356366623765373530633735</span>
+<span class="s">                  34323262363835346637346261653137626539343534643962376139366330626135393365353739</span>
+<span class="s">                  3431373064656165320a333834613461613338626161633733343566666630366133623265303563</span>
+<span class="s">                  8472</span>
+
+<span class="k">[vyos]</span>
+<span class="na">vyos01 ansible_host</span><span class="o">=</span><span class="s">vyos-01.example.net</span>
+<span class="na">vyos02 ansible_host</span><span class="o">=</span><span class="s">vyos-02.example.net</span>
+<span class="na">vyos03 ansible_host</span><span class="o">=</span><span class="s">vyos-03.example.net</span>
+
+<span class="k">[vyos:vars]</span>
+<span class="na">ansible_network_os</span><span class="o">=</span><span class="s">vyos</span>
+<span class="na">ansible_user</span><span class="o">=</span><span class="s">my_vyos_user</span>
+<span class="na">ansible_password</span><span class="o">=</span> <span class="s">!vault |</span>
+<span class="s">                  $ANSIBLE_VAULT;1.1;AES256</span>
+<span class="s">                  39336231636137663964343966653162353431333566633762393034646462353062633264303765</span>
+<span class="s">                  6331643066663534383564343537343334633031656538370a333737656236393835383863306466</span>
+<span class="s">                  62633364653238323333633337313163616566383836643030336631333431623631396364663533</span>
+<span class="s">                  3665626431626532630a353564323566316162613432373738333064366130303637616239396438</span>
+<span class="s">                  9853</span>
+</pre></div>
+</div>
+<p>If you use ssh-agent, you do not need the <code class="docutils literal notranslate"><span class="pre">ansible_password</span></code> lines. If you use ssh keys, but not ssh-agent, and you have multiple keys, specify the key to use for each connection in the <code class="docutils literal notranslate"><span class="pre">[group:vars]</span></code> section with <code class="docutils literal notranslate"><span class="pre">ansible_ssh_private_key_file=/path/to/correct/key</span></code>. For more information on <code class="docutils literal notranslate"><span class="pre">ansible_ssh_</span></code> options see <a class="reference internal" href="../../user_guide/intro_inventory.html#behavioral-parameters"><span class="std std-ref">Connecting to hosts: behavioral inventory parameters</span></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Never store passwords in plain text.</p>
+</div>
+<div class="section" id="ansible-vault-for-password-encryption">
+<h3><a class="toc-backref" href="#id4">Ansible vault for password encryption</a><a class="headerlink" href="#ansible-vault-for-password-encryption" title="Permalink to this headline">¶</a></h3>
+<p>The “Vault” feature of Ansible allows you to keep sensitive data such as passwords or keys in encrypted files, rather than as plain text in your playbooks or roles. These vault files can then be distributed or placed in source control. See <a class="reference internal" href="../../user_guide/playbooks_vault.html#playbooks-vault"><span class="std std-ref">Using Vault in playbooks</span></a> for more information.</p>
+</div>
+<div class="section" id="common-inventory-variables">
+<h3><a class="toc-backref" href="#id5">Common inventory variables</a><a class="headerlink" href="#common-inventory-variables" title="Permalink to this headline">¶</a></h3>
+<p>The following variables are common for all platforms in the inventory, though they can be overwritten for a particular inventory group or host.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">ansible_connection:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Ansible uses the ansible-connection setting to determine how to connect to a remote device. When working with Ansible Networking, set this to <code class="docutils literal notranslate"><span class="pre">network_cli</span></code> so Ansible treats the remote node as a network device with a limited execution environment. Without this setting, Ansible would attempt to use ssh to connect to the remote and execute the Python script on the network device, which would fail because Python generally isn’t available on network devices.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">ansible_network_os:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">Informs Ansible which Network platform this hosts corresponds to. This is required when using <code class="docutils literal notranslate"><span class="pre">network_cli</span></code> or <code class="docutils literal notranslate"><span class="pre">netconf</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ansible_user:</th><td class="field-body">The user to connect to the remote device (switch) as. Without this the user that is running <code class="docutils literal notranslate"><span class="pre">ansible-playbook</span></code> would be used.
+Specifies which user on the network device the connection</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">ansible_password:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">The corresponding password for <code class="docutils literal notranslate"><span class="pre">ansible_user</span></code> to log in as. If not specified SSH key will be used.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ansible_become:</th><td class="field-body">If enable mode (privilege mode) should be used, see the next section.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">ansible_become_method:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">Which type of <cite>become</cite> should be used, for <code class="docutils literal notranslate"><span class="pre">network_cli</span></code> the only valid choice is <code class="docutils literal notranslate"><span class="pre">enable</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="privilege-escalation">
+<h3><a class="toc-backref" href="#id6">Privilege escalation</a><a class="headerlink" href="#privilege-escalation" title="Permalink to this headline">¶</a></h3>
+<p>Certain network platforms, such as Arista EOS and Cisco IOS, have the concept of different privilege modes. Certain network modules, such as those that modify system state including users, will only work in high privilege states. Ansible supports <code class="docutils literal notranslate"><span class="pre">become</span></code> when using <code class="docutils literal notranslate"><span class="pre">connection:</span> <span class="pre">network_cli</span></code>. This allows privileges to be raised for the specific tasks that need them. Adding <code class="docutils literal notranslate"><span class="pre">become:</span> <span class="pre">yes</span></code> and <code class="docutils literal notranslate"><span class="pre">become_method:</span> <span class="pre">enable</span></code> informs Ansible to go into privilege mode before executing the task, as shown here:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[eos:vars]</span>
+<span class="na">ansible_connection</span><span class="o">=</span><span class="s">network_cli</span>
+<span class="na">ansible_network_os</span><span class="o">=</span><span class="s">eos</span>
+<span class="na">ansible_become</span><span class="o">=</span><span class="s">yes</span>
+<span class="na">ansible_become_method</span><span class="o">=</span><span class="s">enable</span>
+</pre></div>
+</div>
+<p>For more information, see the <a class="reference internal" href="../../user_guide/become.html#become-network"><span class="std std-ref">using become with network modules</span></a> guide.</p>
+</div>
+<div class="section" id="jump-hosts">
+<h3><a class="toc-backref" href="#id7">Jump hosts</a><a class="headerlink" href="#jump-hosts" title="Permalink to this headline">¶</a></h3>
+<p>If the Ansible Controller doesn’t have a direct route to the remote device and you need to use a Jump Host, please see the <a class="reference internal" href="network_debug_troubleshooting.html#network-delegate-to-vs-proxycommand"><span class="std std-ref">Ansible Network Proxy Command</span></a> guide for details on how to achieve this.</p>
+</div>
+</div>
+<div class="section" id="example-1-collecting-facts-and-creating-backup-files-with-a-playbook">
+<h2><a class="toc-backref" href="#id8">Example 1: collecting facts and creating backup files with a playbook</a><a class="headerlink" href="#example-1-collecting-facts-and-creating-backup-files-with-a-playbook" title="Permalink to this headline">¶</a></h2>
+<p>Ansible facts modules gather system information ‘facts’ that are available to the rest of your playbook.</p>
+<p>Ansible Networking ships with a number of network-specific facts modules. In this example, we use the <code class="docutils literal notranslate"><span class="pre">_facts</span></code> modules <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/eos_facts_module.html#eos-facts-module" title="(in Ansible v2.9)"><span class="xref std std-ref">eos_facts</span></a>, <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/ios_facts_module.html#ios-facts-module" title="(in Ansible v2.9)"><span class="xref std std-ref">ios_facts</span></a> and <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/vyos_facts_module.html#vyos-facts-module" title="(in Ansible v2.9)"><span class="xref std std-ref">vyos_facts</span></a> to connect to the remote networking device. As the credentials are not explicitly passed via module arguments, Ansible uses the username and password from the inventory file.</p>
+<p>Ansible’s “Network Fact modules” gather information from the system and store the results in facts prefixed with <code class="docutils literal notranslate"><span class="pre">ansible_net_</span></code>. The data collected by these modules is documented in the <cite>Return Values</cite> section of the module docs, in this case <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/eos_facts_module.html#eos-facts-module" title="(in Ansible v2.9)"><span class="xref std std-ref">eos_facts</span></a> and <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/vyos_facts_module.html#vyos-facts-module" title="(in Ansible v2.9)"><span class="xref std std-ref">vyos_facts</span></a>. We can use the facts, such as <code class="docutils literal notranslate"><span class="pre">ansible_net_version</span></code> late on in the “Display some facts” task.</p>
+<p>To ensure we call the correct mode (<code class="docutils literal notranslate"><span class="pre">*_facts</span></code>) the task is conditionally run based on the group defined in the inventory file, for more information on the use of conditionals in Ansible Playbooks see <a class="reference internal" href="../../user_guide/playbooks_conditionals.html#the-when-statement"><span class="std std-ref">The When Statement</span></a>.</p>
+<p>In this example, we will create an inventory file containing some network switches, then run a playbook to connect to the network devices and return some information about them.</p>
+<div class="section" id="step-1-creating-the-inventory">
+<h3><a class="toc-backref" href="#id9">Step 1: Creating the inventory</a><a class="headerlink" href="#step-1-creating-the-inventory" title="Permalink to this headline">¶</a></h3>
+<p>First, create a file called <code class="docutils literal notranslate"><span class="pre">inventory</span></code>, containing:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[switches:children]</span>
+<span class="na">eos</span>
+<span class="na">ios</span>
+<span class="na">vyos</span>
+
+<span class="k">[eos]</span>
+<span class="na">eos01.example.net</span>
+
+<span class="k">[ios]</span>
+<span class="na">ios01.example.net</span>
+
+<span class="k">[vyos]</span>
+<span class="na">vyos01.example.net</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-creating-the-playbook">
+<h3><a class="toc-backref" href="#id10">Step 2: Creating the playbook</a><a class="headerlink" href="#step-2-creating-the-playbook" title="Permalink to this headline">¶</a></h3>
+<p>Next, create a playbook file called <code class="docutils literal notranslate"><span class="pre">facts-demo.yml</span></code> containing the following:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;Demonstrate</span><span class="nv"> </span><span class="s">connecting</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">switches&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">switches</span>
+  <span class="l l-Scalar l-Scalar-Plain">gather_facts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="c1">###</span>
+    <span class="c1"># Collect data</span>
+    <span class="c1">#</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Gather facts (eos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">eos_facts</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;eos&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Gather facts (ops)</span>
+      <span class="l l-Scalar l-Scalar-Plain">ios_facts</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;ios&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Gather facts (vyos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">vyos_facts</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;vyos&#39;</span>
+
+    <span class="c1">###</span>
+    <span class="c1"># Demonstrate variables</span>
+    <span class="c1">#</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Display some facts</span>
+      <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&quot;The</span><span class="nv"> </span><span class="s">hostname</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_net_hostname</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">OS</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_net_version</span><span class="nv"> </span><span class="s">}}&quot;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Facts from a specific host</span>
+      <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">var</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">hostvars[&#39;vyos01.example.net&#39;]</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Write facts to disk using a template</span>
+      <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">content</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">#jinja2: lstrip_blocks: True</span>
+          <span class="no">EOS device info:</span>
+            <span class="no">{% for host in groups[&#39;eos&#39;] %}</span>
+            <span class="no">Hostname: {{ hostvars[host].ansible_net_hostname }}</span>
+            <span class="no">Version: {{ hostvars[host].ansible_net_version }}</span>
+            <span class="no">Model: {{ hostvars[host].ansible_net_model }}</span>
+            <span class="no">Serial: {{ hostvars[host].ansible_net_serialnum }}</span>
+            <span class="no">{% endfor %}</span>
+
+          <span class="no">IOS device info:</span>
+            <span class="no">{% for host in groups[&#39;ios&#39;] %}</span>
+            <span class="no">Hostname: {{ hostvars[host].ansible_net_hostname }}</span>
+            <span class="no">Version: {{ hostvars[host].ansible_net_version }}</span>
+            <span class="no">Model: {{ hostvars[host].ansible_net_model }}</span>
+            <span class="no">Serial: {{ hostvars[host].ansible_net_serialnum }}</span>
+            <span class="no">{% endfor %}</span>
+
+          <span class="no">VyOS device info:</span>
+            <span class="no">{% for host in groups[&#39;vyos&#39;] %}</span>
+            <span class="no">Hostname: {{ hostvars[host].ansible_net_hostname }}</span>
+            <span class="no">Version: {{ hostvars[host].ansible_net_version }}</span>
+            <span class="no">Model: {{ hostvars[host].ansible_net_model }}</span>
+            <span class="no">Serial: {{ hostvars[host].ansible_net_serialnum }}</span>
+            <span class="no">{% endfor %}</span>
+        <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/switch-facts</span>
+      <span class="l l-Scalar l-Scalar-Plain">run_once</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="c1">###</span>
+    <span class="c1"># Get running configuration</span>
+    <span class="c1">#</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Backup switch (eos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">eos_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">backup</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">backup_eos_location</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;eos&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">backup switch (vyos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">vyos_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">backup</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">backup_vyos_location</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;vyos&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create backup dir</span>
+      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="s">&quot;/tmp/backups/{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">directory</span>
+        <span class="l l-Scalar l-Scalar-Plain">recurse</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Copy backup files into /tmp/backups/ (eos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">backup_eos_location.backup_path</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="s">&quot;/tmp/backups/{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}/{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}.bck&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;eos&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Copy backup files into /tmp/backups/ (vyos)</span>
+      <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">src</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">backup_vyos_location.backup_path</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="s">&quot;/tmp/backups/{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}/{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}.bck&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;vyos&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-running-the-playbook">
+<h3><a class="toc-backref" href="#id11">Step 3: Running the playbook</a><a class="headerlink" href="#step-3-running-the-playbook" title="Permalink to this headline">¶</a></h3>
+<p>To run the playbook, run the following from a console prompt:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ansible-playbook -i inventory facts-demo.yml</span>
+</pre></div>
+</div>
+<p>This should return output similar to the following:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PLAY RECAP</span>
+<span class="go">eos01.example.net          : ok=7    changed=2    unreachable=0    failed=0</span>
+<span class="go">ios01.example.net          : ok=7    changed=2    unreachable=0    failed=0</span>
+<span class="go">vyos01.example.net         : ok=6    changed=2    unreachable=0    failed=0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-4-examining-the-playbook-results">
+<h3><a class="toc-backref" href="#id12">Step 4: Examining the playbook results</a><a class="headerlink" href="#step-4-examining-the-playbook-results" title="Permalink to this headline">¶</a></h3>
+<p>Next, look at the contents of the file we created containing the switch facts:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat /tmp/switch-facts</span>
+</pre></div>
+</div>
+<p>You can also look at the backup files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">find /tmp/backups</span>
+</pre></div>
+</div>
+<p>If <cite>ansible-playbook</cite> fails, please follow the debug steps in <a class="reference internal" href="network_debug_troubleshooting.html#network-debug-troubleshooting"><span class="std std-ref">Network Debug and Troubleshooting Guide</span></a>.</p>
+</div>
+</div>
+<div class="section" id="example-2-simplifying-playbooks-with-network-agnostic-modules">
+<span id="network-agnostic-examples"></span><h2><a class="toc-backref" href="#id13">Example 2: simplifying playbooks with network agnostic modules</a><a class="headerlink" href="#example-2-simplifying-playbooks-with-network-agnostic-modules" title="Permalink to this headline">¶</a></h2>
+<p>(This example originally appeared in the <a class="reference external" href="https://www.ansible.com/blog/deep-dive-on-cli-command-for-network-automation">Deep Dive on cli_command for Network Automation</a> blog post by Sean Cavanaugh -<a class="reference external" href="https://github.com/IPvSean">&#64;IPvSean</a>).</p>
+<p>If you have two or more network platforms in your environment, you can use the network agnostic modules to simplify your playbooks. You can use network agnostic modules such as <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> or <code class="docutils literal notranslate"><span class="pre">cli_config</span></code> in place of the platform-specific modules such as <code class="docutils literal notranslate"><span class="pre">eos_config</span></code>, <code class="docutils literal notranslate"><span class="pre">ios_config</span></code>, and <code class="docutils literal notranslate"><span class="pre">junos_config</span></code>. This reduces the number of tasks and conditionals you need in your playbooks.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Network agnostic modules require the <a class="reference external" href="https://docs.ansible.com/ansible/2.9/plugins/connection/network_cli.html#network-cli-connection" title="(in Ansible v2.9)"><span class="xref std std-ref">network_cli</span></a> connection plugin.</p>
+</div>
+<div class="section" id="sample-playbook-with-platform-specific-modules">
+<h3><a class="toc-backref" href="#id14">Sample playbook with platform-specific modules</a><a class="headerlink" href="#sample-playbook-with-platform-specific-modules" title="Permalink to this headline">¶</a></h3>
+<p>This example assumes three platforms, Arista EOS, Cisco NXOS, and Juniper JunOS.  Without the network agnostic modules, a sample playbook might contain the following three tasks with platform-specific commands:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run Arista command</span>
+  <span class="l l-Scalar l-Scalar-Plain">eos_command</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">commands</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show ip int br</span>
+  <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;eos&#39;</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run Cisco NXOS command</span>
+  <span class="l l-Scalar l-Scalar-Plain">nxos_command</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">commands</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show ip int br</span>
+  <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;nxos&#39;</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run Vyos command</span>
+  <span class="l l-Scalar l-Scalar-Plain">vyos_command</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">commands</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show interface</span>
+  <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;vyos&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simplified-playbook-with-cli-command-network-agnostic-module">
+<h3><a class="toc-backref" href="#id15">Simplified playbook with <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> network agnostic module</a><a class="headerlink" href="#simplified-playbook-with-cli-command-network-agnostic-module" title="Permalink to this headline">¶</a></h3>
+<p>You can replace these platform-specific modules with the network agnostic <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> module as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">network</span>
+  <span class="l l-Scalar l-Scalar-Plain">gather_facts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="l l-Scalar l-Scalar-Plain">connection</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">network_cli</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Arista and display results</span>
+      <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Arista</span>
+        <span class="l l-Scalar l-Scalar-Plain">cli_command</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show ip int br</span>
+        <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result</span>
+
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Display result to terminal window</span>
+        <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">var</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result.stdout_lines</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;eos&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Cisco IOS and display results</span>
+      <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Cisco IOS</span>
+        <span class="l l-Scalar l-Scalar-Plain">cli_command</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show ip int br</span>
+        <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result</span>
+
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Display result to terminal window</span>
+        <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">var</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result.stdout_lines</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;ios&#39;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Vyos and display results</span>
+      <span class="l l-Scalar l-Scalar-Plain">block</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run cli_command on Vyos</span>
+        <span class="l l-Scalar l-Scalar-Plain">cli_command</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">show interfaces</span>
+        <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result</span>
+
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Display result to terminal window</span>
+        <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">var</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">result.stdout_lines</span>
+      <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible_network_os == &#39;vyos&#39;</span>
+</pre></div>
+</div>
+<p>If you use groups and group_vars by platform type, this playbook can be further simplified to :</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run command and print to terminal window</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">routers</span>
+  <span class="l l-Scalar l-Scalar-Plain">gather_facts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Run show command</span>
+      <span class="l l-Scalar l-Scalar-Plain">cli_command</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{show_interfaces}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">command_output</span>
+</pre></div>
+</div>
+<p>You can see a full example of this using group_vars and also a configuration backup example at <a class="reference external" href="https://github.com/network-automation/agnostic_example">Network agnostic examples</a>.</p>
+</div>
+<div class="section" id="using-multiple-prompts-with-the-cli-command">
+<h3><a class="toc-backref" href="#id16">Using multiple prompts with the  <code class="docutils literal notranslate"><span class="pre">cli_command</span></code></a><a class="headerlink" href="#using-multiple-prompts-with-the-cli-command" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">cli_command</span></code> also supports multiple prompts.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Change password to default</span>
+  <span class="l l-Scalar l-Scalar-Plain">cli_command</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;New</span><span class="nv"> </span><span class="s">password&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;Retype</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">password&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">answer</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;mypassword123&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;mypassword123&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">check_all</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+  <span class="l l-Scalar l-Scalar-Plain">loop</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;configure&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;rollback&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;set</span><span class="nv"> </span><span class="s">system</span><span class="nv"> </span><span class="s">root-authentication</span><span class="nv"> </span><span class="s">plain-text-password&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;commit&quot;</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/cli_command_module.html#cli-command-module" title="(in Ansible v2.9)"><span class="xref std std-ref">cli_command</span></a> for full documentation on this command.</p>
+</div>
+</div>
+<div class="section" id="implementation-notes">
+<h2><a class="toc-backref" href="#id17">Implementation Notes</a><a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="demo-variables">
+<h3><a class="toc-backref" href="#id18">Demo variables</a><a class="headerlink" href="#demo-variables" title="Permalink to this headline">¶</a></h3>
+<p>Although these tasks are not needed to write data to disk, they are used in this example to demonstrate some methods of accessing facts about the given devices or a named host.</p>
+<p>Ansible <code class="docutils literal notranslate"><span class="pre">hostvars</span></code> allows you to access variables from a named host. Without this we would return the details for the current host, rather than the named host.</p>
+<p>For more information, see <a class="reference internal" href="../../user_guide/playbooks_variables.html#magic-variables-and-hostvars"><span class="std std-ref">Accessing information about other hosts with magic variables</span></a>.</p>
+</div>
+<div class="section" id="get-running-configuration">
+<h3><a class="toc-backref" href="#id19">Get running configuration</a><a class="headerlink" href="#get-running-configuration" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/eos_config_module.html#eos-config-module" title="(in Ansible v2.9)"><span class="xref std std-ref">eos_config</span></a> and <a class="reference external" href="https://docs.ansible.com/ansible/2.9/modules/vyos_config_module.html#vyos-config-module" title="(in Ansible v2.9)"><span class="xref std std-ref">vyos_config</span></a> modules have a <code class="docutils literal notranslate"><span class="pre">backup:</span></code> option that when set will cause the module to create a full backup of the current <code class="docutils literal notranslate"><span class="pre">running-config</span></code> from the remote device before any changes are made. The backup file is written to the <code class="docutils literal notranslate"><span class="pre">backup</span></code> folder in the playbook root directory. If the directory does not exist, it is created.</p>
+<p>To demonstrate how we can move the backup file to a different location, we register the result and move the file to the path stored in <code class="docutils literal notranslate"><span class="pre">backup_path</span></code>.</p>
+<p>Note that when using variables from tasks in this way we use double quotes (<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>) and double curly-brackets (<code class="docutils literal notranslate"><span class="pre">{{...}}</span></code> to tell Ansible that this is a variable.</p>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h2><a class="toc-backref" href="#id20">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>If you receive an connection error please double check the inventory and playbook for typos or missing lines. If the issue still occurs follow the debug steps in <a class="reference internal" href="network_debug_troubleshooting.html#network-debug-troubleshooting"><span class="std std-ref">Network Debug and Troubleshooting Guide</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../index.html#network-guide"><span class="std std-ref">Ansible for Network Automation</span></a></li>
+<li><a class="reference internal" href="../../user_guide/intro_inventory.html#intro-inventory"><span class="std std-ref">How to build your inventory</span></a></li>
+<li><a class="reference internal" href="../../user_guide/playbooks_best_practices.html#best-practices-for-variables-and-vaults"><span class="std std-ref">Vault best practices</span></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="network_debug_troubleshooting.html" class="btn btn-neutral float-right" title="Network Debug and Troubleshooting Guide"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="faq.html" class="btn btn-neutral" title="Ansible Network FAQ"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>
