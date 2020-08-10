@@ -115,7 +115,7 @@ EXAMPLES = r'''
 # if state is present, then create network config if not present ,else success
 - name: Create network config
   hpe_nimble_network:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -129,7 +129,7 @@ EXAMPLES = r'''
 
 - name: Delete network config
   hpe_nimble_network:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -137,7 +137,7 @@ EXAMPLES = r'''
 
 - name: Validate network config
   hpe_nimble_network:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -147,7 +147,7 @@ EXAMPLES = r'''
 
 - name: Activate Network config
   hpe_nimble_network:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -354,7 +354,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     activate = module.params["activate"]

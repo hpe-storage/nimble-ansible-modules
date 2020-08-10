@@ -84,7 +84,7 @@ EXAMPLES = r'''
 
 - name: Update fibre channel interface
   hpe_nimble_fc:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     array_name_or_serial: "{{ array_name_or_serial | mandatory }}"
@@ -95,7 +95,7 @@ EXAMPLES = r'''
 
 - name: Regenerate fibre channel config
   hpe_nimble_fc:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     array_name_or_serial: "{{ array_name_or_serial | mandatory }}" # provide the group_leader_array name
@@ -106,7 +106,7 @@ EXAMPLES = r'''
 
 - name: Hardware upgrade for fibre channel
   hpe_nimble_fc:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     array_name_or_serial: "{{ array_name_or_serial | mandatory }}"
@@ -257,7 +257,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     array_name_or_serial = module.params["array_name_or_serial"]

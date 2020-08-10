@@ -95,7 +95,7 @@ EXAMPLES = r'''
 # if state is present, then create a pool if not present. Succeed if it already exists.
 - name: Create pool if not present
   hpe_nimble_pool:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     state: "{{ state | default('present') }}"
@@ -105,7 +105,7 @@ EXAMPLES = r'''
 
 - name: Delete pool
   hpe_nimble_pool:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -277,7 +277,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

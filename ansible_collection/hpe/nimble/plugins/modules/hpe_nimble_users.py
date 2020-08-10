@@ -112,7 +112,7 @@ EXAMPLES = r'''
 # if state is present, then create user if not present, else success
 - name: Create user
   hpe_nimble_users:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -121,7 +121,7 @@ EXAMPLES = r'''
 
 - name: Delete user
   hpe_nimble_users:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -129,7 +129,7 @@ EXAMPLES = r'''
 
 - name: Unlock user
   hpe_nimble_users:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -315,7 +315,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

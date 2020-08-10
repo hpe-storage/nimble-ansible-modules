@@ -80,7 +80,7 @@ EXAMPLES = r'''
 
 - name: Update shelf
   hpe_nimble_shelf:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     shelf_serial: "{{ shelf_serial | mandatory }}"
@@ -177,7 +177,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

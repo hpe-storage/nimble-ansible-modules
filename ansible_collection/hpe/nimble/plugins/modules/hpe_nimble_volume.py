@@ -235,7 +235,7 @@ EXAMPLES = r'''
 # if state is present, then create a volume if not present. Succeeds if it already exists.
 - name: Create volume if not present
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     state: "{{ state | default('present') }}"
@@ -249,7 +249,7 @@ EXAMPLES = r'''
 
 - name: Changing volume "{{ name }}" to offline state
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     state: offline
@@ -257,7 +257,7 @@ EXAMPLES = r'''
 
 - name: Changing volume "{{ name }}" to online state
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     state: online
@@ -268,7 +268,7 @@ EXAMPLES = r'''
 # Clone task only run if "parent" is specified. Snapshot is optional.
 - name: Create or Refresh a clone!
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}" # name here is the name of cloned volume
@@ -287,7 +287,7 @@ EXAMPLES = r'''
 # If snapshot is provided, then restore volume from specified snapshot.
 - name: Restore volume "{{ name }}".
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -296,7 +296,7 @@ EXAMPLES = r'''
 
 - name: Delete volume "{{ name }}" (must be offline)
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -304,7 +304,7 @@ EXAMPLES = r'''
 
 - name: Move volume to pool
   hpe_nimble_volume:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     move: true
@@ -731,7 +731,7 @@ def main():
     caching = module.params["caching"]
     force_vvol = module.params["force_vvol"]
     move = module.params["move"]
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
 

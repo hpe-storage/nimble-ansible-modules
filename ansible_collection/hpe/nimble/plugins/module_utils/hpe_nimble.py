@@ -131,7 +131,7 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
 def basic_auth_arg_fields():
 
     fields = {
-        "hostname": {
+        "host": {
             "required": True,
             "type": "str"
         },

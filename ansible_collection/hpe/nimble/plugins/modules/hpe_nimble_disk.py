@@ -68,7 +68,7 @@ EXAMPLES = r'''
 
 - name: Update Disk
   hpe_nimble_disk:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     slot: "{{ slot | mandatory }}"
@@ -154,7 +154,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

@@ -70,6 +70,7 @@ options:
         "snapshot_collections",
         "software_versions",
         "user_groups",
+        "user_policies",
         "users",
         "volumes",
         "volume_collections"
@@ -91,7 +92,7 @@ version_added: 2.9
 EXAMPLES = r'''
 - name: collect default set of information
   hpe_nimble_info:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     gather_subset:
@@ -104,7 +105,7 @@ EXAMPLES = r'''
 
 - name: collect config
   hpe_nimble_info:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     gather_subset:
@@ -117,7 +118,7 @@ EXAMPLES = r'''
 
 - name: collect all
   hpe_nimble_info:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     gather_subset:
@@ -132,7 +133,7 @@ EXAMPLES = r'''
 - name: collect volume, snapshot and volume collection. Below query will show just one
   snapshot detail with attributes 'name and id' for a volume called 'vol1'.
   hpe_nimble_info:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     gather_subset:
@@ -948,6 +949,7 @@ def intialize_info_subset(client_obj):
         "snapshot_collections": client_obj.snapshot_collections,
         "software_versions": client_obj.software_versions,
         "user_groups": client_obj.user_groups,
+        "user_policies": client_obj.user_policies,
         "users": client_obj.users,
         "volumes": client_obj.volumes,
         "volume_collections": client_obj.volume_collections
@@ -991,7 +993,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     gather_subset = module.params["gather_subset"]

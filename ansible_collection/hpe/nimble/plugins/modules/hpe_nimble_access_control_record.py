@@ -79,7 +79,7 @@ EXAMPLES = r'''
 # if state is present, create access control record if not already present.
 - name: Create access control record for volume
   hpe_nimble_access_control_record:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
@@ -89,7 +89,7 @@ EXAMPLES = r'''
 # Delete the access control record for a given volume name
 - name: Delete access control record for volume
   hpe_nimble_access_control_record:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
@@ -215,7 +215,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]
