@@ -20,8 +20,12 @@ Install the HPE Nimble Storage array collection on your Ansible management host.
 ## Available Modules
 
 - hpe_nimble_access_control_record - Manage HPE Nimble Storage access control records
+- hpe_nimble_disk - Manage HPE Nimble Storage disk
+- hpe_nimble_fc - Manage HPE Nimble Storage fibre channel
 - hpe_nimble_info - Collect information from HPE Nimble Storage array
 - hpe_nimble_initiator_group - Manage HPE Nimble Storage initiator groups
+- hpe_nimble_network - Manage HPE Nimble Storage network configuration
+- hpe_nimble_performance_policy - Manage HPE Nimble Storage performance policies
 - hpe_nimble_pool - Manage HPE Nimble Storage pools
 - hpe_nimble_protection_schedule - Manage HPE Nimble Storage protection schedules
 - hpe_nimble_protection_template - Manage HPE Nimble Storage protection templates
