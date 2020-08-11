@@ -12,7 +12,7 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ar-india)
+  - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
 description: Manage volumes on HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
@@ -196,7 +196,7 @@ options:
     type: int
     default: 100
     description:
-    - The size of the volume.
+    - Volume size in mebibytes. Size is required for creating a volume but not for cloning an existing volume.
   snapshot:
     required: False
     type: str
