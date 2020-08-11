@@ -12,7 +12,7 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -24,7 +24,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-    - Alok Ranjan (@ar-india)
+    - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
 description: Manage disks on HPE Nimble Storage group.
 module: hpe_nimble_disk
 options:
@@ -68,7 +68,7 @@ EXAMPLES = r'''
 
 - name: Update Disk
   hpe_nimble_disk:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     slot: "{{ slot | mandatory }}"
@@ -154,7 +154,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

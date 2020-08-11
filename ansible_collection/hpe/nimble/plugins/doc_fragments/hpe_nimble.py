@@ -17,19 +17,19 @@ class ModuleDocFragment(object):
     # HPE Nimble doc fragment
     DOCUMENTATION = '''
 options:
-  hostname:
+  host:
     description:
-    - The storage system IP address.
+    - HPE Nimble Storage IP address.
     required: True
     type: str
   password:
     description:
-    - The storage system password.
+    - HPE Nimble Storage password.
     required: True
     type: str
   username:
     description:
-    - The storage system user name.
+    - HPE Nimble Storage user name.
     required: True
     type: str
 requirements:
