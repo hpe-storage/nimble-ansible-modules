@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interactive input: prompts &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tags" href="playbooks_tags.html" />
+    <link rel="prev" title="Plugin Filter Configuration" href="plugin_filtering_config.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Ansible Quickstart Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_concepts.html">Ansible concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_inventory.html">How to build your inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_dynamic_inventory.html">Working with dynamic inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_patterns.html">Patterns: targeting hosts and groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_adhoc.html">Introduction to ad-hoc commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_details.html">Connection methods and details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line_tools.html">Working with command line tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="playbooks.html">Working With Playbooks</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="playbooks_intro.html">Intro to Playbooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_best_practices.html">Tips and tricks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_reuse.html">Re-using Ansible artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_reuse_roles.html">Roles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_variables.html">Using Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_templating.html">Templating (Jinja2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_conditionals.html">Conditionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_loops.html">Loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_blocks.html">Blocks</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="playbooks_special_topics.html">Advanced Playbooks Features</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="become.html">Understanding privilege escalation: become</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_async.html">Asynchronous actions and polling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_checkmode.html">Check Mode (“Dry Run”)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_debugger.html">Playbook Debugger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_delegation.html">Delegation, Rolling Updates, and Local Actions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_environment.html">Setting the Environment (and Working With Proxies)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_environment.html#working-with-language-specific-version-managers">Working With Language-Specific Version Managers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_error_handling.html">Error handling in playbooks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_advanced_syntax.html">Advanced Syntax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../plugins/plugins.html">Working With Plugins</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Interactive input: prompts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_tags.html">Tags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_vault.html">Using Vault in playbooks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_startnstep.html">Start and Step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_lookups.html">Lookups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="playbooks_module_defaults.html">Module defaults</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="playbooks_strategies.html">Controlling playbook execution: strategies and more</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide_rolling_upgrade.html">Playbook Example: Continuous Delivery and Rolling Upgrades</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="become.html">Understanding privilege escalation: become</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vault.html">Ansible Vault</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample_setup.html">Sample Ansible setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Working With Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/plugins.html">Working With Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro_bsd.html">Ansible and BSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows.html">Windows Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections_using.html">Using collections</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="playbooks.html">Working With Playbooks</a> &raquo;</li>
+        
+          <li><a href="playbooks_special_topics.html">Advanced Playbooks Features</a> &raquo;</li>
+        
+      <li>Interactive input: prompts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/user_guide/playbooks_prompts.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="interactive-input-prompts">
+<span id="playbooks-prompts"></span><h1>Interactive input: prompts<a class="headerlink" href="#interactive-input-prompts" title="Permalink to this headline">¶</a></h1>
+<p>If you want your playbook to prompt the user for certain input, add a ‘vars_prompt’ section. Prompting the user for variables lets you avoid recording sensitive data like passwords. In addition to security, prompts support flexibility. For example, if you use one playbook across multiple software releases, you could prompt for the particular release version.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#encrypting-values-supplied-by-vars-prompt" id="id1">Encrypting values supplied by <code class="docutils literal notranslate"><span class="pre">vars_prompt</span></code></a></li>
+<li><a class="reference internal" href="#allowing-special-characters-in-vars-prompt-values" id="id2">Allowing special characters in <code class="docutils literal notranslate"><span class="pre">vars_prompt</span></code> values</a></li>
+</ul>
+</div>
+<p>Here is a most basic example:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="l l-Scalar l-Scalar-Plain">vars_prompt</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">username</span>
+      <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span> <span class="s">&quot;What</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">username?&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">private</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+      <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span> <span class="s">&quot;What</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">password?&quot;</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&#39;Logging</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&#39;</span>
+</pre></div>
+</div>
+<p>The user input is hidden by default but it can be made visible by setting <code class="docutils literal notranslate"><span class="pre">private:</span> <span class="pre">no</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Prompts for individual <code class="docutils literal notranslate"><span class="pre">vars_prompt</span></code> variables will be skipped for any variable that is already defined through the command line <code class="docutils literal notranslate"><span class="pre">--extra-vars</span></code> option, or when running from a non-interactive session (such as cron or Ansible Tower). See <a class="reference internal" href="playbooks_variables.html#passing-variables-on-the-command-line"><span class="std std-ref">Passing variables on the command line</span></a>.</p>
+</div>
+<p>If you have a variable that changes infrequently, you can provide a default value that can be overridden:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">vars_prompt</span><span class="p p-Indicator">:</span>
+
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;release_version&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span> <span class="s">&quot;Product</span><span class="nv"> </span><span class="s">release</span><span class="nv"> </span><span class="s">version&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">default</span><span class="p p-Indicator">:</span> <span class="s">&quot;1.0&quot;</span>
+</pre></div>
+</div>
+<div class="section" id="encrypting-values-supplied-by-vars-prompt">
+<h2><a class="toc-backref" href="#id1">Encrypting values supplied by <code class="docutils literal notranslate"><span class="pre">vars_prompt</span></code></a><a class="headerlink" href="#encrypting-values-supplied-by-vars-prompt" title="Permalink to this headline">¶</a></h2>
+<p>You can encrypt the entered value so you can use it, for instance, with the user module to define a password:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">vars_prompt</span><span class="p p-Indicator">:</span>
+
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;my_password2&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span> <span class="s">&quot;Enter</span><span class="nv"> </span><span class="s">password2&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">private</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="l l-Scalar l-Scalar-Plain">encrypt</span><span class="p p-Indicator">:</span> <span class="s">&quot;sha512_crypt&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">confirm</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="l l-Scalar l-Scalar-Plain">salt_size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
+</pre></div>
+</div>
+<p>If you have <a class="reference external" href="https://passlib.readthedocs.io/en/stable/">Passlib</a> installed, you can use any crypt scheme the library supports:</p>
+<ul class="simple">
+<li><em>des_crypt</em> - DES Crypt</li>
+<li><em>bsdi_crypt</em> - BSDi Crypt</li>
+<li><em>bigcrypt</em> - BigCrypt</li>
+<li><em>crypt16</em> - Crypt16</li>
+<li><em>md5_crypt</em> - MD5 Crypt</li>
+<li><em>bcrypt</em> - BCrypt</li>
+<li><em>sha1_crypt</em> - SHA-1 Crypt</li>
+<li><em>sun_md5_crypt</em> - Sun MD5 Crypt</li>
+<li><em>sha256_crypt</em> - SHA-256 Crypt</li>
+<li><em>sha512_crypt</em> - SHA-512 Crypt</li>
+<li><em>apr_md5_crypt</em> - Apache’s MD5-Crypt variant</li>
+<li><em>phpass</em> - PHPass’ Portable Hash</li>
+<li><em>pbkdf2_digest</em> - Generic PBKDF2 Hashes</li>
+<li><em>cta_pbkdf2_sha1</em> - Cryptacular’s PBKDF2 hash</li>
+<li><em>dlitz_pbkdf2_sha1</em> - Dwayne Litzenberger’s PBKDF2 hash</li>
+<li><em>scram</em> - SCRAM Hash</li>
+<li><em>bsd_nthash</em> - FreeBSD’s MCF-compatible nthash encoding</li>
+</ul>
+<p>The only parameters accepted are ‘salt’ or ‘salt_size’. You can use your own salt by defining
+‘salt’, or have one generated automatically using ‘salt_size’. By default Ansible generates a salt
+of size 8.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.7.</span></p>
+</div>
+<p>If you do not have Passlib installed, Ansible uses the <a class="reference external" href="https://docs.python.org/2/library/crypt.html">crypt</a> library as a fallback. Ansible supports at most four crypt schemes, depending on your platform at most the following crypt schemes are supported:</p>
+<ul class="simple">
+<li><em>bcrypt</em> - BCrypt</li>
+<li><em>md5_crypt</em> - MD5 Crypt</li>
+<li><em>sha256_crypt</em> - SHA-256 Crypt</li>
+<li><em>sha512_crypt</em> - SHA-512 Crypt</li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.8.</span></p>
+</div>
+</div>
+<div class="section" id="allowing-special-characters-in-vars-prompt-values">
+<span id="unsafe-prompts"></span><h2><a class="toc-backref" href="#id2">Allowing special characters in <code class="docutils literal notranslate"><span class="pre">vars_prompt</span></code> values</a><a class="headerlink" href="#allowing-special-characters-in-vars-prompt-values" title="Permalink to this headline">¶</a></h2>
+<p>Some special characters, such as <code class="docutils literal notranslate"><span class="pre">{</span></code> and <code class="docutils literal notranslate"><span class="pre">%</span></code> can create templating errors. If you need to accept special characters, use the <code class="docutils literal notranslate"><span class="pre">unsafe</span></code> option:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">vars_prompt</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;my_password_with_weird_chars&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">prompt</span><span class="p p-Indicator">:</span> <span class="s">&quot;Enter</span><span class="nv"> </span><span class="s">password&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">unsafe</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="l l-Scalar l-Scalar-Plain">private</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="playbooks_intro.html#playbooks-intro"><span class="std std-ref">Intro to Playbooks</span></a></dt>
+<dd>An introduction to playbooks</dd>
+<dt><a class="reference internal" href="playbooks_conditionals.html#playbooks-conditionals"><span class="std std-ref">Conditionals</span></a></dt>
+<dd>Conditional statements in playbooks</dd>
+<dt><a class="reference internal" href="playbooks_variables.html#playbooks-variables"><span class="std std-ref">Using Variables</span></a></dt>
+<dd>All about variables</dd>
+<dt><a class="reference external" href="https://groups.google.com/group/ansible-devel">User Mailing List</a></dt>
+<dd>Have a question?  Stop by the google group!</dd>
+<dt><a class="reference external" href="http://irc.freenode.net">irc.freenode.net</a></dt>
+<dd>#ansible IRC chat channel</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="playbooks_tags.html" class="btn btn-neutral float-right" title="Tags"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="plugin_filtering_config.html" class="btn btn-neutral" title="Plugin Filter Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

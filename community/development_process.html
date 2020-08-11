@@ -1,0 +1,760 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Ansible Development Cycle &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/community/development_process.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributors License Agreement" href="contributor_license_agreement.html" />
+    <link rel="prev" title="Communicating" href="communication.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Ansible Community Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#going-deeper">Going deeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#working-with-the-ansible-repo">Working with the Ansible repo</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#traditional-table-of-contents">Traditional Table of Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="code_of_conduct.html">Community Code of Conduct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="how_can_I_help.html">How can I help?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporting_bugs_and_features.html">Reporting Bugs And Requesting Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_contributions.html">Contributing to the Ansible Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="communication.html">Communicating</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">The Ansible Development Cycle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#macro-development-roadmaps-releases-and-projects">Macro development: roadmaps, releases, and projects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#micro-development-the-lifecycle-of-a-pr">Micro development: the lifecycle of a PR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#making-your-pr-merge-worthy">Making your PR merge-worthy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backporting-merged-prs">Backporting merged PRs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_license_agreement.html">Contributors License Agreement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="triage_process.html">Triage Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="other_tools_and_programs.html">Other Tools And Programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dev_guide/style_guide/index.html">Ansible style guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="committer_guidelines.html">Committers Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainers.html">Module Maintainer Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_managers.html">Release Manager Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="github_admins.html">GitHub Admins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Ansible Community Guide</a> &raquo;</li>
+        
+      <li>The Ansible Development Cycle</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/community/development_process.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-ansible-development-cycle">
+<span id="community-development-process"></span><h1>The Ansible Development Cycle<a class="headerlink" href="#the-ansible-development-cycle" title="Permalink to this headline">¶</a></h1>
+<p>The Ansible development cycle happens on two levels. At a macro level, the team plans releases and tracks progress with roadmaps and projects. At a micro level, each PR has its own lifecycle.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#macro-development-roadmaps-releases-and-projects" id="id1">Macro development: roadmaps, releases, and projects</a></li>
+<li><a class="reference internal" href="#micro-development-the-lifecycle-of-a-pr" id="id2">Micro development: the lifecycle of a PR</a><ul>
+<li><a class="reference internal" href="#automated-pr-review-ansibullbot" id="id3">Automated PR review: ansibullbot</a><ul>
+<li><a class="reference internal" href="#ansibot-workflow" id="id4">Ansibot workflow</a></li>
+<li><a class="reference internal" href="#pr-labels" id="id5">PR labels</a><ul>
+<li><a class="reference internal" href="#workflow-labels" id="id6">Workflow labels</a></li>
+<li><a class="reference internal" href="#information-labels" id="id7">Information labels</a></li>
+<li><a class="reference internal" href="#special-labels" id="id8">Special Labels</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#human-pr-review" id="id9">Human PR review</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#making-your-pr-merge-worthy" id="id10">Making your PR merge-worthy</a><ul>
+<li><a class="reference internal" href="#changelogs" id="id11">Changelogs</a><ul>
+<li><a class="reference internal" href="#creating-a-changelog-fragment" id="id12">Creating a changelog fragment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#backporting-merged-prs" id="id13">Backporting merged PRs</a></li>
+</ul>
+</div>
+<div class="section" id="macro-development-roadmaps-releases-and-projects">
+<h2><a class="toc-backref" href="#id1">Macro development: roadmaps, releases, and projects</a><a class="headerlink" href="#macro-development-roadmaps-releases-and-projects" title="Permalink to this headline">¶</a></h2>
+<p>If you want to follow the conversation about what features will be added to Ansible for upcoming releases and what bugs are being fixed, you can watch these resources:</p>
+<ul>
+<li><p class="first">the <a class="reference internal" href="../roadmap/index.html#roadmaps"><span class="std std-ref">Ansible Roadmap</span></a></p>
+</li>
+<li><p class="first">the <a class="reference internal" href="../reference_appendices/release_and_maintenance.html#release-and-maintenance"><span class="std std-ref">Ansible Release Schedule</span></a></p>
+</li>
+<li><p class="first">various GitHub <a class="reference external" href="https://github.com/ansible/ansible/projects">projects</a> - for example:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the <a class="reference external" href="https://github.com/ansible/ansible/projects/39">2.10 release project</a></li>
+<li>the <a class="reference external" href="https://github.com/ansible/ansible/projects/20">network bugs project</a></li>
+<li>the <a class="reference external" href="https://github.com/ansible/ansible/projects/27">core documentation project</a></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="micro-development-the-lifecycle-of-a-pr">
+<span id="community-pull-requests"></span><h2><a class="toc-backref" href="#id2">Micro development: the lifecycle of a PR</a><a class="headerlink" href="#micro-development-the-lifecycle-of-a-pr" title="Permalink to this headline">¶</a></h2>
+<p>Ansible accepts code through <strong>pull requests</strong> (“PRs” for short). GitHub provides a great overview of <a class="reference external" href="https://help.github.com/articles/about-pull-requests/">how the pull request process works</a> in general. The ultimate goal of any pull request is to get merged and become part of Ansible Core.
+Here’s an overview of the PR lifecycle:</p>
+<ul class="simple">
+<li>Contributor opens a PR</li>
+<li>Ansibot reviews the PR</li>
+<li>Ansibot assigns labels</li>
+<li>Ansibot pings maintainers</li>
+<li>Shippable runs the test suite</li>
+<li>Developers, maintainers, community review the PR</li>
+<li>Contributor addresses any feedback from reviewers</li>
+<li>Developers, maintainers, community re-review</li>
+<li>PR merged or closed</li>
+</ul>
+<div class="section" id="automated-pr-review-ansibullbot">
+<h3><a class="toc-backref" href="#id3">Automated PR review: ansibullbot</a><a class="headerlink" href="#automated-pr-review-ansibullbot" title="Permalink to this headline">¶</a></h3>
+<p>Because Ansible receives many pull requests, and because we love automating things, we’ve automated several steps of the process of reviewing and merging pull requests with a tool called Ansibullbot, or Ansibot for short.</p>
+<p><a class="reference external" href="https://github.com/ansible/ansibullbot/blob/master/ISSUE_HELP.md">Ansibullbot</a> serves many functions:</p>
+<ul class="simple">
+<li>Responds quickly to PR submitters to thank them for submitting their PR</li>
+<li>Identifies the community maintainer responsible for reviewing PRs for any files affected</li>
+<li>Tracks the current status of PRs</li>
+<li>Pings responsible parties to remind them of any PR actions for which they may be responsible</li>
+<li>Provides maintainers with the ability to move PRs through the workflow</li>
+<li>Identifies PRs abandoned by their submitters so that we can close them</li>
+<li>Identifies modules abandoned by their maintainers so that we can find new maintainers</li>
+</ul>
+<div class="section" id="ansibot-workflow">
+<h4><a class="toc-backref" href="#id4">Ansibot workflow</a><a class="headerlink" href="#ansibot-workflow" title="Permalink to this headline">¶</a></h4>
+<p>Ansibullbot runs continuously. You can generally expect to see changes to your issue or pull request within thirty minutes. Ansibullbot examines every open pull request in the repositories, and enforces state roughly according to the following workflow:</p>
+<ul class="simple">
+<li>If a pull request has no workflow labels, it’s considered <strong>new</strong>. Files in the pull request are identified, and the maintainers of those files are pinged by the bot, along with instructions on how to review the pull request. (Note: sometimes we strip labels from a pull request to “reboot” this process.)</li>
+<li>If the module maintainer is not <code class="docutils literal notranslate"><span class="pre">$team_ansible</span></code>, the pull request then goes into the <strong>community_review</strong> state.</li>
+<li>If the module maintainer is <code class="docutils literal notranslate"><span class="pre">$team_ansible</span></code>, the pull request then goes into the <strong>core_review</strong> state (and probably sits for a while).</li>
+<li>If the pull request is in <strong>community_review</strong> and has received comments from the maintainer:<ul>
+<li>If the maintainer says <code class="docutils literal notranslate"><span class="pre">shipit</span></code>, the pull request is labeled <strong>shipit</strong>, whereupon the Core team assesses it for final merge.</li>
+<li>If the maintainer says <code class="docutils literal notranslate"><span class="pre">needs_info</span></code>, the pull request is labeled <strong>needs_info</strong> and the submitter is asked for more info.</li>
+<li>If the maintainer says <strong>needs_revision</strong>, the pull request is labeled <strong>needs_revision</strong> and the submitter is asked to fix some things.</li>
+</ul>
+</li>
+<li>If the submitter says <code class="docutils literal notranslate"><span class="pre">ready_for_review</span></code>, the pull request is put back into <strong>community_review</strong> or <strong>core_review</strong> and the maintainer is notified that the pull request is ready to be reviewed again.</li>
+<li>If the pull request is labeled <strong>needs_revision</strong> or <strong>needs_info</strong> and the submitter has not responded lately:<ul>
+<li>The submitter is first politely pinged after two weeks, pinged again after two more weeks and labeled <strong>pending action</strong>, and the issue or pull request will be closed two weeks after that.</li>
+<li>If the submitter responds at all, the clock is reset.</li>
+</ul>
+</li>
+<li>If the pull request is labeled <strong>community_review</strong> and the reviewer has not responded lately:<ul>
+<li>The reviewer is first politely pinged after two weeks, pinged again after two more weeks and labeled <strong>pending_action</strong>, and then may be reassigned to <code class="docutils literal notranslate"><span class="pre">$team_ansible</span></code> or labeled <strong>core_review</strong>, or often the submitter of the pull request is asked to step up as a maintainer.</li>
+</ul>
+</li>
+<li>If Shippable tests fail, or if the code is not able to be merged, the pull request is automatically put into <strong>needs_revision</strong> along with a message to the submitter explaining why.</li>
+</ul>
+<p>There are corner cases and frequent refinements, but this is the workflow in general.</p>
+</div>
+<div class="section" id="pr-labels">
+<h4><a class="toc-backref" href="#id5">PR labels</a><a class="headerlink" href="#pr-labels" title="Permalink to this headline">¶</a></h4>
+<p>There are two types of PR Labels generally: <strong>workflow</strong> labels and <strong>information</strong> labels.</p>
+<div class="section" id="workflow-labels">
+<h5><a class="toc-backref" href="#id6">Workflow labels</a><a class="headerlink" href="#workflow-labels" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><strong>community_review</strong>: Pull requests for modules that are currently awaiting review by their maintainers in the Ansible community.</li>
+<li><strong>core_review</strong>: Pull requests for modules that are currently awaiting review by their maintainers on the Ansible Core team.</li>
+<li><strong>needs_info</strong>: Waiting on info from the submitter.</li>
+<li><strong>needs_rebase</strong>: Waiting on the submitter to rebase.</li>
+<li><strong>needs_revision</strong>: Waiting on the submitter to make changes.</li>
+<li><strong>shipit</strong>: Waiting for final review by the core team for potential merge.</li>
+</ul>
+</div>
+<div class="section" id="information-labels">
+<h5><a class="toc-backref" href="#id7">Information labels</a><a class="headerlink" href="#information-labels" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><strong>backport</strong>: this is applied automatically if the PR is requested against any branch that is not devel. The bot immediately assigns the labels backport and <code class="docutils literal notranslate"><span class="pre">core_review</span></code>.</li>
+<li><strong>bugfix_pull_request</strong>: applied by the bot based on the templatized description of the PR.</li>
+<li><strong>cloud</strong>: applied by the bot based on the paths of the modified files.</li>
+<li><strong>docs_pull_request</strong>: applied by the bot based on the templatized description of the PR.</li>
+<li><strong>easyfix</strong>: applied manually, inconsistently used but sometimes useful.</li>
+<li><strong>feature_pull_request</strong>: applied by the bot based on the templatized description of the PR.</li>
+<li><strong>networking</strong>: applied by the bot based on the paths of the modified files.</li>
+<li><strong>owner_pr</strong>: largely deprecated. Formerly workflow, now informational. Originally, PRs submitted by the maintainer would automatically go to <strong>shipit</strong> based on this label. If the submitter is also a maintainer, we notify the other maintainers and still require one of the maintainers (including the submitter) to give a <strong>shipit</strong>.</li>
+<li><strong>pending_action</strong>: applied by the bot to PRs that are not moving. Reviewed every couple of weeks by the community team, who tries to figure out the appropriate action (closure, asking for new maintainers, and so on).</li>
+</ul>
+</div>
+<div class="section" id="special-labels">
+<h5><a class="toc-backref" href="#id8">Special Labels</a><a class="headerlink" href="#special-labels" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><strong>new_plugin</strong>: this is for new modules or plugins that are not yet in Ansible.</li>
+</ul>
+<p><strong>Note:</strong> <cite>new_plugin</cite> kicks off a completely separate process, and frankly it doesn’t work very well at present. We’re working our best to improve this process.</p>
+</div>
+</div>
+</div>
+<div class="section" id="human-pr-review">
+<h3><a class="toc-backref" href="#id9">Human PR review</a><a class="headerlink" href="#human-pr-review" title="Permalink to this headline">¶</a></h3>
+<p>After Ansibot reviews the PR and applies labels, the PR is ready for human review. The most likely reviewers for any PR are the maintainers for the module that PR modifies.</p>
+<p>Each module has at least one assigned <a class="reference internal" href="maintainers.html#maintainers"><span class="std std-ref">maintainer</span></a>, listed in the <a class="reference external" href="https://github.com/ansible/ansible/blob/devel/.github/BOTMETA.yml">BOTMETA.yml</a> file.</p>
+<p>The maintainer’s job is to review PRs that affect that module and decide whether they should be merged (<code class="docutils literal notranslate"><span class="pre">shipit</span></code>) or revised (<code class="docutils literal notranslate"><span class="pre">needs_revision</span></code>). We’d like to have at least one community maintainer for every module. If a module has no community maintainers assigned, the maintainer is listed as <code class="docutils literal notranslate"><span class="pre">$team_ansible</span></code>.</p>
+<p>Once a human applies the <code class="docutils literal notranslate"><span class="pre">shipit</span></code> label, the <a class="reference internal" href="committer_guidelines.html#community-committer-guidelines"><span class="std std-ref">committers</span></a> decide whether the PR is ready to be merged. Not every PR that gets the <code class="docutils literal notranslate"><span class="pre">shipit</span></code> label is actually ready to be merged, but the better our reviewers are, and the better our guidelines are, the more likely it will be that a PR that reaches <strong>shipit</strong> will be mergeable.</p>
+</div>
+</div>
+<div class="section" id="making-your-pr-merge-worthy">
+<h2><a class="toc-backref" href="#id10">Making your PR merge-worthy</a><a class="headerlink" href="#making-your-pr-merge-worthy" title="Permalink to this headline">¶</a></h2>
+<p>We don’t merge every PR. Here are some tips for making your PR useful, attractive, and merge-worthy.</p>
+<div class="section" id="changelogs">
+<span id="community-changelogs"></span><h3><a class="toc-backref" href="#id11">Changelogs</a><a class="headerlink" href="#changelogs" title="Permalink to this headline">¶</a></h3>
+<p>Changelogs help users and developers keep up with changes to Ansible.
+Ansible builds a changelog for each release from fragments. You <strong>must</strong> add a changelog fragment to any PR that changes functionality or fixes a bug.
+You don’t have to add a changelog fragment for PRs that add new
+modules and plugins, because our tooling does that for you automatically.</p>
+<p>We build short summary changelogs for minor releases as well as for major releases. If you backport a bugfix, include a changelog fragment with the backport PR.</p>
+<div class="section" id="creating-a-changelog-fragment">
+<span id="changelogs-how-to"></span><h4><a class="toc-backref" href="#id12">Creating a changelog fragment</a><a class="headerlink" href="#creating-a-changelog-fragment" title="Permalink to this headline">¶</a></h4>
+<p>A basic changelog fragment is a <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file placed in the
+<code class="docutils literal notranslate"><span class="pre">changelogs/fragments/</span></code> directory.  Each file contains a yaml dict with
+keys like <code class="docutils literal notranslate"><span class="pre">bugfixes</span></code> or <code class="docutils literal notranslate"><span class="pre">major_changes</span></code> followed by a list of
+changelog entries of bugfixes or features.  Each changelog entry is
+rst embedded inside of the yaml file which means that certain
+constructs would need to be escaped so they can be interpreted by rst
+and not by yaml (or escaped for both yaml and rst if that’s your
+desire).  Each PR <strong>must</strong> use a new fragment file rather than adding to
+an existing one, so we can trace the change back to the PR that introduced it.</p>
+<p>To create a changelog entry, create a new file with a unique name in the <code class="docutils literal notranslate"><span class="pre">changelogs/fragments/</span></code> directory. The file name should include the PR number and a description of the change. It must end with the file extension <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">40696-user-backup-shadow-file.yaml</span></code></p>
+<p>A single changelog fragment may contain multiple sections but most will only contain one section.
+The toplevel keys (bugfixes, major_changes, and so on) are defined in the
+<a class="reference external" href="https://github.com/ansible/ansible/blob/devel/changelogs/config.yaml">config file</a> for our release note tool. Here are the valid sections and a description of each:</p>
+<dl class="docutils">
+<dt><strong>major_changes</strong></dt>
+<dd>Major changes to Ansible itself. Generally does not include module or plugin changes.</dd>
+<dt><strong>minor_changes</strong></dt>
+<dd>Minor changes to Ansible, modules, or plugins. This includes new features, new parameters added to modules, or behavior changes to existing parameters.</dd>
+<dt><strong>deprecated_features</strong></dt>
+<dd>Features that have been deprecated and are scheduled for removal in a future release.</dd>
+<dt><strong>removed_features</strong></dt>
+<dd>Features that were previously deprecated and are now removed.</dd>
+<dt><strong>bugfixes</strong></dt>
+<dd>Fixes that resolve issues. If there is a specific issue related to this bugfix, add a link in the changelog entry.</dd>
+<dt><strong>known_issues</strong></dt>
+<dd>Known issues that are currently not fixed or will not be fixed.</dd>
+</dl>
+<p>Most changelog entries will be <code class="docutils literal notranslate"><span class="pre">bugfixes</span></code> or <code class="docutils literal notranslate"><span class="pre">minor_changes</span></code>. When writing a changelog entry that pertains to a particular module, start the entry with <code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">[module</span> <span class="pre">name]</span> <span class="pre">-</span></code> and include a link to the related issue if one exists.</p>
+<p>Here are some examples:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">bugfixes</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">win_updates - fixed issue where running win_updates on async fails without any error</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">minor_changes</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lineinfile - add warning when using an empty regexp (https://github.com/ansible/ansible/issues/29443)</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">bugfixes</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">copy module - The copy module was attempting to change the mode of files for</span>
+<span class=" -Error"> </span><span class="l l-Scalar l-Scalar-Plain">remote_src=True even if mode was not set as a parameter.  This failed on</span>
+ <span class="l l-Scalar l-Scalar-Plain">filesystems which do not have permission bits.</span>
+</pre></div>
+</div>
+<p>You can find more example changelog fragments in the <a class="reference external" href="https://github.com/ansible/ansible/tree/stable-2.6/changelogs/fragments">changelog directory</a> for the 2.6 release. You can also find documentation of the format, including hints on embedding rst in the yaml, in the <a class="reference external" href="https://docs.openstack.org/reno/latest/user/usage.html#editing-a-release-note">reno documentation</a>.</p>
+<p>Once you’ve written the changelog fragment for your PR, commit the file and include it with the pull request.</p>
+</div>
+</div>
+</div>
+<div class="section" id="backporting-merged-prs">
+<span id="backport-process"></span><h2><a class="toc-backref" href="#id13">Backporting merged PRs</a><a class="headerlink" href="#backporting-merged-prs" title="Permalink to this headline">¶</a></h2>
+<p>All Ansible PRs must be merged to the <code class="docutils literal notranslate"><span class="pre">devel</span></code> branch first.
+After a pull request has been accepted and merged to the <code class="docutils literal notranslate"><span class="pre">devel</span></code> branch, the following instructions will help you create a
+pull request to backport the change to a previous stable branch.</p>
+<p>We do <strong>not</strong> backport features.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>These instructions assume that:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">stable-2.9</span></code> is the targeted release branch for the backport</li>
+<li><code class="docutils literal notranslate"><span class="pre">https://github.com/ansible/ansible.git</span></code> is configured as a
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span></code> named <code class="docutils literal notranslate"><span class="pre">upstream</span></code>. If you do not use
+a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span></code> named <code class="docutils literal notranslate"><span class="pre">upstream</span></code>, adjust the instructions accordingly.</li>
+<li><code class="docutils literal notranslate"><span class="pre">https://github.com/&lt;yourgithubaccount&gt;/ansible.git</span></code>
+is configured as a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span></code> named <code class="docutils literal notranslate"><span class="pre">origin</span></code>. If you do not use
+a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span></code> named <code class="docutils literal notranslate"><span class="pre">origin</span></code>, adjust the instructions accordingly.</li>
+</ul>
+</div></blockquote>
+</div>
+<ol class="arabic">
+<li><p class="first">Prepare your devel, stable, and feature branches:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">git fetch upstream</span>
+<span class="l l-Scalar l-Scalar-Plain">git checkout -b backport/2.9/[PR_NUMBER_FROM_DEVEL] upstream/stable-2.9</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Cherry pick the relevant commit SHA from the devel branch into your feature
+branch, handling merge conflicts as necessary:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">git cherry-pick -x [SHA_FROM_DEVEL]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Add a <a class="reference internal" href="#changelogs-how-to"><span class="std std-ref">changelog fragment</span></a> for the change, and commit it.</p>
+</li>
+<li><p class="first">Push your feature branch to your fork on GitHub:</p>
+<div class="highlight-YAML+Jinja notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">git push origin backport/2.9/[PR_NUMBER_FROM_DEVEL]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Submit the pull request for <code class="docutils literal notranslate"><span class="pre">backport/2.9/[PR_NUMBER_FROM_DEVEL]</span></code>
+against the <code class="docutils literal notranslate"><span class="pre">stable-2.9</span></code> branch</p>
+</li>
+<li><p class="first">The Release Manager will decide whether to merge the backport PR before
+the next minor release. There isn’t any need to follow up. Just ensure that the automated
+tests (CI) are green.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The choice to use <code class="docutils literal notranslate"><span class="pre">backport/2.9/[PR_NUMBER_FROM_DEVEL]</span></code> as the
+name for the feature branch is somewhat arbitrary, but conveys meaning
+about the purpose of that branch. It is not required to use this format,
+but it can be helpful, especially when making multiple backport PRs for
+multiple stable branches.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you prefer, you can use CPython’s cherry-picker tool
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">'cherry-picker</span> <span class="pre">&gt;=</span> <span class="pre">1.3.2'</span></code>) to backport commits
+from devel to stable branches in Ansible. Take a look at the <a class="reference external" href="https://pypi.org/p/cherry-picker#cherry-picking">cherry-picker
+documentation</a> for
+details on installing, configuring, and using it.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="contributor_license_agreement.html" class="btn btn-neutral float-right" title="Contributors License Agreement"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="communication.html" class="btn btn-neutral" title="Communicating"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>

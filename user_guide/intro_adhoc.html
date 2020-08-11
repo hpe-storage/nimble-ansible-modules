@@ -1,0 +1,616 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction to ad-hoc commands &mdash; Ansible Documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html"/>
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ansible.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Connection methods and details" href="connection_details.html" />
+    <link rel="prev" title="Patterns: targeting hosts and groups" href="intro_patterns.html" /> <!---- extra head elements for Ansible beyond RTD Sphinx Theme --->
+<script type="text/javascript" src="//www.redhat.com/dtm.js"></script>
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="devel">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script> 
+</head>
+
+<body class="wy-body-for-nav">
+   <!---- extra body elements for Ansible beyond RTD Sphinx Theme --->
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+  <div class="DocSite-globalNav ansibleNav">
+      <ul>
+          <li><a href="https://www.ansible.com/ansiblefest" target="_blank">AnsibleFest</a></li>
+          <li><a href="https://www.ansible.com/tower" target="_blank">Products</a></li>
+          <li><a href="https://www.ansible.com/community" target="_blank">Community</a></li>
+          <li><a href="https://www.ansible.com/webinars-training" target="_blank">Webinars & Training</a></li>
+          <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+      </ul>
+  </div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../_static/images/logo_invert.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">
+    Documentation
+  </div>
+</a> 
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ansible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                devel
+              </div>
+            
+          
+
+          <!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <div class="version-dropdown">
+      <select class="version-list" id="version-list" onchange="javascript:location.href = this.value;">
+        <script> x = document.getElementById("version-list"); </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "latest";
+            if ( "latest" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","latest");
+            } else {
+              option.value = current_url.replace("latest","latest");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.8";
+            if ( "2.8" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.8");
+            } else {
+              option.value = current_url.replace("latest","2.8");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "2.7";
+            if ( "2.7" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","2.7");
+            } else {
+              option.value = current_url.replace("latest","2.7");
+            }
+            x.add(option);
+          </script>
+        
+          <script>
+            current_url = window.location.href;
+            option = document.createElement("option");
+            option.text = "devel";
+            if ( "devel" == "devel" ) {
+              option.selected = true;
+            }
+            if (current_url.search("devel") > -1) {
+              option.value = current_url.replace("devel","devel");
+            } else {
+              option.value = current_url.replace("latest","devel");
+            }
+            x.add(option);
+          </script>
+        
+      </select>
+    </div>
+  
+</div>
+          
+<div role="search">
+<!--  <form id="rtd-search-form" class="wy-form" action="../search.html" -->
+  <form id="rtd-search-form" class="wy-form"  method="get">
+    <input type="text" class="st-default-search-input" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">User Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Ansible Community Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/cloud_guides.html">Public Cloud Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/network_guides.html">Network Technology Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scenario_guides/virt_guides.html">Virtualization and Containerization Guides</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../network/getting_started/index.html">Network Automation Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/user_guide/index.html">Network Automation Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../network/dev_guide/index.html">Network Automation Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules_by_category.html">Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/release_and_maintenance.html">Release and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/tower.html">Red Hat Ansible Tower</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap/index.html">Ansible Roadmap</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+         <!-- extra nav elements for Ansible beyond RTD Sphinx Theme --->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br/>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="https://cdn2.hubspot.net/hubfs/330046/docs-graphics/ASB-docs-left-rail.png" />
+  </a>
+  <br/><br/><br/>
+</div>
+      </div>
+    </nav>
+  </div>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ansible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+      <li>Introduction to ad-hoc commands</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <!-- Ansible-specific additions for modules etc -->
+                
+                  <a href="https://github.com/ansible/ansible/edit/devel/docs/docsite/rst/user_guide/intro_adhoc.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+                
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <!--- Based on sphinx versionwarning extension. Extension currently only works on READTHEDOCS -->
+  <script>
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("This is a testing site. For the official docs go to https://docs.ansible.com/");
+      para.appendChild(banner_text);
+      element = document.getElementById('testing_banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+
+    // Create a banner if we're not the latest version
+    current_url = window.location.href;
+    if ((current_url.search("latest") > -1) || (current_url.search("/2.9/") > -1)) {
+     // no banner for latest release
+    } else if (current_url.search("devel") > -1) {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading the *devel* version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    } else {
+      document.write('<div id="banner_id" class="admonition caution">');
+      para = document.createElement('p');
+      banner_text=document.createTextNode("You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the latest stable released version.");
+      para.appendChild(banner_text);
+      element = document.getElementById('banner_id');
+      element.appendChild(para);
+      document.write('</div>');
+    }
+  </script>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction-to-ad-hoc-commands">
+<span id="intro-adhoc"></span><h1>Introduction to ad-hoc commands<a class="headerlink" href="#introduction-to-ad-hoc-commands" title="Permalink to this headline">¶</a></h1>
+<p>An Ansible ad-hoc command uses the <cite>/usr/bin/ansible</cite> command-line tool to automate a single task on one or more managed nodes. Ad-hoc commands are quick and easy, but they are not reusable. So why learn about ad-hoc commands first? Ad-hoc commands demonstrate the simplicity and power of Ansible. The concepts you learn here will port over directly to the playbook language. Before reading and executing these examples, please read <a class="reference internal" href="intro_inventory.html#intro-inventory"><span class="std std-ref">How to build your inventory</span></a>.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#why-use-ad-hoc-commands" id="id4">Why use ad-hoc commands?</a></li>
+<li><a class="reference internal" href="#use-cases-for-ad-hoc-tasks" id="id5">Use cases for ad-hoc tasks</a><ul>
+<li><a class="reference internal" href="#rebooting-servers" id="id6">Rebooting servers</a></li>
+<li><a class="reference internal" href="#managing-files" id="id7">Managing files</a></li>
+<li><a class="reference internal" href="#managing-packages" id="id8">Managing packages</a></li>
+<li><a class="reference internal" href="#managing-users-and-groups" id="id9">Managing users and groups</a></li>
+<li><a class="reference internal" href="#managing-services" id="id10">Managing services</a></li>
+<li><a class="reference internal" href="#gathering-facts" id="id11">Gathering facts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="why-use-ad-hoc-commands">
+<h2><a class="toc-backref" href="#id4">Why use ad-hoc commands?</a><a class="headerlink" href="#why-use-ad-hoc-commands" title="Permalink to this headline">¶</a></h2>
+<p>Ad-hoc commands are great for tasks you repeat rarely. For example, if you want to power off all the machines in your lab for Christmas vacation, you could execute a quick one-liner in Ansible without writing a playbook. An ad-hoc command looks like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible <span class="o">[</span>pattern<span class="o">]</span> -m <span class="o">[</span>module<span class="o">]</span> -a <span class="s2">&quot;[module options]&quot;</span>
+</pre></div>
+</div>
+<p>You can learn more about <a class="reference internal" href="intro_patterns.html#intro-patterns"><span class="std std-ref">patterns</span></a> and <a class="reference internal" href="modules.html#working-with-modules"><span class="std std-ref">modules</span></a> on other pages.</p>
+</div>
+<div class="section" id="use-cases-for-ad-hoc-tasks">
+<h2><a class="toc-backref" href="#id5">Use cases for ad-hoc tasks</a><a class="headerlink" href="#use-cases-for-ad-hoc-tasks" title="Permalink to this headline">¶</a></h2>
+<p>Ad-hoc tasks can be used to reboot servers, copy files, manage packages and users, and much more. You can use any Ansible module in an ad-hoc task. Ad-hoc tasks, like playbooks, use a declarative model,
+calculating and executing the actions required to reach a specified final state. They
+achieve a form of idempotence by checking the current state before they begin and doing nothing unless the current state is different from the specified final state.</p>
+<div class="section" id="rebooting-servers">
+<h3><a class="toc-backref" href="#id6">Rebooting servers</a><a class="headerlink" href="#rebooting-servers" title="Permalink to this headline">¶</a></h3>
+<p>The default module for the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> command-line utility is the <a class="reference internal" href="../modules/command_module.html#command-module"><span class="std std-ref">command module</span></a>. You can use an ad-hoc task to call the command module and reboot all web servers in Atlanta, 10 at a time. Before Ansible can do this, you must have all servers in Atlanta listed in a a group called [atlanta] in your inventory, and you must have working SSH credentials for each machine in that group. To reboot all the servers in the [atlanta] group:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible atlanta -a <span class="s2">&quot;/sbin/reboot&quot;</span>
+</pre></div>
+</div>
+<p>By default Ansible uses only 5 simultaneous processes. If you have more hosts than the value set for the fork count, Ansible will talk to them, but it will take a little longer. To reboot the [atlanta] servers with 10 parallel forks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible atlanta -a <span class="s2">&quot;/sbin/reboot&quot;</span> -f <span class="m">10</span>
+</pre></div>
+</div>
+<p>/usr/bin/ansible will default to running from your user account. To connect as a different user:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible atlanta -a <span class="s2">&quot;/sbin/reboot&quot;</span> -f <span class="m">10</span> -u username
+</pre></div>
+</div>
+<p>Rebooting probably requires privilege escalation. You can connect to the server as <code class="docutils literal notranslate"><span class="pre">username</span></code> and run the command as the <code class="docutils literal notranslate"><span class="pre">root</span></code> user by using the <a class="reference internal" href="become.html#become"><span class="std std-ref">become</span></a> keyword:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible atlanta -a <span class="s2">&quot;/sbin/reboot&quot;</span> -f <span class="m">10</span> -u username --become <span class="o">[</span>--ask-become-pass<span class="o">]</span>
+</pre></div>
+</div>
+<p>If you add <code class="docutils literal notranslate"><span class="pre">--ask-become-pass</span></code> or <code class="docutils literal notranslate"><span class="pre">-K</span></code>, Ansible prompts you for the password to use for privilege escalation (sudo/su/pfexec/doas/etc).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference internal" href="../modules/command_module.html#command-module"><span class="std std-ref">command module</span></a> does not support extended shell syntax like piping and
+redirects (although shell variables will always work). If your command requires shell-specific
+syntax, use the <cite>shell</cite> module instead. Read more about the differences on the
+<a class="reference internal" href="modules.html#working-with-modules"><span class="std std-ref">Working With Modules</span></a> page.</p>
+</div>
+<p>So far all our examples have used the default ‘command’ module. To use a different module, pass <code class="docutils literal notranslate"><span class="pre">-m</span></code> for module name. For example, to use the <a class="reference internal" href="../modules/shell_module.html#shell-module"><span class="std std-ref">shell module</span></a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible raleigh -m shell -a <span class="s1">&#39;echo $TERM&#39;</span>
+</pre></div>
+</div>
+<p>When running any command with the Ansible <em>ad hoc</em> CLI (as opposed to
+<a class="reference internal" href="playbooks.html#working-with-playbooks"><span class="std std-ref">Playbooks</span></a>), pay particular attention to shell quoting rules, so
+the local shell retains the variable and passes it to Ansible.
+For example, using double rather than single quotes in the above example would
+evaluate the variable on the box you were on.</p>
+</div>
+<div class="section" id="managing-files">
+<span id="file-transfer"></span><h3><a class="toc-backref" href="#id7">Managing files</a><a class="headerlink" href="#managing-files" title="Permalink to this headline">¶</a></h3>
+<p>An ad-hoc task can harness the power of Ansible and SCP to transfer many files to multiple machines in parallel. To transfer a file directly to all servers in the [atlanta] group:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible atlanta -m copy -a <span class="s2">&quot;src=/etc/hosts dest=/tmp/hosts&quot;</span>
+</pre></div>
+</div>
+<p>If you plan to repeat a task like this, use the <a class="reference internal" href="../modules/template_module.html#template-module"><span class="std std-ref">template</span></a> module in a playbook.</p>
+<p>The <a class="reference internal" href="../modules/file_module.html#file-module"><span class="std std-ref">file</span></a> module allows changing ownership and permissions on files. These
+same options can be passed directly to the <code class="docutils literal notranslate"><span class="pre">copy</span></code> module as well:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m file -a <span class="s2">&quot;dest=/srv/foo/a.txt mode=600&quot;</span>
+$ ansible webservers -m file -a <span class="s2">&quot;dest=/srv/foo/b.txt mode=600 owner=mdehaan group=mdehaan&quot;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">file</span></code> module can also create directories, similar to <code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">-p</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m file -a <span class="s2">&quot;dest=/path/to/c mode=755 owner=mdehaan group=mdehaan state=directory&quot;</span>
+</pre></div>
+</div>
+<p>As well as delete directories (recursively) and delete files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m file -a <span class="s2">&quot;dest=/path/to/c state=absent&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="managing-packages">
+<span id="id1"></span><h3><a class="toc-backref" href="#id8">Managing packages</a><a class="headerlink" href="#managing-packages" title="Permalink to this headline">¶</a></h3>
+<p>You might also use an ad-hoc task to install, update, or remove packages on managed nodes using a package management module like yum. To ensure a package is installed without updating it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m yum -a <span class="s2">&quot;name=acme state=present&quot;</span>
+</pre></div>
+</div>
+<p>To ensure a specific version of a package is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m yum -a <span class="s2">&quot;name=acme-1.5 state=present&quot;</span>
+</pre></div>
+</div>
+<p>To ensure a package is at the latest version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m yum -a <span class="s2">&quot;name=acme state=latest&quot;</span>
+</pre></div>
+</div>
+<p>To ensure a package is not installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m yum -a <span class="s2">&quot;name=acme state=absent&quot;</span>
+</pre></div>
+</div>
+<p>Ansible has modules for managing packages under many platforms. If there is no module for your package manager, you can install packages using the command module or create a module for your package manager.</p>
+</div>
+<div class="section" id="managing-users-and-groups">
+<span id="users-and-groups"></span><h3><a class="toc-backref" href="#id9">Managing users and groups</a><a class="headerlink" href="#managing-users-and-groups" title="Permalink to this headline">¶</a></h3>
+<p>You can create, manage, and remove user accounts on your managed nodes with ad-hoc tasks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible all -m user -a <span class="s2">&quot;name=foo password=&lt;crypted password here&gt;&quot;</span>
+
+$ ansible all -m user -a <span class="s2">&quot;name=foo state=absent&quot;</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="../modules/user_module.html#user-module"><span class="std std-ref">user</span></a> module documentation for details on all of the available options, including
+how to manipulate groups and group membership.</p>
+</div>
+<div class="section" id="managing-services">
+<span id="id2"></span><h3><a class="toc-backref" href="#id10">Managing services</a><a class="headerlink" href="#managing-services" title="Permalink to this headline">¶</a></h3>
+<p>Ensure a service is started on all webservers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m service -a <span class="s2">&quot;name=httpd state=started&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively, restart a service on all webservers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m service -a <span class="s2">&quot;name=httpd state=restarted&quot;</span>
+</pre></div>
+</div>
+<p>Ensure a service is stopped:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible webservers -m service -a <span class="s2">&quot;name=httpd state=stopped&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="gathering-facts">
+<span id="id3"></span><h3><a class="toc-backref" href="#id11">Gathering facts</a><a class="headerlink" href="#gathering-facts" title="Permalink to this headline">¶</a></h3>
+<p>Facts represent discovered variables about a system. You can use facts to implement conditional execution of tasks but also just to get ad-hoc information about your systems. To see all facts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ansible all -m setup
+</pre></div>
+</div>
+<p>You can also filter this output to display only certain facts, see the <a class="reference internal" href="../modules/setup_module.html#setup-module"><span class="std std-ref">setup</span></a> module documentation for details.</p>
+<p>Now that you understand the basic elements of Ansible execution, you are ready to learn to automate repetitive tasks using <a class="reference internal" href="playbooks_intro.html#playbooks-intro"><span class="std std-ref">Ansible Playbooks</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../installation_guide/intro_configuration.html#intro-configuration"><span class="std std-ref">Configuring Ansible</span></a></dt>
+<dd>All about the Ansible config file</dd>
+<dt><a class="reference internal" href="../modules/list_of_all_modules.html#all-modules"><span class="std std-ref">All modules</span></a></dt>
+<dd>A list of available modules</dd>
+<dt><a class="reference internal" href="playbooks.html#working-with-playbooks"><span class="std std-ref">Working With Playbooks</span></a></dt>
+<dd>Using Ansible for configuration management &amp; deployment</dd>
+<dt><a class="reference external" href="https://groups.google.com/group/ansible-project">Mailing List</a></dt>
+<dd>Questions? Help? Ideas?  Stop by the list on Google Groups</dd>
+<dt><a class="reference external" href="http://irc.freenode.net">irc.freenode.net</a></dt>
+<dd>#ansible IRC chat channel</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="connection_details.html" class="btn btn-neutral float-right" title="Connection methods and details"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="intro_patterns.html" class="btn btn-neutral" title="Patterns: targeting hosts and groups"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Red Hat, Inc.
+      <span class="lastupdated">
+        Last updated on Aug 10, 2020.
+      </span>
+
+    </p>
+  </div> 
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script>
+
+  
+  
+    
+   <!-- extra footer elements for Ansible beyond RTD Sphinx Theme --->
+<!-- begin analytics -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = '//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script type="text/javascript">
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script> 
+
+</body>
+</html>
