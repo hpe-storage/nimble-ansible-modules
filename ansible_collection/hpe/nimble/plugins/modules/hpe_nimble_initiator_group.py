@@ -13,7 +13,7 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
 
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
@@ -22,7 +22,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ar-india)
+  - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
 description: Manage HPE Nimble Storage initiator groups.
 module: hpe_nimble_initiator_group
 options:
@@ -106,7 +106,7 @@ EXAMPLES = r'''
 # if state is present, then create ig if not present. Succeeds if it already exists.
 - name: Create an igroup
   hpe_nimble_initiator_group:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
@@ -117,7 +117,7 @@ EXAMPLES = r'''
 
 - name: Delete igroup
   hpe_nimble_initiator_group:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     access_protocol: "{{ access_protocol | default('iscsi')}}"
@@ -275,7 +275,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

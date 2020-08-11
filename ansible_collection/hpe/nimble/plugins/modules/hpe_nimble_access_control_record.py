@@ -12,7 +12,7 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -24,8 +24,8 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 author:
-  - Alok Ranjan (@ar-india)
-description: On HPE Nimble Storage array - Create or delete access control record for volume.
+  - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+description: Manage access control records on HPE Nimble Storage group.
 module: hpe_nimble_access_control_record
 options:
   apply_to:
@@ -79,7 +79,7 @@ EXAMPLES = r'''
 # if state is present, create access control record if not already present.
 - name: Create access control record for volume
   hpe_nimble_access_control_record:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
@@ -89,7 +89,7 @@ EXAMPLES = r'''
 # Delete the access control record for a given volume name
 - name: Delete access control record for volume
   hpe_nimble_access_control_record:
-    hostname: "{{ hostname }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     volume: "{{ volume }}"
@@ -215,7 +215,7 @@ def main():
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
-    hostname = module.params["hostname"]
+    hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
     state = module.params["state"]

@@ -10,26 +10,26 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
 
 class ModuleDocFragment(object):
 
     # HPE Nimble doc fragment
     DOCUMENTATION = '''
 options:
-  hostname:
+  host:
     description:
-    - The storage system IP address.
+    - HPE Nimble Storage IP address.
     required: True
     type: str
   password:
     description:
-    - The storage system password.
+    - HPE Nimble Storage password.
     required: True
     type: str
   username:
     description:
-    - The storage system user name.
+    - HPE Nimble Storage user name.
     required: True
     type: str
 requirements:
