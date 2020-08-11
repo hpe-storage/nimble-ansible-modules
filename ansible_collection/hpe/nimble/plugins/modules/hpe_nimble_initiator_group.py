@@ -38,7 +38,7 @@ options:
     required: False
     type: str
     description:
-    - Application identifier of initiator group.
+    - Application identifier of initiator group. String of up to 255 alphanumeric characters, hyphen, colon, dot and underscore are allowed.
   change_name:
     required: False
     type: str
