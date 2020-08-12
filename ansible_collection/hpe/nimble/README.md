@@ -14,16 +14,19 @@ This is a pre-release of the HPE Nimble Storage Content Collection for Ansible.
 Install the collection on your Ansible management host.
 
 ```
-ansible-galaxy collection install git+https://github.com/hpe-storage/nimble-ansible-modules.git,rel-1.0.0
+ansible-galaxy collection install git+https://github.com/hpe-storage/nimble-ansible-modules.git#ansible_collection/hpe/nimble,rel-1.0.0
 ```
 
 **Note**: This is a beta release. The content collection will be made available through Ansible Galaxy and Automation Hub upon release.
 
 ## Documentation
 
-A local rendering of the Ansible 2.10 docs with the HPE Nimble Storage Content Collection for Ansible is being made available below.
+A [local rendering](https://hpe-storage.github.io/nimble-ansible-modules/modules/list_of_storage_modules.html) of the Ansible documentation for the available modules:
 
-- [HPE Nimble Storage](https://hpe-storage.github.io/nimble-ansible-modules/modules/list_of_storage_modules.html)
+- [hpe_nimble_volume](https://hpe-storage.github.io/nimble-ansible-modules/modules/hpe_nimble_volume_module.html#hpe-nimble-volume-module)
+- [hpe_nimble_initiator_group](https://hpe-storage.github.io/nimble-ansible-modules/modules/hpe_nimble_initiator_group_module.html#hpe-nimble-initiator-group-module)
+- [hpe_nimble_access_control_record](https://hpe-storage.github.io/nimble-ansible-modules/modules/hpe_nimble_access_control_record_module.html#hpe-nimble-access-control-record-module)
+- [hpe_nimble_info](https://hpe-storage.github.io/nimble-ansible-modules/modules/hpe_nimble_info_module.html#hpe-nimble-info-module)
 
 ## License
 
@@ -43,4 +46,4 @@ HPE Nimble Storage Content Collection for Ansible is released under the Apache-2
     See the License for the specific language governing permissions and
     limitations under the License.
     
-See [LICENSE](LICENSE) for the full terms.
+See [LICENSE](https://github.com/hpe-storage/nimble-ansible-modules/blob/master/LICENSE) for the full terms.
