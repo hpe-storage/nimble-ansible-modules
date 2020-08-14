@@ -26,7 +26,7 @@ DOCUMENTATION = r'''
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
 description: Manage users on HPE Nimble Storage group.
-module: hpe_nimble_users
+module: hpe_nimble_user
 options:
   auth_password:
     required: False
@@ -111,7 +111,7 @@ EXAMPLES = r'''
 # if state is create, then create user, fails if it exist or cannot create
 # if state is present, then create user if not present, else success
 - name: Create user
-  hpe_nimble_users:
+  hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -120,7 +120,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete user
-  hpe_nimble_users:
+  hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -128,7 +128,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Unlock user
-  hpe_nimble_users:
+  hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
