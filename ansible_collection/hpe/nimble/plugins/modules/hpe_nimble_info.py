@@ -161,7 +161,7 @@ nimble_info:
   description: Returns the information collected from the HPE Nimble Storage array
   returned: always
   type: complex
-   "nimble_info": {
+  sample: {
     "config": {
         "arrays": [
             {
