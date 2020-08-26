@@ -1,0 +1,77 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "ansible-volcoll"
+    description: "modified 2"
+
+  tasks:
+
+      # if state is create , then create a volcoll if not present. Fails if already present.
+      # if state is present, then create a volcoll if not present. Succeed if it already exists.
+    - name: Create Volume collection if not present
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+
+    - name: Promote vol coll should fail with message SM_ealready
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: present
+        promote: True
+      register: output
+      failed_when: " 'SM_ealready' not in output.msg"
+
+    - name: check mandatory param for Demote vol coll
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: present
+        demote: True
+        # replication_partner: "suneeth-fiji.rtpvlab.nimblestorage.com"
+      register: output
+      failed_when: " 'replication_partner_id' not in output.msg"
+
+    - name: "Demote vol coll will fail with msg : Invalid value for replication partner"
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: present
+        demote: True
+        replication_partner: "abc-xyz.rtpvlab.nimblestorage.com"
+      register: output
+      failed_when: " 'Invalid value for replication partner' not in output.exception"
+
+    - name: Validate vol coll
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: present
+        validate: True
+
+    - name: Delete vol coll (it's can have volumes)
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+
+

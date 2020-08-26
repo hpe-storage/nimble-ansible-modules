@@ -1,0 +1,197 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "ansible-vol1"
+    cloned_vol: "ansible-cloned-vol1"
+    volcoll: "ansible-volcoll"
+    #volcoll: ""
+    force: true
+    size: 2000
+    limit_iops: 1020
+    limit_mbps: 50000
+    description: "hello ansible modaifi 3"
+    parent: "ansible-vol1"
+    metadata: {
+            "key_-*1": "xyz",
+            "ansible": "metadasda",
+            "nikki6": "met2ads12sda"
+        }
+    destination: "ansible-default"
+    #snapshot: "ansible2" # used for cloning
+
+  tasks:
+
+      # if state is create , then create a volume if not present. Fails if already present.
+      # if state is present, then create a volume if not present. Succeed if it already exists.
+    - name: Create Volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        size: "{{ size }}"
+        limit_iops: "{{ limit_iops }}"
+        limit_mbps: "{{ limit_mbps }}"
+        force: "{{force | default(0)}}"
+        metadata: "{{ metadata }}"
+        description: "{{ description }}"
+        #volcoll: "{{ ansible_default_ipv4['address']}}-{{ volcoll }}"
+        #volcoll: ""
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+
+      register: output
+
+    # - debug:
+    #     var: output
+    #   tags:
+    #     - create_vol
+
+
+    - name: Changing Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+
+
+    - name: Changing Volume to online state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: true
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+
+    - name: Delete volume. This should fail as volume is online
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+      register: output
+      failed_when: "'SM_http_conflict' not in output.msg"
+
+    - name: Changing Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+
+
+    - name: Delete volume. This should pass
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+      register: output
+      #failed_when: "'SM_http_conflict' not in output.msg"
+
+    - name: Create Volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        size: "{{ size }}"
+        limit_iops: "{{ limit_iops }}"
+        limit_mbps: "{{ limit_mbps }}"
+        force: "{{force | default(0)}}"
+        metadata: "{{ metadata }}"
+        description: "{{ description }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+      register: output
+
+    # Create a clone from the given snapshot name.
+    # if snapshot name is not provided then create a snapshot of source volume
+    # clone task should only run if parent is specified.snapshot name is optional
+    - name: Let's create or refresh a clone!
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ cloned_vol | mandatory}}" # name here is the name of cloned volume
+        # parent volume to clone from
+        parent: "{{ansible_default_ipv4['address']}}-{{ parent }}" # do we neeed the source vol if snapshot is provided?
+        snapshot: "{{ snapshot | default(None)}}"
+        state: "{{ state | default('present') }}"
+      when:
+        - parent is defined
+
+    - name: Changing cloned Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ cloned_vol }}"
+
+    - name: Delete cloned volume. This should pass
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ cloned_vol }}"
+        state: absent
+      register: output
+      #failed_when: "'SM_http_conflict' not in output.msg"
+
+    # if no snapshot is given then restore volume to last snapshot,fails if no snapshots exist
+    # or if snapshot is provided then restore volume from that snapshot
+    - name: Restore volume .
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        snapshot: "{{ snapshot | default(None)}}"
+        state: restore
+
+    - name: Move Volume to pool. Should fail with msg , Invalid value for pool
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        move: true
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: present
+        destination: "{{ destination | mandatory }}"
+      register: output
+      failed_when: "'Invalid value for pool' not in output.msg"
+
+    - name: Changing restored Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+
+    - name: Delete restored volume.
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+      register: output
+      #failed_when: "'SM_http_conflict' not in output.msg"
+
+

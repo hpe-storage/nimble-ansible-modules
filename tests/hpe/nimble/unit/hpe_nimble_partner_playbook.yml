@@ -1,0 +1,61 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    description: "updated by ansible"
+    secret: "password-91"
+    subnet_label: "mgmt-data"
+
+  tasks:
+    # if state is create, then create partner, fails if it exist or cannot create
+    # if state is present, then create partner if not present ,else success
+    - name: Create Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"  # upstream hostname
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ downstream_group_name | mandatory }}"
+        description: "{{ description }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        secret: "{{ secret | mandatory }}"
+        subnet_label: "{{ subnet_label | mandatory }}"
+        state: "{{ state | default('present') }}"
+
+    # - name: Test Partner
+    #   hpe_nimble_partner:
+    #     host: "{{ host }}"
+    #     username: "{{ username }}"
+    #     password: "{{ password }}"
+    #     downstream_hostname: "{{ downstream_hostname | mandatory }}"
+    #     state: "present"
+    #     test: true
+
+    - name: Pause Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "present"
+        pause: true
+
+    - name: Resume Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "present"
+        resume: true
+
+    - name: Delete Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "absent"

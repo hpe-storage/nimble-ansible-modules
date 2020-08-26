@@ -1,0 +1,42 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    vol_name: "ansible-vol1"
+    #state: "create"
+    shelf_serial: "alokr1-va"
+    accept_foreign: True
+    activated: True
+    force: True
+
+  tasks:
+
+    - name: Update shelf. should fail with SM_shelf_no_eloc_id
+      hpe_nimble_shelf:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        shelf_serial: "{{ shelf_serial | mandatory }}"
+        accept_foreign: "{{ accept_foreign }}"
+        activated: "{{ activated }}"
+        force: "{{ force }}"
+        state: "{{ 'present' }}"
+      register: output
+      failed_when: "'SM_shelf_no_eloc_id' not in output.msg"
+
+    - name: Update shelf. should fail with shelf serial not found
+      hpe_nimble_shelf:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        shelf_serial: "invalid"
+        accept_foreign: "{{ accept_foreign }}"
+        activated: "{{ activated }}"
+        force: "{{ force }}"
+        state: "{{ 'present' }}"
+      register: output
+      failed_when: "'Shelf serial' not in output.msg"
+

@@ -1,0 +1,40 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    vol_name: "ansible-vol1"
+    name: "ansible-prot-template1"
+    description: "modified 2"
+    app_sync: 'vss'
+    app_id: 'sql2016'
+    app_server: "appserver.ns.com"
+
+  tasks:
+
+      # if state is create , then create a prot_template if not present. Fails if already present.
+      # if state is present, then create a prot_template if not present. Succeed if it already exists.
+    - name: Create Protection Template if not present
+      hpe_nimble_protection_template:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+        app_id: "{{ app_id }}"
+        app_server: "{{ app_server }}"
+        app_sync: "{{ app_sync }}"
+
+    - name: Delete Protection Template
+      hpe_nimble_protection_template:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+
+

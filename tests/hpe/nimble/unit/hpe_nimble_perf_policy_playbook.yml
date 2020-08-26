@@ -1,0 +1,44 @@
+---
+- hosts: "localhost"
+  gather_facts: true
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "ansible-policy"
+    description: "updated again by ansible2"
+    compress: false
+
+  tasks:
+
+    - name: Load Storage System Vars
+      include_vars: 'properties/storage_system_properties.yml'
+      tags:
+        - create_perf_policy
+        - delete_perf_policy
+
+      # if state is create , then create a performance policy if not present. Fails if already present.
+      # if state is present, then create a performance policy if not present. Succeed if it already exists.
+    - name: Create performance policy if not present
+      hpe_nimble_performance_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}" 
+        name: "{{ name }}"
+        description: "{{ description }}"
+        compress: "{{ compress }}"
+      ignore_errors: yes
+      tags:
+         - create_perf_policy
+
+    - name: Delete performance policy
+      hpe_nimble_performance_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+      ignore_errors: yes
+      tags:
+        - delete_perf_policy

@@ -1,0 +1,40 @@
+---
+- hosts: "localhost"
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "ansiblechapuser3"
+    user_password: "password_25-24"
+    description: "updated by ansible 3"
+
+  tasks:
+    - name: Load Storage System Vars
+      include_vars: 'properties/storage_system_properties.yml'
+      tags:
+        - create_chap_user
+        - delete_chap_user
+
+    # if state is create, then create chap user, fails if it exist or cannot create
+    # if state is present, then create chap user if not present ,else success
+    - name: Create Chap User
+      hpe_nimble_chap_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description }}"
+        user_password: "{{ user_password | mandatory }}"
+        state: "{{ state | default('present') }}" 
+      tags:
+        - create_chap_user
+
+    - name: Delete Chap User
+      hpe_nimble_chap_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "absent"
+      tags:
+        - delete_chap_user

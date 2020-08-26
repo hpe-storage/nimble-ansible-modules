@@ -1,0 +1,113 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    name: "group-alokr1-va"
+    alert_to_email_addrs: "ansible.rnjxsfxx@hpe.com"
+    send_alert_to_support: true
+    src_group_ip: "10.18.175.96"
+    src_password: "Password-1"
+    src_passphrase: "Passphrase-1"
+    skip_secondary_mgmt_ip: false
+
+  tasks:
+
+    # if state is present, then create group if not present ,else success
+    - name: Update group
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        send_alert_to_support: "{{ send_alert_to_support }}"
+        alert_to_email_addrs: "{{ alert_to_email_addrs }}"
+        state: "present"
+      tags:
+        - update_group
+
+    - name: Reboot group. Should fail with 'cannot be rebooted as it is not present'
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "invalid group"
+        state: "present"
+        reboot: true
+      register: output
+      failed_when: "'cannot be rebooted as it is not present' not in output.msg"
+
+    - name: Validate merge group. Should fail with 'Failed logging in to the source group'
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        src_group_ip: "{{ src_group_ip }}"
+        src_password: "{{ src_password }}"
+        skip_secondary_mgmt_ip: "{{ skip_secondary_mgmt_ip }}"
+        src_passphrase: "{{ src_passphrase }}"
+        state: "present"
+        validate_merge: true
+      register: output
+      failed_when: "'Failed logging in to the source group' not in output.msg"
+
+    - name: Test alert group
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        level: 'info'
+        state: "present"
+        test_alert: true
+      tags:
+        - test_alert_group
+
+    - name: Migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        migrate: true
+      register: output
+      failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
+
+    - name: Check migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        check_migrate: true
+      register: output
+      failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
+
+    - name: Merge group.Should fail with 'specified for the argument 'src_passphrase''
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        merge: true
+      register: output
+      failed_when: "'SM_invalid_arg_value' not in output.msg"
+
+    - name: Halt group.Should fail with 'SM_invalid_arg_value'
+      hpe_nimble_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        #force: false
+        halt: true
+      register: output
+      failed_when: "'SM_invalid_arg_value' not in output.msg"

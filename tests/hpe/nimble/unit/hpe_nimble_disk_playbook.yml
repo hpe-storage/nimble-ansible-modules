@@ -1,0 +1,27 @@
+---
+
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    slot: 0
+    disk_op: "add"
+    shelf_location: "A.0"
+    force: false
+
+  tasks:
+    - name: Update Disk. Will fail as no correct disk id is provided
+      hpe_nimble_disk:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        slot: "{{ slot | mandatory }}"
+        shelf_location: "{{ shelf_location | mandatory }}"
+        disk_op: "{{ disk_op | mandatory }}"
+        force: "{{ force }}"
+        state: "{{ 'present' }}"
+      register: output
+      failed_when: "'SM_invalid_path_variable' not in output.msg"
+

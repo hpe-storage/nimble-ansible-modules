@@ -1,0 +1,92 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    volume: "ansible-vol1"
+    name: "snapshot2"
+    description: "updated again by ansible"
+    online: false
+
+  tasks:
+
+      # if state is create , then create a snapshot if not present. Fails if already present.
+      # if state is present, then create a snapshot if not present. Succeed if it already exists.
+    - name: Create snapshot should fail as volume is not present
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        name: "{{ name }}"
+       # online: false
+        online: "{{ online | default(true) }}"
+        description: "{{ description }}"
+        writable: "{{ writable | default(false) }}"
+      register: output
+      failed_when: "'not present on array for taking snapshot' not in output.msg"
+
+    - name: Create Volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        size: 10
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+      register: output
+
+    - name: Delete snapshot  should fail as snapshot {{name}} is not present
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        name: "{{ name }}"
+        state: absent
+      register: output
+      failed_when: "'cannot be deleted as it is not present in given volume' not in output.msg"
+
+    - name: Create snapshot
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        name: "{{ name }}"
+       # online: false
+        online: "{{ online | default(true) }}"
+        description: "{{ description }}"
+        writable: "{{ writable | default(false) }}"
+      register: output
+      #failed_when: "'not present on array for taking snapshot' not in output.msg"
+
+    - name: Delete snapshot
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        name: "{{ name }}"
+        state: absent
+
+    - name: Changing Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+
+    - name: Delete volume. This should pass
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        state: absent

@@ -1,0 +1,95 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    volume: "ansible-vol1"
+    #state: "create"
+    initiator_group: "ig-ansiblecentos1"
+    chap_user: "ansible"
+
+  tasks:
+
+    - name: Create Volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        size: 10
+        force: true
+        state: "{{ state | default('present') }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+      register: output
+
+    # if state is create, then create acl for given volume, fails if it exist or cannot create
+    # if state is present, then create acl if not present, else success
+    - name: Check mandatory param.
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        state: "{{ state | default('present') }}"
+      register: output
+      failed_when: "'missing required arguments' not in output.msg"
+
+    - name: Create an initiator group (from scratch).
+      hpe_nimble_initiator_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        access_protocol: "{{ access_protocol | default('iscsi')}}"
+        name: "{{ansible_default_ipv4['address']}}-{{ initiator_group }}"
+        state: "{{ state | default('present') }}"
+
+    # if state is create, then create acl for given volume, fails if it exist or cannot create
+    # if state is present, then create acl if not present, else success
+    - name: Create ACR for volume
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        initiator_group: "{{ansible_default_ipv4['address']}}-{{ initiator_group }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete ACR for non existent volume. should fail with "No access control record"
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        initiator_group: "{{ansible_default_ipv4['address']}}-{{ initiator_group }}"
+        volume: invalid
+        state: "absent" # fail if volume does not exist
+      register: output
+      failed_when: "'No access control record' not in output.msg"
+
+    # delete the acl for a given volume name
+    - name: Delete ACR for volume
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        initiator_group: "{{ansible_default_ipv4['address']}}-{{ initiator_group }}"
+        volume: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        state: "absent" # fail if volume does not exist
+
+    - name: Changing Volume to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+
+    - name: Delete volume. This should pass
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        state: absent
+      register: output

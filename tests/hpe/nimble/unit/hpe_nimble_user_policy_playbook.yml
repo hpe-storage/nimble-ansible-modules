@@ -1,0 +1,18 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+
+    - name: Update user policy.
+      hpe_nimble_user_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        allowed_attempts: 2
+        state: "present"

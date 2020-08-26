@@ -1,0 +1,57 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    state: "create"
+    name: "ansible-prot-schedule1"
+    description: "modified 2"
+    volcoll_or_prottmpl_type: "volume_collection"
+    prot_template_name: "ansible-prot-template1"
+    volcoll_name: "ansible-volcoll"
+    num_retain: 10
+
+  tasks:
+
+    - name: Create Volume collection if not present
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volcoll_name }}"
+        description: "{{ description | default(None)}}"
+        state: present
+
+      # if state is create , then create a prot_schedule if not present. Fails if already present.
+      # if state is present, then create a prot_schedule if not present. Succeed if it already exists.
+    - name: Create Protection schedule if not present
+      hpe_nimble_protection_schedule:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+        volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
+        volcoll_name: "{{ansible_default_ipv4['address']}}-{{ volcoll_name }}"
+        num_retain: "{{num_retain}}"
+
+    - name: Delete Protection schedule
+      hpe_nimble_protection_schedule:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+
+    - name: Delete vol coll (it's can have volumes)
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volcoll_name }}"
+        state: absent
+
+
