@@ -63,7 +63,7 @@ options:
     required: True
     type: str
     description:
-    - Name of snapshot schedule to create.
+    - Name of protection schedule to create.
   num_retain:
     required: False
     type: int
@@ -196,6 +196,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
     volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
     prot_template_name: "{{ prot_template_name }}"
+    num_retain: "{{ num_retain }}"
 
 - name: Delete protection schedule
   hpe_nimble_protection_schedule:

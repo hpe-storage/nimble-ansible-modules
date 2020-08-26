@@ -161,7 +161,7 @@ nimble_info:
   description: Returns the information collected from the HPE Nimble Storage array
   returned: always
   type: complex
-   "nimble_info": {
+  sample: {
     "config": {
         "arrays": [
             {
@@ -609,7 +609,7 @@ def is_subset_option_valid(subset_options):
         raise Exception("Subset options should be provided as dictionary.")
     for key, value in subset_options.items():
         if key != "fields" and key != "query" and key != "limit" and key != "detail":
-            return (False, key)
+            return (False, key, f"Valid subset option names are:'fields', 'query', 'limit', and 'detail'")
         if key == 'limit' and type(value) is not int:
             return (False, key, "Subset options 'limit' should be provided as integer.")
         if key == 'detail' and type(value) is not bool:

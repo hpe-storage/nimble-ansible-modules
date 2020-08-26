@@ -25,6 +25,7 @@ Install the HPE Nimble Storage array collection on your Ansible management host.
 - hpe_nimble_disk - Manage HPE Nimble Storage disks
 - hpe_nimble_encryption - Manage HPE Nimble Storage encryption
 - hpe_nimble_fc - Manage HPE Nimble Storage fibre channel
+- hpe_nimble_group -  Manage HPE Nimble Storage groups
 - hpe_nimble_info - Collect information from HPE Nimble Storage array
 - hpe_nimble_initiator_group - Manage HPE Nimble Storage initiator groups
 - hpe_nimble_network - Manage HPE Nimble Storage network configuration
@@ -37,9 +38,26 @@ Install the HPE Nimble Storage array collection on your Ansible management host.
 - hpe_nimble_snapshot_collection - Manage HPE Nimble Storage snapshot collections
 - hpe_nimble_snapshot - Manage HPE Nimble Storage snapshots
 - hpe_nimble_user -  Manage HPE Nimble Storage users
+- hpe_nimble_user_policy -  Manage HPE Nimble Storage user policies
 - hpe_nimble_volume -  Manage HPE Nimble Storage volumes
 - hpe_nimble_volume_collection - Manage HPE Nimble Storage volume collections
 
 ## License
 
-[Apache-2.0-or-later](http://www.apache.org/licenses/LICENSE-2.0)
+HPE Nimble Storage Content Collection for Ansible is released under the Apache-2.0 license.
+
+    Copyright 2020 Hewlett Packard Enterprise Development LP
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+See [LICENSE](https://github.com/hpe-storage/nimble-ansible-modules/blob/master/LICENSE) for the full terms.
