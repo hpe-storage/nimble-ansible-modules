@@ -14,6 +14,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -63,7 +66,8 @@ options:
     type: bool
     default: False
     description:
-    - Forcibly delete the specified snapshot collection even if it is the last replicated snapshot. Doing so could lead to full re-seeding at the next replication.
+    - Forcibly delete the specified snapshot collection even if it is the last replicated snapshot. Doing so could lead to full re-seeding at the
+      next replication.
   invoke_on_upstream_partner:
     required: False
     type: bool
@@ -96,8 +100,9 @@ options:
     type: bool
     default: False
     description:
-    - Skip consistency check for database files on this snapshot. This option only applies to volume collections with application synchronization set to VSS,
-      application ID set to MS Exchange 2010 or later with Database Availability Group (DAG), snap_verify option set to true, and disable_appsync option set to false.
+    - Skip consistency check for database files on this snapshot. This option only applies to volume collections with application
+      synchronization set to VSS, application ID set to MS Exchange 2010 or later with Database Availability Group (DAG), snap_verify option
+      set to true, and disable_appsync option set to false.
   snap_verify:
       required: False
       type: bool
@@ -122,6 +127,7 @@ options:
   vol_snap_attr_list:
       required: False
       type: list
+      elements: dict
       description:
       - List of snapshot attributes for snapshots being created as part of snapshot collection creation. List of volumes with per snapshot attributes.
   volcoll:
@@ -129,9 +135,9 @@ options:
       type: str
       description:
       - Parent volume collection name.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage snapshot collections.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -261,6 +267,7 @@ def main():
         "vol_snap_attr_list": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "replicate_to": {

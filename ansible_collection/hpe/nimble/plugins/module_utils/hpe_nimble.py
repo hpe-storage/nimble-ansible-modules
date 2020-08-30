@@ -12,7 +12,10 @@
 # OF ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-# author alok ranjan (alok.ranjan2@hpe.com)
+# author Alok Ranjan (alok.ranjan2@hpe.com)
+
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 
 import datetime
 import uuid
@@ -137,8 +140,7 @@ def basic_auth_arg_fields():
         },
         "username": {
             "required": True,
-            "type": "str",
-            "no_log": True
+            "type": "str"
         },
         "password": {
             "required": True,
@@ -284,6 +286,7 @@ def get_downstream_partner_id(client_obj, downstream_partner):
         if resp is None:
             raise Exception(f"Invalid value for downstream partner {downstream_partner}")
         return resp.attrs.get("id")
+
 
 def get_initiator_group_id(client_obj, ig_name):
     if is_null_or_empty(ig_name):

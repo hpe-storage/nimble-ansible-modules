@@ -82,9 +82,9 @@ options:
     type: int
     description:
     - Number of uppercase characters required in user passwords. Allowed range is [0, 255] inclusive.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage user policies.
-version_added: "2.9"
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -110,6 +110,7 @@ except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
+
 def update_user_policy(
         client_obj,
         **kwargs):
@@ -117,14 +118,14 @@ def update_user_policy(
     try:
         user_resp = client_obj.user_policies.get()
         if utils.is_null_or_empty(user_resp):
-            return (False, False, f"User policy is not present on Array", {})
+            return (False, False, "User policy is not present on Array", {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(user_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             user_resp = client_obj.user_policies.update(id=user_resp.attrs.get("id"), **params)
-            return (True, True, f"Updated user policy successfully.", changed_attrs_dict)
+            return (True, True, "Updated user policy successfully.", changed_attrs_dict)
         else:
-            return (True, False, f"User Policy already present in given state.", {})
+            return (True, False, "User Policy already present in given state.", {})
     except Exception as ex:
         return (False, False, f"User Policy Update failed | {ex}", {})
 

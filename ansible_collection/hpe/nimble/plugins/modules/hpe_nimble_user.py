@@ -70,7 +70,7 @@ options:
     type: str
     description:
     - Name of the user.
-  password:
+  user_password:
     required: False
     type: str
     description:
@@ -82,7 +82,6 @@ options:
     - poweruser
     - operator
     - guest
-    default: guest
     type: str
     description:
     - Role of the user.
@@ -101,9 +100,9 @@ options:
     default: False
     description:
     - Unlock the user.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage users.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -294,11 +293,6 @@ def main():
         "auth_password": {
             "required": False,
             "type": "str",
-            "no_log": False
-        },
-        "query_params": {
-            "required": False,
-            "type": "list",
             "no_log": False
         },
         "unlock": {

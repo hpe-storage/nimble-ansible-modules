@@ -31,13 +31,11 @@ options:
   control_port:
     required: False
     type: int
-    default: 4213
     description:
     - Port number of partner control interface. Value -1 for an invalid port or a positive integer value up to 65535 representing the TCP/IP port.
   data_port:
     required: False
     type: int
-    default: 4214
     description:
     - Port number of partner data interface. Value -1 for an invalid port or a positive integer value up to 65535 representing the TCP/IP port.
   description:
@@ -126,11 +124,12 @@ options:
   throttles:
     required: False
     type: list
+    elements: dict
     description:
     - Throttles used while replicating from/to this partner. All the throttles for the partner.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage Replication Partner.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -402,6 +401,7 @@ def main():
         "throttles": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "state": {

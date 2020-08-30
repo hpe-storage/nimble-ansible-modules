@@ -49,7 +49,7 @@ options:
     - Position of the shelf the disk belongs to.
   slot:
     required: True
-    type: str
+    type: int
     description:
     - Disk slot number.
   state:
@@ -59,9 +59,9 @@ options:
     type: str
     description:
     - Choice for disk operation.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage disk.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -87,6 +87,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def update_disk(
         client_obj,

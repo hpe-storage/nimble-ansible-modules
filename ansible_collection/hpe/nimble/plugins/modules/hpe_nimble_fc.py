@@ -75,9 +75,9 @@ options:
     type: str
     description:
     - Base World Wide Node Name(WWNN). Six bytes expressed in hex separated by colons. Example:- 'af:32:f1'.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage fibre channel.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -179,7 +179,8 @@ def regenerate_wwn(
             changed_attrs_dict = {}
             fc_config_resp = client_obj.fibre_channel_configs.regenerate(fc_config_resp.attrs.get("id"), precheck, wwnn_base_str)
             changed_attrs_dict['wwnn_base_str'] = wwnn_base_str
-            return (True, True, f"Updated fibre channel config for group leader array '{array_name_or_serial}'. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Updated fibre channel config for group leader array '{array_name_or_serial}'."
+                    "Modified the following fields :", changed_attrs_dict)
     except Exception as ex:
         return (False, False, f"Fibre channel config update failed |'{ex}'", {})
 

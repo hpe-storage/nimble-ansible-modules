@@ -78,6 +78,7 @@ options:
   nic_list:
     required: False
     type: list
+    elements: dict
     description:
     - List NICs information. Used when creating an array.
   pool_description:
@@ -108,14 +109,15 @@ options:
   state:
       required: True
       choices:
+          - create
           - present
           - absent
       type: str
       description:
       - Choice for array operation
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage array.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -124,7 +126,7 @@ EXAMPLES = r'''
 # if state is present, then create a array if not present. Succeed if it already exists.
 - name: Create array if not present
   hpe_nimble_array:
-     host: "{{ host }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     state: "{{ state | default('present') }}"
@@ -137,7 +139,7 @@ EXAMPLES = r'''
 
 - name: Delete array
   hpe_nimble_array:
-     host: "{{ host }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     vol_name: "{{ansible_default_ipv4['address']}}-{{ vol_name }}"
@@ -146,7 +148,7 @@ EXAMPLES = r'''
 
 - name: Failover array
   hpe_nimble_array:
-     host: "{{ host }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -155,7 +157,7 @@ EXAMPLES = r'''
 
 - name: halt array
   hpe_nimble_array:
-     host: "{{ host }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -164,7 +166,7 @@ EXAMPLES = r'''
 
 - name: Reboot array
   hpe_nimble_array:
-     host: "{{ host }}"
+    host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
@@ -181,6 +183,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def create_array(
         client_obj,
@@ -351,7 +354,8 @@ def main():
         },
         "nic_list": {
             "required": False,
-            "type": "list",
+            "type": 'list',
+            "elements": 'dict',
             "no_log": False
         },
         "secondary_mgmt_ip": {

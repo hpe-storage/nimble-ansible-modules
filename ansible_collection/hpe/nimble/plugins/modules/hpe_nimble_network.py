@@ -33,9 +33,10 @@ options:
     type: bool
     description:
     - Activate a network configuration.
-  array_list:
+  array:
     required: False
     type: list
+    elements: dict
     description:
     - List of array network configs.
   change_name:
@@ -52,7 +53,6 @@ options:
   iscsi_connection_rebalancing:
     required: False
     type: bool
-    default: True
     description:
     - Whether rebalancing is enabled. Enabling this means rebalancing iSCSI connections by periodically breaking existing
       connections that are out-of-balance, allowing the host to reconnect to a more appropriate data IP address.
@@ -80,14 +80,16 @@ options:
     type: str
     description:
     - Secondary management IP address for the Group. Four numbers in the range [0,255] separated by periods.
-  subnet_list:
+  subnet:
     required: False
     type: list
+    elements: dict
     description:
     - List of subnet configs.
-  route_list:
+  route:
     required: False
     type: list
+    elements: dict
     description:
     - List of static routes.
   state:
@@ -104,9 +106,9 @@ options:
     type: bool
     description:
     - Validate a network configuration.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage network configuration.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -282,6 +284,7 @@ def main():
         "array": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "change_name": {
@@ -326,11 +329,13 @@ def main():
         "subnet": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "route": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "state": {

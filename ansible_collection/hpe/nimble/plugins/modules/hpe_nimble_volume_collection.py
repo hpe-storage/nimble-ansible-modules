@@ -14,6 +14,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -85,7 +88,6 @@ options:
     - generic
     required: False
     type: str
-    default: none
     description:
     - Application synchronization.
   change_name:
@@ -111,10 +113,11 @@ options:
     required: False
     type: bool
     description:
-    - Gracefully transfer ownership of the specified volume collection. This action can be used to pass control of the volume collection to the downstream
-      replication partner. Ownership and full control over the volume collection will be given to the downstream replication partner. The volumes associated
-      with the volume collection will be set to offline prior to the final snapshot being taken and replicated, thus ensuring full data synchronization
-      as part of the transfer. By default, the new owner will automatically begin replicating the volume collection back to this node when the handover completes.
+    - Gracefully transfer ownership of the specified volume collection. This action can be used to pass control of the volume collection
+      to the downstream replication partner. Ownership and full control over the volume collection will be given to the downstream replication
+      partner. The volumes associated with the volume collection will be set to offline prior to the final snapshot being taken and replicated,
+      thus ensuring full data synchronization as part of the transfer. By default, the new owner will automatically begin replicating the volume
+      collection back to this node when the handover completes.
   invoke_on_upstream_partner:
     required: False
     type: bool
@@ -175,7 +178,6 @@ options:
     - synchronous
     required: False
     type: str
-    default: periodic_snapshot
     description:
     - Type of replication configured for the volume collection.
   state:
@@ -187,6 +189,11 @@ options:
     type: str
     description:
     - Choice for volume collection operations.
+  validate:
+    required: False
+    type: bool
+    description:
+    - Validate a volume collection with either Microsoft VSS or VMware application synchronization.
   vcenter_hostname:
     required: False
     type: str
@@ -203,9 +210,9 @@ options:
     type: str
     description:
     - Application VMware vCenter password. A password with few constraints.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage volume collections.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -213,66 +220,66 @@ EXAMPLES = r'''
 # if state is create , then create a volcoll if not present. Fails if already present.
 # if state is present, then create a volcoll if not present. Succeed if it already exists.
 - name: Create volume collection if not present
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  description: "{{ description | default(None)}}"
-  state: "{{ state | default('present') }}"
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    description: "{{ description | default(None)}}"
+    state: "{{ state | default('present') }}"
 
 - name: Delete volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: absent
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: absent
 
 - name: Promote volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: present
-  promote: True
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: present
+    promote: True
 
 - name: Demote volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: present
-  demote: True
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: present
+    demote: True
 
 - name: Handover volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: present
-  handover: True
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: present
+    handover: True
 
 - name: Abort handover volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: present
-  abort_handover: True
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: present
+    abort_handover: True
 
 - name: Validate volume collection
-hpe_nimble_volume_collection:
-  host: "{{ host }}"
-  username: "{{ username }}"
-  password: "{{ password }}"
-  name: "{{ name }}"
-  state: present
-  validate: True
+  hpe_nimble_volume_collection:
+    host: "{{ host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ name }}"
+    state: present
+    validate: True
 
 '''
 RETURN = r'''
@@ -284,6 +291,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def create_volcoll(
         client_obj,

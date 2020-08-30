@@ -1,5 +1,0 @@
-host: "10.18.171.96"
-username: "admin"
-password: "admin"
-downstream_hostname: "10.18.175.96"
-downstream_group_name: "group-alokr8-va" # please specify the exact group name of downstream partner

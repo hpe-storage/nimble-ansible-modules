@@ -71,9 +71,9 @@ options:
     type: str
     description:
     - Serial number of shelf.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage shelves.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -99,6 +99,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def update_shelve(
         client_obj,
