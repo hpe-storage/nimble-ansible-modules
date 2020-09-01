@@ -33,9 +33,9 @@ module: hpe_nimble_info
 options:
   gather_subset:
     required: False
-    type: str
     default: minimum
     type: list
+    elements: dict
     description:
       - When supplied, this argument will define the information to be collected. Possible values for this include
         "all"
@@ -84,12 +84,13 @@ options:
       - limit - An integer value which represents how many latest items to show for a given subset.
       - detail - A bool flag when set to true fetches everything for a given subset. Default is True.
       - query - A Key-Value pair to query.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Collect information from HPE Nimble Storage array.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
+
 - name: collect default set of information
   hpe_nimble_info:
     host: "{{ host }}"
@@ -131,7 +132,7 @@ EXAMPLES = r'''
     msg: "{{ array_info['nimble_info'] }}"
 
 - name: collect volume, snapshot and volume collection. Below query will show just one
-  snapshot detail with attributes 'name and id' for a volume called 'vol1'.
+        snapshot detail with attributes 'name and id' for a volume called 'vol1'.
   hpe_nimble_info:
     host: "{{ host }}"
     username: "{{ username }}"
@@ -161,6 +162,7 @@ nimble_info:
   description: Returns the information collected from the HPE Nimble Storage array
   returned: always
   type: complex
+  contains: {}
   sample: {
     "config": {
         "arrays": [
@@ -566,6 +568,7 @@ limit_not_supported = [
     "software_versions"
 ]
 
+
 def add_to_valid_subset_list(valid_subset_list,
                              subset_name,
                              subset_options,
@@ -605,11 +608,11 @@ def add_to_valid_subset_list(valid_subset_list,
 def is_subset_option_valid(subset_options):
     if subset_options is None:
         return (True, "", "")
-    if type(subset_options) is not dict:
+    if isinstance(subset_options, dict) is False:
         raise Exception("Subset options should be provided as dictionary.")
     for key, value in subset_options.items():
         if key != "fields" and key != "query" and key != "limit" and key != "detail":
-            return (False, key, f"Valid subset option names are:'fields', 'query', 'limit', and 'detail'")
+            return (False, key, "Valid subset option names are:'fields', 'query', 'limit', and 'detail'")
         if key == 'limit' and type(value) is not int:
             return (False, key, "Subset options 'limit' should be provided as integer.")
         if key == 'detail' and type(value) is not bool:
@@ -658,14 +661,14 @@ def raise_repeat_subset_ex(key):
 
 
 def raise_subset_mutually_exclusive_ex():
-    msg = f"Subset 'all' and 'minimum' are mutually exclusive. Please provide only one of them"
+    msg = "Subset 'all' and 'minimum' are mutually exclusive. Please provide only one of them"
     raise Exception(msg)
 
 
 def parse_subset_list(info_subset, gather_subset):
     valid_subset_list = []
     try:
-        if gather_subset is None or type(gather_subset) is not list:
+        if gather_subset is None or isinstance(gather_subset, list) is False:
             add_to_valid_subset_list(valid_subset_list, 'minimum', None)
             return valid_subset_list
         # each entry in gather subset represents a dictonary or list for each object set
@@ -688,7 +691,7 @@ def parse_subset_list(info_subset, gather_subset):
                                 raise_subset_mutually_exclusive_ex()
                             handle_all_subset(info_subset, valid_subset_list, subset_options, True)
                             continue
-                        elif key == 'minimum' or key == 'config':
+                        if key == 'minimum' or key == 'config':
                             if subset_options is not None:
                                 raise Exception("Subset options cannot be used with 'minimum' and 'config' subset.")
                             if key == 'minimum':
@@ -719,7 +722,7 @@ def generate_dict(name, resp):
         if key in temp_dict:
             # we need to convert the dict into a list of items as we have more than one item for the same key
             temp_list = [temp_dict[key]]
-            if type(temp_dict[key]) is dict:
+            if isinstance(temp_dict[key], dict) is True:
                 temp_dict.pop(key)
             temp_dict.setdefault(key, temp_list).append(item.attrs)
         elif key is None or key == "N/A":
@@ -850,6 +853,8 @@ def fetch_minimum_subset(info_subset):
 # snapshots actually needs a vol_name/vol_id as mandatory params. Hence ,in case of 'all' subset
 # where user cannot provide a query option. we need to fetch the snapshots by iterating
 # over the list of volumes and see if those volumes have snapshots.
+
+
 def fetch_snapshots_for_all_subset(subset, client_obj):
     if subset is None or client_obj is None:
         return {}
@@ -871,7 +876,7 @@ def fetch_snapshots_for_all_subset(subset, client_obj):
 
 
 def fetch_subset(valid_subset_list, info_subset):
-    if valid_subset_list is None or type(valid_subset_list) is not list:
+    if valid_subset_list is None or isinstance(valid_subset_list, list) is False:
         return {}
     try:
         result_dict = {}
@@ -907,7 +912,7 @@ def fetch_subset(valid_subset_list, info_subset):
                     result_dict[key] = value
             except Exception as ex:
                 msg = f"Failed to fetch {subset['name']} details. Error:'{str(ex)}'"
-                raise Exception(msg)
+                raise Exception(msg) from ex
         return result_dict
     except Exception:
         raise
@@ -983,6 +988,7 @@ def main():
         "gather_subset": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             'default': "minimum",
             "no_log": False
         }

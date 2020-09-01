@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 # Copyright 2020 Hewlett Packard Enterprise Development LP
 #
@@ -37,7 +38,6 @@ options:
     - openstack
     - openstackv2
     type: str
-    default: none
     description:
     - External management agent type.
   app_uuid:
@@ -48,7 +48,6 @@ options:
   block_size:
     required: False
     type: int
-    default: 4096
     description:
     - Size in bytes of blocks in the volume.
   cache_pinned:
@@ -94,7 +93,6 @@ options:
     - none
     - aes_256_xts
     type: str
-    default: none
     description:
     - The encryption cipher of the volume.
   folder:
@@ -118,7 +116,6 @@ options:
     choices:
     - volume
     - group
-    default: volume
     description:
     - This indicates whether volume is exported under iSCSI Group Target or iSCSI volume target. This attribute is only meaningful to iSCSI system.
   limit:
@@ -129,13 +126,11 @@ options:
   limit_iops:
     required: False
     type: int
-    default: -1
     description:
     - IOPS limit for this volume.
   limit_mbps:
     required: False
     type: int
-    default: -1
     description:
     - Throughput limit for this volume in MB/s.
   metadata:
@@ -162,7 +157,6 @@ options:
   online:
     required: False
     type: bool
-    default: True
     description:
     - Online state of volume, available for host initiators to establish connections.
   owned_by_group:
@@ -194,7 +188,6 @@ options:
     - Volume is read-only.
   size:
     type: int
-    default: 100
     description:
     - Volume size in mebibytes. Size is required for creating a volume but not for cloning an existing volume.
   snapshot:
@@ -215,7 +208,6 @@ options:
   thinly_provisioned:
     required: False
     type: bool
-    default: True
     description:
     - Set volume's provisioning level to thin.
   volcoll:
@@ -224,9 +216,9 @@ options:
     description:
     - Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from
       volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage volumes.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -252,7 +244,8 @@ EXAMPLES = r'''
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
-    state: offline
+    online: False
+    state: present
     name: "{{ name }}"
 
 - name: Changing volume "{{ name }}" to online state
@@ -260,7 +253,8 @@ EXAMPLES = r'''
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
-    state: online
+    online: True
+    state: present
     name: "{{ name }}"
 
 # Create a clone from the given snapshot name.
@@ -332,6 +326,7 @@ class Vol_Operation(Enum):
     FAILED = 1
 
 # util functions
+
 
 def move_volume(
         client_obj,
@@ -438,7 +433,8 @@ def restore_volume(client_obj, vol_name, snapshot_to_restore=None):
             # get the snapshot detail from the given source vol
             snap_resp = client_obj.snapshots.get(vol_name=vol_name, name=snapshot_to_restore)
             if utils.is_null_or_empty(snap_resp):
-                return (False, False, f"Volume '{vol_name}' cannot not be restored as given snapshot name '{snapshot_to_restore}' is not present in source volume.", {})
+                return (False, False, f"Volume '{vol_name}' cannot not be restored as given snapshot name '{snapshot_to_restore}' is not present in"
+                        "source volume.", {})
 
         # offline and restore
         client_obj.volumes.offline(id=vol_resp.attrs.get("id"))
@@ -531,7 +527,8 @@ def clone_volume(
             # get the snapshot detail from the given source vol
             snap_list_resp = client_obj.snapshots.list(vol_name=parent, name=snapshot_to_clone)
             if utils.is_null_or_empty(snap_list_resp):
-                return (False, False, f"Could not create clone volume '{vol_name}' as given snapshot name '{snapshot_to_clone}' is not present in parent volume", {})
+                return (False, False, f"Could not create clone volume '{vol_name}' as given snapshot name '{snapshot_to_clone}' is not present "
+                        "in parent volume", {})
             # create clone
             clonevol_resp, msg = create_clone_from_snapshot(client_obj, snap_list_resp, vol_name, snapshot_to_clone, state)
 

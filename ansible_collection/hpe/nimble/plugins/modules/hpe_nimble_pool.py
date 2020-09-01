@@ -14,6 +14,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -28,6 +31,7 @@ options:
   array_list:
     required: False
     type: list
+    elements: dict
     description:
     - List of arrays in the pool with detailed information. To create or update array list, only array ID is required.
   change_name:
@@ -84,9 +88,9 @@ options:
     type: str
     description:
     - Name of the target pool.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage pools.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -218,6 +222,7 @@ def main():
         "array_list": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "change_name": {

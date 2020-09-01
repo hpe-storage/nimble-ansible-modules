@@ -127,6 +127,7 @@ options:
   dns_servers:
     required: False
     type: list
+    elements: dict
     description:
     - IP addresses for this group's dns servers.
   fc_enabled:
@@ -172,7 +173,7 @@ options:
     type: bool
     description:
     - Whether iSNS is enabled.
-    isns_port:
+  isns_port:
     required: False
     type: int
     description:
@@ -256,6 +257,7 @@ options:
   repl_throttle_list:
     required: False
     type: list
+    elements: dict
     description:
     - All the replication bandwidth limits on the system. All the throttles for the partner.
   send_alert_to_support:
@@ -431,9 +433,9 @@ options:
     type: bool
     description:
     - Are vvols enabled on this group.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage group.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -811,6 +813,7 @@ def main():
         "dns_servers": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "fc_enabled": {
@@ -936,6 +939,7 @@ def main():
         "repl_throttle_list": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "send_alert_to_support": {

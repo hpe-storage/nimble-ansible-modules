@@ -79,9 +79,9 @@ options:
     type: str
     description:
     - Choice for encryption operation.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage encryption.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''

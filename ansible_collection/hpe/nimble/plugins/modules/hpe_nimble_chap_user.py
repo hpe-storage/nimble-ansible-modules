@@ -41,6 +41,7 @@ options:
   initiator_iqns:
     required: False
     type: list
+    elements: dict
     description:
     - List of iSCSI initiators. To be configured with this CHAP user for iSCSI Group Target CHAP authentication. This attribute
       cannot be modified at the same time with other attributes. If any specified initiator is already associated with another CHAP
@@ -50,12 +51,6 @@ options:
     type: str
     description:
     - Name of CHAP user.
-  password:
-    required: False
-    type: str
-    description:
-    - CHAP secret. The CHAP secret should be between 12-16 characters and cannot contain spaces or most punctuation.
-      string of 12 to 16 printable ASCII characters excluding ampersand and ^[];`
   state:
     required: True
     choices:
@@ -65,9 +60,15 @@ options:
     type: str
     description:
     - Choice for chap user operation.
-extends_documentation_fragment: hpe_nimble
+  user_password:
+    required: False
+    type: str
+    description:
+    - CHAP secret. The CHAP secret should be between 12-16 characters and cannot contain spaces or most punctuation.
+      string of 12 to 16 printable ASCII characters excluding ampersand and ^[];`
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage CHAP user.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -185,6 +186,7 @@ def main():
         "initiator_iqns": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "name": {

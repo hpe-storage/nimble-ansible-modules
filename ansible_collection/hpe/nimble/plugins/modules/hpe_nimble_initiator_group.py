@@ -15,6 +15,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -52,11 +55,13 @@ options:
   fc_initiators:
     required: False
     type: list
+    elements: dict
     description:
     - List of FC initiators. When create/update fc_initiators, WWPN is required.
   fc_tdz_ports:
     required: False
     type: list
+    elements: int
     description:
     - List of target fibre channel ports with target driven zoning configured on this initiator group.
   host_type:
@@ -69,6 +74,7 @@ options:
   iscsi_initiators:
     required: False
     type: list
+    elements: dict
     description:
     - List of iSCSI initiators. When create/update iscsi_initiators, either iqn or ip_address is always required with label.
   metadata:
@@ -93,11 +99,12 @@ options:
   target_subnets:
     required: False
     type: list
+    elements: dict
     description:
     - List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage initiator groups.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -134,6 +141,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def create_igroup(
         client_obj,
@@ -239,21 +247,25 @@ def main():
         "fc_tdz_ports": {
             "required": False,
             "type": "list",
+            "elements": 'int',
             "no_log": False,
         },
         "target_subnets": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False,
         },
         "iscsi_initiators": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False,
         },
         "fc_initiators": {
             "required": False,
             "type": "list",
+            "elements": 'dict',
             "no_log": False
         },
         "app_uuid": {

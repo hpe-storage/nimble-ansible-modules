@@ -14,6 +14,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -34,7 +37,6 @@ options:
     - openstack
     - openstackv2
     type: str
-    default: none
     description:
     - External management agent type.
   app_uuid:
@@ -99,9 +101,9 @@ options:
     default: False
     description:
     - Allow snapshot to be writable. Mandatory and must be set to 'true' for VSS application synchronized snapshots.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage snapshots.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''

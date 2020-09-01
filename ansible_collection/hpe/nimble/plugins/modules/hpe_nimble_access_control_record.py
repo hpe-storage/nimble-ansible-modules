@@ -35,7 +35,6 @@ options:
     - snapshot
     - both
     type: str
-    default: both
     description:
     - Type of object this access control record applies to.
   chap_user:
@@ -64,13 +63,13 @@ options:
     description:
     - Choice for access control record operation.
   volume:
-    required: False
+    required: True
     type: str
     description:
     - Name for the volume this access control record applies to.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage access control records.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -106,6 +105,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def create_acr(
         client_obj,
@@ -144,7 +144,8 @@ def create_acr(
             # if state is set to present, we pass
             if state == "present":
                 return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.")
-        return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot be created as it is already present.")
+        return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot "
+                "be created as it is already present.")
     except Exception as ex:
         return (False, False, f"Access control record creation failed | {ex}")
 

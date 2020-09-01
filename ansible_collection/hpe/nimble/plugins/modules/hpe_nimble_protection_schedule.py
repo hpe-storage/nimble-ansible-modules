@@ -14,6 +14,9 @@
 
 # author Alok Ranjan (alok.ranjan2@hpe.com)
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -40,7 +43,6 @@ options:
   days:
     required: False
     type: str
-    default: 'all'
     description:
     - Specifies which days snapshots should be taken. Comma separated list of days of the week or 'all'.
   description:
@@ -90,7 +92,6 @@ options:
       - weeks
     required: False
     type: str
-    default: days
     description:
     - Time unit over which to take the number of snapshots specified in 'period'. For example, a value of 'days' with a
       'period' of '1' results in one snapshot every day.
@@ -147,7 +148,6 @@ options:
   until_time:
     required: False
     type: int
-    default: 86399
     description:
     - Time of day to stop taking snapshots. Applicable only when repeat frequency specifies more than one snapshot in a day.
   use_downstream_for_DR:
@@ -177,9 +177,9 @@ options:
     type: str
     description:
     - Name of the volume collection in which this protection schedule is attached to.
-extends_documentation_fragment: hpe_nimble
+extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage HPE Nimble Storage protection schedules.
-version_added: 2.9
+version_added: "2.9.0"
 '''
 
 EXAMPLES = r'''
@@ -216,6 +216,7 @@ try:
 except ImportError:
     client = None
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
+
 
 def create_prot_schedule(
         client_obj,
