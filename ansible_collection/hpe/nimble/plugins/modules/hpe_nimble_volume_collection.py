@@ -341,11 +341,6 @@ def delete_volcoll(client_obj, volcoll_name):
         if utils.is_null_or_empty(volcoll_resp):
             return (False, False, f"Volume collection '{volcoll_name}' not present to delete.", {})
         else:
-            # check if this volcoll has any volumes associated
-            volume_list = volcoll_resp.attrs.get("volume_list")
-            if utils.is_null_or_empty(volume_list) is False:
-                for volume_obj in volume_list:
-                    client_obj.volumes.update(id=volume_obj['id'], volcoll_id="")  # disassociate
 
             client_obj.volume_collections.delete(id=volcoll_resp.attrs.get("id"))
             return (True, True, f"Deleted volume collection '{volcoll_name}' successfully.", {})
