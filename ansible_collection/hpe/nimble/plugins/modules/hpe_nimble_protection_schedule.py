@@ -204,6 +204,8 @@ EXAMPLES = r'''
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
+    volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
+    volcoll_name: "{{ volcoll_name }}"
     state: absent
 
 '''
@@ -226,7 +228,10 @@ def create_prot_schedule(
     if utils.is_null_or_empty(prot_schedule_name):
         return (False, False, "Create protection schedule failed as protection schedule name is not present.", {})
     try:
-        prot_schedule_resp = client_obj.protection_schedules.get(id=None, name=prot_schedule_name)
+        prot_schedule_resp = client_obj.protection_schedules.get(id=None,
+                                                                 name=prot_schedule_name,
+                                                                 volcoll_or_prottmpl_type=kwargs['volcoll_or_prottmpl_type'],
+                                                                 volcoll_or_prottmpl_id=kwargs['volcoll_or_prottmpl_id'])
         if utils.is_null_or_empty(prot_schedule_resp):
             params = utils.remove_null_args(**kwargs)
             prot_schedule_resp = client_obj.protection_schedules.create(name=prot_schedule_name, **params)
@@ -256,13 +261,19 @@ def update_prot_schedule(
         return (False, False, f"Protection schedule update failed |{ex}", {})
 
 
-def delete_prot_schedule(client_obj, prot_schedule_name):
+def delete_prot_schedule(client_obj,
+                         prot_schedule_name,
+                         volcoll_or_prottmpl_type,
+                         volcoll_or_prottmpl_id):
 
     if utils.is_null_or_empty(prot_schedule_name):
         return (False, False, "Protection schedule deletion failed as protection schedule name is not present", {})
 
     try:
-        prot_schedule_resp = client_obj.protection_schedules.get(id=None, name=prot_schedule_name)
+        prot_schedule_resp = client_obj.protection_schedules.get(id=None,
+                                                                 name=prot_schedule_name,
+                                                                 volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
+                                                                 volcoll_or_prottmpl_id=volcoll_or_prottmpl_id)
         if utils.is_null_or_empty(prot_schedule_resp):
             return (False, False, f"Protection schedule '{prot_schedule_name}' not present to delete.", {})
         else:
@@ -300,7 +311,7 @@ def main():
         },
         "volcoll_or_prottmpl_type": {
             "choices": ['protection_template', 'volume_collection'],
-            "required": False,
+            "required": True,
             "type": "str",
             "no_log": False,
         },
@@ -392,13 +403,19 @@ def main():
             "no_log": False
         }
     }
+
     mutually_exclusive = [
         ['prot_template_name', 'volcoll_name']
     ]
-    required_if = [('state', 'create', ['volcoll_or_prottmpl_type', 'num_retain'])]
+    required_if = [
+        ['state', 'create', ['num_retain']]
+    ]
+    required_one_of = [
+        ['volcoll_name', 'prot_template_name']
+    ]
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    module = AnsibleModule(argument_spec=fields, mutually_exclusive=mutually_exclusive, required_if=required_if)
+    module = AnsibleModule(argument_spec=fields, mutually_exclusive=mutually_exclusive, required_if=required_if, required_one_of=required_one_of)
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
@@ -443,12 +460,17 @@ def main():
 
     # States
     if state == "create" or state == "present":
-        prot_schedule_resp = client_obj.protection_schedules.get(id=None, name=prot_schedule_name)
-        if utils.is_null_or_empty(prot_schedule_resp) or state == "create":
-            # check for mandatory params
-            if volcoll_name is None and prot_template_name is None or volcoll_or_prottmpl_type is None:
-                module.fail_json(msg='Please provide the Mandatory params : volcoll_or_prottmpl_type, and volcoll_name or prot_template_name.')
+        # we need to enforce the below params as mandatory as there can be a scenario where in a protection schedule with the same name
+        # exists in a different volume collection or in different protection tempalate. Hence, if a user wants to modify/update
+        # a protection schedule , they need to provide all the three params for us to query and find the exact protection schedule
+        if volcoll_name is None and prot_template_name is None or volcoll_or_prottmpl_type is None:
+            module.fail_json(msg='Please provide the Mandatory params : volcoll_or_prottmpl_type, and volcoll_name or prot_template_name.')
 
+        prot_schedule_resp = client_obj.protection_schedules.get(id=None,
+                                                                 name=prot_schedule_name,
+                                                                 volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
+                                                                 volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
+        if utils.is_null_or_empty(prot_schedule_resp) or state == "create":
             return_status, changed, msg, changed_attrs_dict = create_prot_schedule(
                 client_obj,
                 prot_schedule_name,
@@ -495,7 +517,10 @@ def main():
                 use_downstream_for_DR=use_downstream_for_DR)
 
     elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_prot_schedule(client_obj, prot_schedule_name)
+        return_status, changed, msg, changed_attrs_dict = delete_prot_schedule(client_obj,
+                                                                               prot_schedule_name,
+                                                                               volcoll_or_prottmpl_type,
+                                                                               utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
 
     if return_status:
         if changed_attrs_dict:
