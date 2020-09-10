@@ -1,0 +1,685 @@
+Using /etc/ansible/ansible.cfg as config file
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Volume if not present] ********************************************
+changed: [localhost] => {"changed": true, "message": "Created volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Check mandatory param.] **************************************************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "missing required arguments: initiator_group"}
+
+TASK [Create an initiator group (from scratch).] *******************************
+ok: [localhost] => {"changed": false, "message": "Initiator group '10.18.180.239-ig-ansiblecentos1' already present.", "return_status": true}
+
+TASK [Create ACR for volume] ***************************************************
+changed: [localhost] => {"changed": true, "msg": "Successfully created access control record with attributes: {'volume': '10.18.180.239-ansible-vol1', 'initiator_group': '10.18.180.239-ig-ansiblecentos1'}.", "return_status": true}
+
+TASK [Delete ACR for non existent volume. should fail with "No access control record"] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "No access control record for initiator group '10.18.180.239-ig-ansiblecentos1' associated with volume 'invalid' found.", "return_status": true}
+
+TASK [Delete ACR for volume] ***************************************************
+changed: [localhost] => {"changed": true, "msg": "Successfully deleted access control record for initiator group '10.18.180.239-ig-ansiblecentos1' associated with volume '10.18.180.239-ansible-vol1'.", "return_status": true}
+
+TASK [Changing Volume to offline state] ****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Delete volume. This should pass] *****************************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create array if not present.Should fail with ex 'SM_http_not_found'] *****
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Array creation failed |{'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_enoent', 'severity': 'error', 'text': 'No such object.'}]}", "return_status": false}
+
+TASK [Delete array.Should fail with 'cannot be deleted as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Array 'ansibler1-va' cannot be deleted as it is not present.", "return_status": false}
+
+TASK [Failover array.Should fail with 'cannot failover as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Array 'ansibler1-va' cannot failover as it is not present.", "return_status": false}
+
+TASK [halt array.Should fail with 'cannot be halted as it is not present'] *****
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Array 'ansibler1-va' cannot be halted as it is not present.", "return_status": false}
+
+TASK [Reboot array.Should fail with 'cannot be rebooted as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Array 'invalid array' cannot be rebooted as it is not present.", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Load Storage System Vars] ************************************************
+ok: [localhost] => {"ansible_facts": {"downstream_group_name": "group-alokr8-va", "downstream_hostname": "10.18.175.96", "host": "10.18.171.96", "password": "admin", "username": "admin"}, "ansible_included_var_files": ["/etc/ansible/playbook/test/unit/properties/storage_system_properties.yml"], "changed": false}
+
+TASK [Create Chap User] ********************************************************
+changed: [localhost] => {"changed": true, "msg": "Chap user 'ansiblechapuser3' created successfully.", "return_status": true}
+
+TASK [Delete Chap User] ********************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted chap user 'ansiblechapuser3' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Update Disk. Will fail as no correct disk id is provided] ****************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Disk update failed |'{'messages': [{'code': 'SM_http_bad_request', 'severity': 'error', 'text': 'The request could not be understood by the server.'}, {'code': 'SM_invalid_path_variable', 'severity': 'error', 'arguments': {'arg': 'id', 'value': 'None'}, 'text': \"Invalid value 'None' specified for path variable 'id'.\"}]}'", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create master key] *******************************************************
+changed: [localhost] => {"changed": true, "msg": "Master key 'default' created successfully.", "return_status": true}
+
+TASK [purge inactive master key] ***********************************************
+changed: [localhost] => {"changed": true, "msg": "Purged inactive master key 'default' successfully.", "return_status": true}
+
+TASK [group encryption ,will fail as the group name does not exist] ************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Encryption setting for group 'default' cannot be done as it is not present.", "return_status": false}
+
+TASK [Delete master key] *******************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted master key 'default' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Update FC. Should fail with ex "SM_array_not_found"] *********************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Fibre channel update failed |'{'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_array_not_found', 'severity': 'error', 'text': 'Array was not found.'}]}'", "return_status": false}
+
+TASK [Regenerate fc config. Should fail with "No fibre channel config is present"] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "No fibre channel config is present for array 'rtp-array33'.", "return_status": false}
+
+TASK [Hardware upgrade fc config. Should fail with "No fibre channel config is present"] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "No fibre channel config is present for array 'rtp-array33'.", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Update group] ************************************************************
+ok: [localhost] => {"changed": false, "msg": "Group 'group-alokr1-va' already present.", "return_status": true}
+
+TASK [Reboot group. Should fail with 'cannot be rebooted as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Group 'invalid group' cannot be rebooted as it is not present.", "return_status": false}
+
+TASK [Validate merge group. Should fail with 'Failed logging in to the source group'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Validate merge for group failed | '{'messages': [{'code': 'SM_http_conflict', 'severity': 'error', 'text': 'The request could not be completed due to a conflict.'}, {'code': 'SM_failed_source_group_login', 'severity': 'error', 'text': 'Failed logging in to the source group.'}]}'", "return_status": false}
+
+TASK [Test alert group] ********************************************************
+changed: [localhost] => {"changed": true, "msg": "Tested alert for group 'group-alokr1-va' successfully.", "return_status": true}
+
+TASK [Migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Group migrate failed | '{'messages': [{'code': 'SM_http_conflict', 'severity': 'error', 'text': 'The request could not be completed due to a conflict.'}, {'code': 'SM_migrate_bgl_unavail', 'severity': 'error', 'text': 'Backup Group Leader Array has not been setup yet.'}]}'", "return_status": false}
+
+TASK [Check migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Check migrate for group failed | '{'messages': [{'code': 'SM_http_conflict', 'severity': 'error', 'text': 'The request could not be completed due to a conflict.'}, {'code': 'SM_migrate_bgl_unavail', 'severity': 'error', 'text': 'Backup Group Leader Array has not been setup yet.'}]}'", "return_status": false}
+
+TASK [Merge group.Should fail with 'specified for the argument 'src_passphrase''] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Merge for group failed | '{'messages': [{'code': 'SM_http_bad_request', 'severity': 'error', 'text': 'The request could not be understood by the server.'}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'src_group_ip', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'src_group_ip'.\"}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'src_password', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'src_password'.\"}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'force', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'force'.\"}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'skip_secondary_mgmt_ip', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'skip_secondary_mgmt_ip'.\"}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'src_passphrase', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'src_passphrase'.\"}]}'", "return_status": false}
+
+TASK [Halt group.Should fail with 'SM_invalid_arg_value'] **********************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Halt group failed | '{'messages': [{'code': 'SM_http_bad_request', 'severity': 'error', 'text': 'The request could not be understood by the server.'}, {'code': 'SM_invalid_arg_value', 'severity': 'error', 'arguments': {'arg': 'force', 'value': 'null'}, 'text': \"Invalid value 'null' specified for the argument 'force'.\"}]}'", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [collect volume snapshot and volcoll subset with subset options.] *********
+ok: [localhost] => {"changed": false, "message": "Fetched the subset details.", "nimble_info": {"config": {"arrays": [{"all_flash": false, "extended_model": "vmware-4G-5T-160F", "full_name": "alokr1-va", "role": "leader", "serial": "alokr1-va"}], "groups": [{"alarms_enabled": true, "auto_switchover_enabled": true, "auto_switchover_messages": [], "autosupport_enabled": true, "default_iscsi_target_scope": "group", "dns_servers": [{"ip_addr": "10.235.0.185"}, {"ip_addr": "10.12.255.254"}], "domain_name": "vlab.nimblestorage.com", "encryption_config": {"cipher": "none", "encryption_active": false, "encryption_key_manager": "local", "master_key_set": false, "mode": "none", "scope": "none"}, "failover_mode": "Manual", "fc_enabled": false, "iscsi_enabled": true, "isns_enabled": true, "leader_array_name": "alokr1-va", "member_list": ["alokr1-va"], "name": "group-alokr1-va", "ntp_server": "time.nimblestorage.com", "send_alert_to_support": true, "smtp_auth_enabled": false, "smtp_auth_username": "", "smtp_port": 25, "smtp_server": "", "snmp_community": "public", "snmp_trap_enabled": false, "snmp_trap_host": "", "snmp_trap_port": 162, "syslogd_enabled": false, "syslogd_server": "", "vvol_enabled": true}], "network_configs": [{"active_since": 1592210265, "array_list": [{"ctrlr_a_support_ip": "10.18.171.132", "ctrlr_b_support_ip": "10.18.171.133", "member_gid": 1, "name": "alokr1-va", "nic_list": [{"data_ip": "172.16.41.139", "name": "eth3", "subnet_label": "data1", "tagged": false}, {"data_ip": "172.16.234.76", "name": "eth4", "subnet_label": "data2", "tagged": false}, {"data_ip": "", "name": "eth2", "subnet_label": "mgmt-data", "tagged": false}, {"data_ip": "", "name": "eth1", "subnet_label": "mgmt-data", "tagged": false}]}], "creation_time": 1586411318, "group_leader_array": "alokr1-va", "id": "177321e77f009f2013000000000000000000000001", "iscsi_automatic_connection_method": true, "iscsi_connection_rebalancing": true, "last_active": 1592210256, "last_modified": 1586411356, "mgmt_ip": "10.18.171.96", "name": "active", "role": "active", "route_list": [{"gateway": "10.18.160.1", "tgt_netmask": "0.0.0.0", "tgt_network": "0.0.0.0"}], "secondary_mgmt_ip": "", "subnet_list": [{"allow_group": true, "allow_iscsi": true, "discovery_ip": "172.16.41.140", "failover": true, "failover_enable_time": 0, "label": "data1", "mtu": 1500, "netmask": "255.255.224.0", "network": "172.16.32.0", "netzone_type": "single", "type": "data", "vlan_id": 0}, {"allow_group": true, "allow_iscsi": true, "discovery_ip": "172.16.234.101", "failover": true, "failover_enable_time": 0, "label": "data2", "mtu": 1500, "netmask": "255.255.224.0", "network": "172.16.224.0", "netzone_type": "single", "type": "data", "vlan_id": 0}, {"allow_group": false, "allow_iscsi": false, "discovery_ip": "", "failover": true, "failover_enable_time": 0, "label": "mgmt-data", "mtu": 1500, "netmask": "255.255.224.0", "network": "10.18.160.0", "netzone_type": "none", "type": "mgmt", "vlan_id": 0}]}, {"active_since": 0, "array_list": [{"ctrlr_a_support_ip": "10.18.171.132", "ctrlr_b_support_ip": "10.18.171.133", "member_gid": 1, "name": "alokr1-va", "nic_list": [{"data_ip": "", "name": "eth2", "subnet_label": "mgmt-data", "tagged": false}, {"data_ip": "", "name": "eth1", "subnet_label": "mgmt-data", "tagged": false}, {"data_ip": "172.16.41.139", "name": "eth3", "subnet_label": "data1", "tagged": false}, {"data_ip": "172.16.234.76", "name": "eth4", "subnet_label": "data2", "tagged": false}]}], "creation_time": 1586411356, "group_leader_array": "alokr1-va", "id": "177321e77f009f2013000000000000000000000002", "iscsi_automatic_connection_method": true, "iscsi_connection_rebalancing": true, "last_active": 1592210265, "last_modified": 1586411318, "mgmt_ip": "10.18.171.96", "name": "backup", "role": "backup", "route_list": [{"gateway": "10.18.160.1", "tgt_netmask": "0.0.0.0", "tgt_network": "0.0.0.0"}], "secondary_mgmt_ip": "", "subnet_list": [{"allow_group": false, "allow_iscsi": false, "discovery_ip": "", "failover": true, "failover_enable_time": 0, "label": "mgmt-data", "mtu": 1500, "netmask": "255.255.224.0", "network": "10.18.160.0", "netzone_type": "none", "type": "mgmt", "vlan_id": 0}, {"allow_group": true, "allow_iscsi": true, "discovery_ip": "172.16.41.140", "failover": true, "failover_enable_time": 0, "label": "data1", "mtu": 1500, "netmask": "255.255.224.0", "network": "172.16.32.0", "netzone_type": "single", "type": "data", "vlan_id": 0}, {"allow_group": true, "allow_iscsi": true, "discovery_ip": "172.16.234.101", "failover": true, "failover_enable_time": 0, "label": "data2", "mtu": 1500, "netmask": "255.255.224.0", "network": "172.16.224.0", "netzone_type": "single", "type": "data", "vlan_id": 0}]}], "pools": [{"array_count": 1, "dedupe_all_volumes": false, "dedupe_capable": false, "is_default": true, "name": "default", "vol_list": [{"id": "0675a5e21cc205c609000000000000000000000001", "name": "vol1", "vol_id": "0675a5e21cc205c609000000000000000000000001", "vol_name": "vol1"}]}]}, "default": {"arrays": [{"all_flash": false, "extended_model": "vmware-4G-5T-160F", "full_name": "alokr1-va"}], "disks": 16, "folders": 0, "groups": [{"auto_switchover_messages": [], "default_iscsi_target_scope": "group", "encryption_config": {"cipher": "none", "encryption_active": false, "encryption_key_manager": "local", "master_key_set": false, "mode": "none", "scope": "none"}, "fc_enabled": false, "iscsi_enabled": true, "leader_array_name": "alokr1-va", "name": "group-alokr1-va", "num_snaps": 49}], "initiator_groups": 3, "protection_schedules": 5, "protection_templates": 3, "protocol_endpoints": 0, "snapshot_collections": 49, "snapshots": 49, "software versions": "5.2.2.0-730069-opt", "users": 2, "volume_collections": 0, "volumes": 1}}, "return_status": true}
+
+TASK [show information] ********************************************************
+ok: [localhost] => {
+    "array_info": {
+        "changed": false,
+        "failed": false,
+        "message": "Fetched the subset details.",
+        "nimble_info": {
+            "config": {
+                "arrays": [
+                    {
+                        "all_flash": false,
+                        "extended_model": "vmware-4G-5T-160F",
+                        "full_name": "alokr1-va",
+                        "role": "leader",
+                        "serial": "alokr1-va"
+                    }
+                ],
+                "groups": [
+                    {
+                        "alarms_enabled": true,
+                        "auto_switchover_enabled": true,
+                        "auto_switchover_messages": [],
+                        "autosupport_enabled": true,
+                        "default_iscsi_target_scope": "group",
+                        "dns_servers": [
+                            {
+                                "ip_addr": "10.235.0.185"
+                            },
+                            {
+                                "ip_addr": "10.12.255.254"
+                            }
+                        ],
+                        "domain_name": "vlab.nimblestorage.com",
+                        "encryption_config": {
+                            "cipher": "none",
+                            "encryption_active": false,
+                            "encryption_key_manager": "local",
+                            "master_key_set": false,
+                            "mode": "none",
+                            "scope": "none"
+                        },
+                        "failover_mode": "Manual",
+                        "fc_enabled": false,
+                        "iscsi_enabled": true,
+                        "isns_enabled": true,
+                        "leader_array_name": "alokr1-va",
+                        "member_list": [
+                            "alokr1-va"
+                        ],
+                        "name": "group-alokr1-va",
+                        "ntp_server": "time.nimblestorage.com",
+                        "send_alert_to_support": true,
+                        "smtp_auth_enabled": false,
+                        "smtp_auth_username": "",
+                        "smtp_port": 25,
+                        "smtp_server": "",
+                        "snmp_community": "public",
+                        "snmp_trap_enabled": false,
+                        "snmp_trap_host": "",
+                        "snmp_trap_port": 162,
+                        "syslogd_enabled": false,
+                        "syslogd_server": "",
+                        "vvol_enabled": true
+                    }
+                ],
+                "network_configs": [
+                    {
+                        "active_since": 1592210265,
+                        "array_list": [
+                            {
+                                "ctrlr_a_support_ip": "10.18.171.132",
+                                "ctrlr_b_support_ip": "10.18.171.133",
+                                "member_gid": 1,
+                                "name": "alokr1-va",
+                                "nic_list": [
+                                    {
+                                        "data_ip": "172.16.41.139",
+                                        "name": "eth3",
+                                        "subnet_label": "data1",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "172.16.234.76",
+                                        "name": "eth4",
+                                        "subnet_label": "data2",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "",
+                                        "name": "eth2",
+                                        "subnet_label": "mgmt-data",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "",
+                                        "name": "eth1",
+                                        "subnet_label": "mgmt-data",
+                                        "tagged": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "creation_time": 1586411318,
+                        "group_leader_array": "alokr1-va",
+                        "id": "177321e77f009f2013000000000000000000000001",
+                        "iscsi_automatic_connection_method": true,
+                        "iscsi_connection_rebalancing": true,
+                        "last_active": 1592210256,
+                        "last_modified": 1586411356,
+                        "mgmt_ip": "10.18.171.96",
+                        "name": "active",
+                        "role": "active",
+                        "route_list": [
+                            {
+                                "gateway": "10.18.160.1",
+                                "tgt_netmask": "0.0.0.0",
+                                "tgt_network": "0.0.0.0"
+                            }
+                        ],
+                        "secondary_mgmt_ip": "",
+                        "subnet_list": [
+                            {
+                                "allow_group": true,
+                                "allow_iscsi": true,
+                                "discovery_ip": "172.16.41.140",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "data1",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "172.16.32.0",
+                                "netzone_type": "single",
+                                "type": "data",
+                                "vlan_id": 0
+                            },
+                            {
+                                "allow_group": true,
+                                "allow_iscsi": true,
+                                "discovery_ip": "172.16.234.101",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "data2",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "172.16.224.0",
+                                "netzone_type": "single",
+                                "type": "data",
+                                "vlan_id": 0
+                            },
+                            {
+                                "allow_group": false,
+                                "allow_iscsi": false,
+                                "discovery_ip": "",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "mgmt-data",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "10.18.160.0",
+                                "netzone_type": "none",
+                                "type": "mgmt",
+                                "vlan_id": 0
+                            }
+                        ]
+                    },
+                    {
+                        "active_since": 0,
+                        "array_list": [
+                            {
+                                "ctrlr_a_support_ip": "10.18.171.132",
+                                "ctrlr_b_support_ip": "10.18.171.133",
+                                "member_gid": 1,
+                                "name": "alokr1-va",
+                                "nic_list": [
+                                    {
+                                        "data_ip": "",
+                                        "name": "eth2",
+                                        "subnet_label": "mgmt-data",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "",
+                                        "name": "eth1",
+                                        "subnet_label": "mgmt-data",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "172.16.41.139",
+                                        "name": "eth3",
+                                        "subnet_label": "data1",
+                                        "tagged": false
+                                    },
+                                    {
+                                        "data_ip": "172.16.234.76",
+                                        "name": "eth4",
+                                        "subnet_label": "data2",
+                                        "tagged": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "creation_time": 1586411356,
+                        "group_leader_array": "alokr1-va",
+                        "id": "177321e77f009f2013000000000000000000000002",
+                        "iscsi_automatic_connection_method": true,
+                        "iscsi_connection_rebalancing": true,
+                        "last_active": 1592210265,
+                        "last_modified": 1586411318,
+                        "mgmt_ip": "10.18.171.96",
+                        "name": "backup",
+                        "role": "backup",
+                        "route_list": [
+                            {
+                                "gateway": "10.18.160.1",
+                                "tgt_netmask": "0.0.0.0",
+                                "tgt_network": "0.0.0.0"
+                            }
+                        ],
+                        "secondary_mgmt_ip": "",
+                        "subnet_list": [
+                            {
+                                "allow_group": false,
+                                "allow_iscsi": false,
+                                "discovery_ip": "",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "mgmt-data",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "10.18.160.0",
+                                "netzone_type": "none",
+                                "type": "mgmt",
+                                "vlan_id": 0
+                            },
+                            {
+                                "allow_group": true,
+                                "allow_iscsi": true,
+                                "discovery_ip": "172.16.41.140",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "data1",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "172.16.32.0",
+                                "netzone_type": "single",
+                                "type": "data",
+                                "vlan_id": 0
+                            },
+                            {
+                                "allow_group": true,
+                                "allow_iscsi": true,
+                                "discovery_ip": "172.16.234.101",
+                                "failover": true,
+                                "failover_enable_time": 0,
+                                "label": "data2",
+                                "mtu": 1500,
+                                "netmask": "255.255.224.0",
+                                "network": "172.16.224.0",
+                                "netzone_type": "single",
+                                "type": "data",
+                                "vlan_id": 0
+                            }
+                        ]
+                    }
+                ],
+                "pools": [
+                    {
+                        "array_count": 1,
+                        "dedupe_all_volumes": false,
+                        "dedupe_capable": false,
+                        "is_default": true,
+                        "name": "default",
+                        "vol_list": [
+                            {
+                                "id": "0675a5e21cc205c609000000000000000000000001",
+                                "name": "vol1",
+                                "vol_id": "0675a5e21cc205c609000000000000000000000001",
+                                "vol_name": "vol1"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "default": {
+                "arrays": [
+                    {
+                        "all_flash": false,
+                        "extended_model": "vmware-4G-5T-160F",
+                        "full_name": "alokr1-va"
+                    }
+                ],
+                "disks": 16,
+                "folders": 0,
+                "groups": [
+                    {
+                        "auto_switchover_messages": [],
+                        "default_iscsi_target_scope": "group",
+                        "encryption_config": {
+                            "cipher": "none",
+                            "encryption_active": false,
+                            "encryption_key_manager": "local",
+                            "master_key_set": false,
+                            "mode": "none",
+                            "scope": "none"
+                        },
+                        "fc_enabled": false,
+                        "iscsi_enabled": true,
+                        "leader_array_name": "alokr1-va",
+                        "name": "group-alokr1-va",
+                        "num_snaps": 49
+                    }
+                ],
+                "initiator_groups": 3,
+                "protection_schedules": 5,
+                "protection_templates": 3,
+                "protocol_endpoints": 0,
+                "snapshot_collections": 49,
+                "snapshots": 49,
+                "software versions": "5.2.2.0-730069-opt",
+                "users": 2,
+                "volume_collections": 0,
+                "volumes": 1
+            }
+        },
+        "return_status": true
+    }
+}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create an initiator group (from scratch).] *******************************
+changed: [localhost] => {"changed": true, "message": "Created initiator Group '10.18.180.239-ig-ansiblecentos2' successfully.", "return_status": true}
+
+TASK [Delete my igroup] ********************************************************
+changed: [localhost] => {"changed": true, "message": "Successfully deleted initiator group '10.18.180.239-ig-ansiblecentos2'.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Network config. Should fail with ex 'SM_array_not_found'] *********
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Network config creation failed |'{'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_array_not_found', 'severity': 'error', 'text': 'Array was not found.'}]}'", "return_status": false}
+
+TASK [Delete Network config. Should fail with 'Network config 'draft' cannot be deleted as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Network config 'draft' cannot be deleted as it is not present.", "return_status": false}
+
+TASK [Validate Network config. Should fail with 'Network config 'draft' cannot be validated as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Network config 'draft' cannot be validated as it is not present.", "return_status": false}
+
+TASK [Activate Network config. Should fail with 'Network config 'draft' cannot be activated as it is not present'] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Network config 'draft' cannot be activated as it is not present.", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Partner] **********************************************************
+changed: [localhost] => {"changed": true, "msg": "Replication partner '10.18.175.96' created successfully.", "return_status": true}
+
+TASK [Pause Partner] ***********************************************************
+changed: [localhost] => {"changed": true, "msg": "Paused replication partner '10.18.175.96' successfully.", "return_status": true}
+
+TASK [Resume Partner] **********************************************************
+changed: [localhost] => {"changed": true, "msg": "Resumed replication partner '10.18.175.96' successfully.", "return_status": true}
+
+TASK [Delete Partner] **********************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted replication partner '10.18.175.96' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Load Storage System Vars] ************************************************
+ok: [localhost] => {"ansible_facts": {"downstream_group_name": "group-alokr8-va", "downstream_hostname": "10.18.175.96", "host": "10.18.171.96", "password": "admin", "username": "admin"}, "ansible_included_var_files": ["/etc/ansible/playbook/test/unit/properties/storage_system_properties.yml"], "changed": false}
+
+TASK [Create performance policy if not present] ********************************
+changed: [localhost] => {"changed": true, "msg": "Created performance policy 'ansible-policy' successfully.", "return_status": true}
+
+TASK [Delete performance policy] ***********************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted performance policy 'ansible-policy' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Create pool 'ansiblepool'. Should fail as array is not present for this pool] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Pool creation failed | {'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_array_not_found', 'severity': 'error', 'text': 'Array was not found.'}]}", "return_status": false}
+
+TASK [Delete pool should fail as ansiblepool is not present] *******************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Cannot delete pool 'ansiblepool' as it is not present.", "return_status": false}
+
+TASK [Merge pool should fail with msg "Merge pools failed as source pool"] *****
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Merge pools failed as source pool 'ansiblepool' is not present.", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Volume collection if not present] *********************************
+changed: [localhost] => {"changed": true, "msg": "Created volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+TASK [Create Protection schedule if not present] *******************************
+changed: [localhost] => {"changed": true, "msg": "Created protection schedule '10.18.180.239-ansible-prot-schedule1' successfully.", "return_status": true}
+
+TASK [Delete Protection schedule] **********************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted protection schedule '10.18.180.239-ansible-prot-schedule1' successfully.", "return_status": true}
+
+TASK [Delete vol coll (it's can have volumes)] *********************************
+changed: [localhost] => {"changed": true, "msg": "Deleted volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Protection Template if not present] *******************************
+changed: [localhost] => {"changed": true, "msg": "Protection template '10.18.180.239-ansible-prot-template1' created successfully.", "return_status": true}
+
+TASK [Delete Protection Template] **********************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted protection template '10.18.180.239-ansible-prot-template1' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Update shelf. should fail with SM_shelf_no_eloc_id] **********************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Shelf update failed | {'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_shelf_no_eloc_id', 'severity': 'error', 'text': 'No expansion shelf exists with the given enclosure.'}]}", "return_status": false}
+
+TASK [Update shelf. should fail with shelf serial not found] *******************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Shelf serial 'invalid' not found.", "return_status": false}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create snapshot collection snapcoll1. Check for mandatory param volcoll.will fail as volcoll does not exist] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "module_stderr": "Traceback (most recent call last):\n  File \"/root/.ansible/tmp/ansible-tmp-1598434893.9406812-28672-68079053497631/AnsiballZ_hpe_nimble_snapshot_collection.py\", line 102, in <module>\n    _ansiballz_main()\n  File \"/root/.ansible/tmp/ansible-tmp-1598434893.9406812-28672-68079053497631/AnsiballZ_hpe_nimble_snapshot_collection.py\", line 94, in _ansiballz_main\n    invoke_module(zipped_mod, temp_path, ANSIBALLZ_PARAMS)\n  File \"/root/.ansible/tmp/ansible-tmp-1598434893.9406812-28672-68079053497631/AnsiballZ_hpe_nimble_snapshot_collection.py\", line 40, in invoke_module\n    runpy.run_module(mod_name='ansible.modules.hpe_nimble_snapshot_collection', init_globals=None, run_name='__main__', alter_sys=True)\n  File \"/usr/lib64/python3.6/runpy.py\", line 205, in run_module\n    return _run_module_code(code, init_globals, run_name, mod_spec)\n  File \"/usr/lib64/python3.6/runpy.py\", line 96, in _run_module_code\n    mod_name, mod_spec, pkg_name, script_name)\n  File \"/usr/lib64/python3.6/runpy.py\", line 85, in _run_code\n    exec(code, run_globals)\n  File \"/tmp/ansible_hpe_nimble_snapshot_collection_payload_486thihj/ansible_hpe_nimble_snapshot_collection_payload.zip/ansible/modules/hpe_nimble_snapshot_collection.py\", line 411, in <module>\n  File \"/tmp/ansible_hpe_nimble_snapshot_collection_payload_486thihj/ansible_hpe_nimble_snapshot_collection_payload.zip/ansible/modules/hpe_nimble_snapshot_collection.py\", line 374, in main\n  File \"/tmp/ansible_hpe_nimble_snapshot_collection_payload_486thihj/ansible_hpe_nimble_snapshot_collection_payload.zip/ansible_collections/hpe/nimble/plugins/module_utils/hpe_nimble.py\", line 167, in get_volcoll_id\nException: Invalid value for volcoll ansible-volcoll\n", "module_stdout": "", "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", "rc": 1}
+
+TASK [Create Volume collection if not present] *********************************
+changed: [localhost] => {"changed": true, "msg": "Created volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+TASK [Create snapshot collection should fail with "SM_no_assoc_vols"] **********
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Snapshot collection creation failed | {'messages': [{'code': 'SM_http_not_found', 'severity': 'error', 'text': 'Server has not found the requested object.'}, {'code': 'SM_no_assoc_vols', 'severity': 'error', 'text': 'No associated volumes found.'}]}", "return_status": false}
+
+TASK [Create Volume if not present] ********************************************
+changed: [localhost] => {"changed": true, "message": "Created volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Update volcoll for Volume] ***********************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"volcoll_id": "077321e77f009f20130000000000000000000000c5"}, "return_status": true}
+
+TASK [Create snapshot collection] **********************************************
+changed: [localhost] => {"changed": true, "msg": "Created snapshot collection '10.18.180.239-snapcoll1' successfully.", "return_status": true}
+
+TASK [Delete Snapshot Collection collection  (must be offline)] ****************
+changed: [localhost] => {"changed": true, "msg": "Snapshot collection '10.18.180.239-snapcoll1' deleted successfully.", "return_status": true}
+
+TASK [Disassociate volcoll from Volume] ****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false, "volcoll_id": ""}, "return_status": true}
+
+TASK [Delete volume. This should pass] *****************************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Delete vol coll] *********************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create snapshot should fail as volume is not present] ********************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Volume '10.18.180.239-ansible-vol1' not present on array for taking snapshot.", "return_status": false}
+
+TASK [Create Volume if not present] ********************************************
+changed: [localhost] => {"changed": true, "message": "Created volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Delete snapshot  should fail as snapshot snapshot2 is not present] *******
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Snapshot 'snapshot2' cannot be deleted as it is not present in given volume '10.18.180.239-ansible-vol1'.", "return_status": false}
+
+TASK [Create snapshot] *********************************************************
+changed: [localhost] => {"changed": true, "msg": "Snapshot 'snapshot2' created successfully.", "return_status": true}
+
+TASK [Delete snapshot] *********************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted snapshot 'snapshot2' successfully.", "return_status": true}
+
+TASK [Changing Volume to offline state] ****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Delete volume. This should pass] *****************************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create User] *************************************************************
+changed: [localhost] => {"changed": true, "msg": "User 'ansibleuser3' created successfully.", "return_status": true}
+
+TASK [Unlock User] *************************************************************
+changed: [localhost] => {"changed": true, "msg": "Unlocked user 'ansibleuser3' successfully.", "return_status": true}
+
+TASK [Delete User] *************************************************************
+changed: [localhost] => {"changed": true, "msg": "Deleted user 'ansibleuser3' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Update user policy.] *****************************************************
+ok: [localhost] => {"changed": false, "msg": "User Policy already present in given state.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Volume collection if not present] *********************************
+changed: [localhost] => {"changed": true, "msg": "Created volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+TASK [Promote vol coll should fail with message SM_ealready] *******************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Promote volume collection failed | {'messages': [{'code': 'SM_http_conflict', 'severity': 'error', 'text': 'The request could not be completed due to a conflict.'}, {'code': 'SM_ealready', 'severity': 'error', 'text': 'Object is already in requested state.'}]}", "return_status": false}
+
+TASK [check mandatory param for Demote vol coll] *******************************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Demote volume collection failed | demote() missing 1 required positional argument: 'replication_partner_id'", "return_status": false}
+
+TASK [Demote vol coll will fail with msg : Invalid value for replication partner] ***
+ok: [localhost] => {"changed": false, "failed_when_result": false, "module_stderr": "Traceback (most recent call last):\n  File \"/root/.ansible/tmp/ansible-tmp-1598434916.075513-29095-264903522346210/AnsiballZ_hpe_nimble_volume_collection.py\", line 102, in <module>\n    _ansiballz_main()\n  File \"/root/.ansible/tmp/ansible-tmp-1598434916.075513-29095-264903522346210/AnsiballZ_hpe_nimble_volume_collection.py\", line 94, in _ansiballz_main\n    invoke_module(zipped_mod, temp_path, ANSIBALLZ_PARAMS)\n  File \"/root/.ansible/tmp/ansible-tmp-1598434916.075513-29095-264903522346210/AnsiballZ_hpe_nimble_volume_collection.py\", line 40, in invoke_module\n    runpy.run_module(mod_name='ansible.modules.hpe_nimble_volume_collection', init_globals=None, run_name='__main__', alter_sys=True)\n  File \"/usr/lib64/python3.6/runpy.py\", line 205, in run_module\n    return _run_module_code(code, init_globals, run_name, mod_spec)\n  File \"/usr/lib64/python3.6/runpy.py\", line 96, in _run_module_code\n    mod_name, mod_spec, pkg_name, script_name)\n  File \"/usr/lib64/python3.6/runpy.py\", line 85, in _run_code\n    exec(code, run_globals)\n  File \"/tmp/ansible_hpe_nimble_volume_collection_payload_xq_1vy2m/ansible_hpe_nimble_volume_collection_payload.zip/ansible/modules/hpe_nimble_volume_collection.py\", line 727, in <module>\n  File \"/tmp/ansible_hpe_nimble_volume_collection_payload_xq_1vy2m/ansible_hpe_nimble_volume_collection_payload.zip/ansible/modules/hpe_nimble_volume_collection.py\", line 649, in main\n  File \"/tmp/ansible_hpe_nimble_volume_collection_payload_xq_1vy2m/ansible_hpe_nimble_volume_collection_payload.zip/ansible_collections/hpe/nimble/plugins/module_utils/hpe_nimble.py\", line 257, in get_replication_partner_id\nException: Invalid value for replication partner abc-xyz.rtpvlab.nimblestorage.com\n", "module_stdout": "", "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", "rc": 1}
+
+TASK [Validate vol coll] *******************************************************
+ok: [localhost] => {"changed": false, "msg": "Validation of volume collection '10.18.180.239-ansible-volcoll' done successfully.", "return_status": true}
+
+TASK [Delete vol coll (it's can have volumes)] *********************************
+changed: [localhost] => {"changed": true, "msg": "Deleted volume collection '10.18.180.239-ansible-volcoll' successfully.", "return_status": true}
+
+PLAY [localhost] ***************************************************************
+
+TASK [Create Volume if not present] ********************************************
+changed: [localhost] => {"changed": true, "message": "Created volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Changing Volume to offline state] ****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Changing Volume to online state] *****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": true}, "return_status": true}
+
+TASK [Delete volume. This should fail as volume is online] *********************
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Volume deletion for 10.18.180.239-ansible-vol1 failed '{'messages': [{'code': 'SM_http_conflict', 'severity': 'error', 'text': 'The request could not be completed due to a conflict.'}, {'code': 'SM_eperm', 'severity': 'error', 'text': 'Operation not permitted.'}]}'", "return_status": false}
+
+TASK [Changing Volume to offline state] ****************************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Delete volume. This should pass] *****************************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Create Volume if not present] ********************************************
+changed: [localhost] => {"changed": true, "message": "Created volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+TASK [Let's create or refresh a clone!] ****************************************
+changed: [localhost] => {"changed": true, "message": "Successfully created cloned volume '10.18.180.239-ansible-cloned-vol1'", "return_status": true}
+
+TASK [Changing cloned Volume to offline state] *********************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-cloned-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Delete cloned volume. This should pass] **********************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-cloned-vol1' successfully.", "return_status": true}
+
+TASK [Restore volume .] ********************************************************
+changed: [localhost] => {"changed": true, "message": "Restored volume '10.18.180.239-ansible-vol1' from snapshot 'ansible-snapshot-26-08-2020-138177277258506630' successfully.", "return_status": true}
+
+TASK [Move Volume to pool. Should fail with msg , Invalid value for pool] ******
+ok: [localhost] => {"changed": false, "failed_when_result": false, "msg": "Volume move failed | 'Invalid value for pool ansible-default'", "return_status": false}
+
+TASK [Changing restored Volume to offline state] *******************************
+changed: [localhost] => {"changed": true, "message": "Volume '10.18.180.239-ansible-vol1' already present. Modified the following fields:", "modified_attrs": {"online": false}, "return_status": true}
+
+TASK [Delete restored volume.] *************************************************
+changed: [localhost] => {"changed": true, "message": "Deleted volume '10.18.180.239-ansible-vol1' successfully.", "return_status": true}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=103  changed=55   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

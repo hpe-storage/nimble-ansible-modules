@@ -131,7 +131,7 @@ options:
       description:
       - List of snapshot attributes for snapshots being created as part of snapshot collection creation. List of volumes with per snapshot attributes.
   volcoll:
-      required: False
+      required: True
       type: str
       description:
       - Parent volume collection name.
@@ -190,7 +190,8 @@ def create_snapcoll(
             snapcoll_resp = client_obj.snapshot_collections.create(name=snapcoll_name, **params)
             return (True, True, f"Created snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' successfully.", {})
         else:
-            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' cannot be created"
+                    "as it is already present.", {})
     except Exception as ex:
         return (False, False, f"Snapshot collection creation failed | {ex}", {})
 

@@ -1,0 +1,72 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  collections:
+    - hpe.nimble
+  vars_files: 'properties/storage_system_properties.yml'
+  #gather_facts: true
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    passphrase: "passphrase-91"
+    age: 1
+    active: true
+    purge_inactive: false
+    group_encryption: false
+    name: "group-alokr1-va"
+    encryption_config: {
+                "mode": "available",
+                "scope": "group",
+                "cipher": "aes_256_xts"
+            }
+
+  tasks:
+
+    # if state is create, then create master key, fails if it exist or cannot create
+    # if state is present, then create master key if not present ,else success
+    - name: Create master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        passphrase: "{{ passphrase }}"
+        active: "{{ active | default('false') }}"
+        state: "{{ state | default('present') }}"
+      tags:
+        - create_master_key
+
+    - name: purge inactive master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        age: "{{ age | mandatory }}"
+        state: "present"
+        purge_inactive: true
+      tags:
+        - purge_inactive
+
+    - name: group encryption ,will fail as the group name does not exist
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        encryption_config: "{{ encryption_config | mandatory }}"
+        state: "present"
+        group_encrypt: true
+      register: output
+      failed_when: "'cannot be done as it is not present' not in output.msg"
+
+    - name: Delete master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        state: "absent"
+      tags:
+        - delete_master_key

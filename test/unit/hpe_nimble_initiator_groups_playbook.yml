@@ -1,0 +1,65 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  collections:
+    - hpe.nimble
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    access_protocol: iscsi
+    name: "ig-ansiblecentos2"
+    description: "updated 1 my first ansible foobar ig group"
+    metadata: {
+                "key_-*1": "xyz",
+                "key2": "metadassdfda",
+                "key3": "hello11"
+                }
+    iscsi_initiators: [
+                  {
+                    iqn: "iqn.1994-05.com.redhat:94afdfsd6b4df58alo4",
+                    label : "ansiblecentos2",
+                    ip_address: "1.1.1.1"
+                  },
+                  {
+                    iqn:  "iqn.1992-01.com.example:foobsdaddar24",
+                    label: "label36"
+                  }
+                ]
+
+  tasks:
+
+    # - name: Load Initiator Group Vars
+    #   include_vars: 'properties/igroup_properties.yml'
+
+    # - name: Get the IQN Name for host {{ ansible_hostname }}
+    #  # below takes care for ubuntu and centos machines
+    #   raw: |
+    #    test -e /usr/bin/apt && (apt -y update && apt install -y python-minimal) || (yum -y install python36)
+    #    cat /etc/iscsi/initiatorname.iscsi
+    #   register: iqn_result
+    #   tags:
+    #     - create_ig
+
+    # if state is create, then create ig, fails if it exist or cannot create
+    # if state is present, then create ig if not present ,else success
+    - name: Create an initiator group (from scratch).
+      hpe_nimble_initiator_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        access_protocol: "{{ access_protocol | default('iscsi')}}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dict. each entry in dicthas one intitator details. default empty
+        description: "{{ description | default(None) }}"
+        metadata: "{{ metadata | default(None)}}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete my igroup
+      hpe_nimble_initiator_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        access_protocol: "{{ access_protocol | default('iscsi')}}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent # fails if unable to delete igroup

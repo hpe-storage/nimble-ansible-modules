@@ -1,0 +1,99 @@
+---
+
+- hosts: "localhost"
+  gather_facts: false
+  collections:
+    - hpe.nimble
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "ansibler1-va"
+    pool_name: "default"
+    nic_list: [
+        {
+            "subnet_label": "management",
+            "data_ip": "127.0.0.23",
+            "name": "eth1"
+        },
+        {
+            "subnet_label": "management",
+            "data_ip": "127.0.0.24",
+            "name": "eth2"
+        },
+        {
+            "subnet_label": "management",
+            "data_ip": "127.0.0.25",
+            "name": "eth3"
+        },
+        {
+            "subnet_label": "management",
+            "data_ip": "127.0.0.26",
+            "name": "eth4"
+        }
+    ]
+    serial: "g1a2"
+    ctrlr_b_support_ip: "127.0.0.22"
+    ctrlr_a_support_ip: "127.0.0.21"
+  tasks:
+      # if state is create , then create a array if not present. Fails if already present.
+      # if state is present, then create a array if not present. Succeed if it already exists.
+    - name: Create array if not present.Should fail with ex 'SM_http_not_found'
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        name: "{{ name }}"
+        ctrlr_b_support_ip: "{{ ctrlr_b_support_ip | mandatory}}"
+        ctrlr_a_support_ip: "{{ ctrlr_a_support_ip | mandatory}}"
+        serial: "{{ serial | mandatory}}"
+        nic_list: "{{ nic_list | mandatory}}"
+        pool_name: "{{ pool_name | mandatory}}"
+      register: output
+      failed_when: "'SM_http_not_found' not in output.msg"
+
+    - name: Delete array.Should fail with 'cannot be deleted as it is not present'
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+      register: output
+      failed_when: "'cannot be deleted as it is not present' not in output.msg"
+
+    - name: Failover array.Should fail with 'cannot failover as it is not present'
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        failover: true
+        state: present
+      register: output
+      failed_when: "'cannot failover as it is not present' not in output.msg"
+
+    - name: halt array.Should fail with 'cannot be halted as it is not present'
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        halt: true
+      register: output
+      failed_when: "'cannot be halted as it is not present' not in output.msg"
+
+    - name: Reboot array.Should fail with 'cannot be rebooted as it is not present'
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "invalid array"
+        state: present
+        reboot: true
+      register: output
+      failed_when: "'cannot be rebooted as it is not present' not in output.msg"
+
