@@ -2,11 +2,13 @@ namespace: "hpe"
 name: "nimble"
 version: "1.0.0"
 authors:
-  - HPE Nimble Storage Ansible Team (@ranjanal) <nimble-dcs-storage-automation-eng@hpe.com>
-  - Alok Ranjan <alok.ranjan2@hpe.com>"
-license: "Apache License, Version 2.0 or later"
+  - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+license: "Apache License, Version 2.0"
 readme: README.md
-description: Manage HPE Nimble Storage array
+description: HPE Nimble Storage Content Collection for Ansible
 repository: https://github.com/hpe-storage/nimble-ansible-modules
 tags:
   - storage
+documentation: http://hpe-storage.github.io/nimble-ansible-modules/modules/list_of_storage_modules.html
+homepage: http://hpe.com/storage/nimble
+issues: https://github.com/hpe-storage/nimble-ansible-modules/issues

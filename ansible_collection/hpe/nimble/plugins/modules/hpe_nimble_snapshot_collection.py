@@ -160,6 +160,7 @@ EXAMPLES = r'''
     username: "{{ username }}"
     password: "{{ password }}"
     name: "{{ name }}"
+    volcoll: "{{ volcoll }}"
     state: absent
 
 '''
@@ -177,18 +178,19 @@ import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 def create_snapcoll(
         client_obj,
         snapcoll_name,
+        volcoll_name,
         **kwargs):
 
     if utils.is_null_or_empty(snapcoll_name):
         return (False, False, "Create snapshot collection failed. snapshot collection name is not present.", {})
     try:
-        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name)
+        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll_name)
         if utils.is_null_or_empty(snapcoll_resp):
             params = utils.remove_null_args(**kwargs)
             snapcoll_resp = client_obj.snapshot_collections.create(name=snapcoll_name, **params)
-            return (True, True, f"Created snapshot collection '{snapcoll_name}' successfully.", {})
+            return (True, True, f"Created snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' successfully.", {})
         else:
-            return (False, False, f"Snapshot collection '{snapcoll_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' cannot be created as it is already present.", {})
     except Exception as ex:
         return (False, False, f"Snapshot collection creation failed | {ex}", {})
 
@@ -212,18 +214,18 @@ def update_snapcoll(
         return (False, False, f"Snapshot collection update failed | {ex}", {})
 
 
-def delete_snapcoll(client_obj, snapcoll_name):
+def delete_snapcoll(client_obj, snapcoll_name, volcoll_name):
 
     if utils.is_null_or_empty(snapcoll_name):
         return (False, False, "Snapshot collection deletion failed as snapshot collection name is not present.", {})
 
     try:
-        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name)
+        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll_name)
         if utils.is_null_or_empty(snapcoll_resp):
-            return (False, False, f"Snapshot collection '{snapcoll_name}' not present to delete.", {})
+            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' not present to delete.", {})
         else:
             client_obj.snapshot_collections.delete(id=snapcoll_resp.attrs.get("id"))
-            return (True, True, f"Snapshot collection '{snapcoll_name}' deleted successfully.", {})
+            return (True, True, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' deleted successfully.", {})
     except Exception as ex:
         return (False, False, f"Snapshot collection deletion failed | {ex}", {})
 
@@ -255,7 +257,7 @@ def main():
             "no_log": False
         },
         "volcoll": {
-            "required": False,
+            "required": True,
             "type": "str",
             "no_log": False
         },
@@ -329,9 +331,8 @@ def main():
     }
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    required_if = [('state', 'create', ['volcoll'])]
 
-    module = AnsibleModule(argument_spec=fields, required_if=required_if)
+    module = AnsibleModule(argument_spec=fields)
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 
@@ -372,11 +373,12 @@ def main():
 
     # States
     if state == "create" or state == "present":
-        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name)
+        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll)
         if utils.is_null_or_empty(snapcoll_resp) or state == "create":
             return_status, changed, msg, changed_attrs_dict = create_snapcoll(
                 client_obj,
                 snapcoll_name,
+                volcoll,
                 description=description,
                 volcoll_id=utils.get_volcoll_id(client_obj, volcoll),
                 is_external_trigger=is_external_trigger,
@@ -403,7 +405,9 @@ def main():
                 force=force)
 
     elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_snapcoll(client_obj, snapcoll_name)
+        return_status, changed, msg, changed_attrs_dict = delete_snapcoll(client_obj,
+                                                                          snapcoll_name,
+                                                                          volcoll)
 
     if return_status:
         if changed_attrs_dict:
