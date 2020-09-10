@@ -188,9 +188,9 @@ def create_snapcoll(
         if utils.is_null_or_empty(snapcoll_resp):
             params = utils.remove_null_args(**kwargs)
             snapcoll_resp = client_obj.snapshot_collections.create(name=snapcoll_name, **params)
-            return (True, True, f"Created snapshot collection '{snapcoll_name}' inside volume collection '{volcoll_name}' successfully.", {})
+            return (True, True, f"Created snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' successfully.", {})
         else:
-            return (False, False, f"Snapshot collection '{snapcoll_name}' inside volume collection '{volcoll_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' cannot be created as it is already present.", {})
     except Exception as ex:
         return (False, False, f"Snapshot collection creation failed | {ex}", {})
 
@@ -222,10 +222,10 @@ def delete_snapcoll(client_obj, snapcoll_name, volcoll_name):
     try:
         snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll_name)
         if utils.is_null_or_empty(snapcoll_resp):
-            return (False, False, f"Snapshot collection '{snapcoll_name}' inside volume collection '{volcoll_name}' not present to delete.", {})
+            return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' not present to delete.", {})
         else:
             client_obj.snapshot_collections.delete(id=snapcoll_resp.attrs.get("id"))
-            return (True, True, f"Snapshot collection '{snapcoll_name}' inside volume collection '{volcoll_name}' deleted successfully.", {})
+            return (True, True, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' deleted successfully.", {})
     except Exception as ex:
         return (False, False, f"Snapshot collection deletion failed | {ex}", {})
 
