@@ -84,7 +84,7 @@ options:
     - guest
     type: str
     description:
-    - Role of the user.
+    - Role of the user. Default is 'guest'.
   state:
     required: True
     choices:
@@ -357,7 +357,7 @@ def main():
                 client_obj,
                 user_name,
                 name=change_name,
-                user_password=user_password,
+                password=user_password,
                 description=description,
                 role=role,
                 inactivity_timeout=inactivity_timeout,
