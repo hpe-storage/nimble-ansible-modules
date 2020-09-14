@@ -35,7 +35,7 @@ options:
     required: False
     default: minimum
     type: list
-    elements: dict
+    elements: raw
     description:
       - When supplied, this argument will define the information to be collected. Possible values for this include
         "all"
@@ -988,7 +988,7 @@ def main():
         "gather_subset": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
+            "elements": 'raw',
             'default': "minimum",
             "no_log": False
         }

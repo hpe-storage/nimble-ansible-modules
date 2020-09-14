@@ -168,7 +168,7 @@ options:
     choices:
       - protection_template
       - volume_collection
-    required: False
+    required: True
     type: str
     description:
     - Type of the protection policy this schedule is attached to.
@@ -466,10 +466,11 @@ def main():
         if volcoll_name is None and prot_template_name is None or volcoll_or_prottmpl_type is None:
             module.fail_json(msg='Please provide the Mandatory params : volcoll_or_prottmpl_type, and volcoll_name or prot_template_name.')
 
-        prot_schedule_resp = client_obj.protection_schedules.get(id=None,
-                                                                 name=prot_schedule_name,
-                                                                 volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
-                                                                 volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
+        prot_schedule_resp = client_obj.protection_schedules.get(
+            id=None,
+            name=prot_schedule_name,
+            volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
+            volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
         if utils.is_null_or_empty(prot_schedule_resp) or state == "create":
             return_status, changed, msg, changed_attrs_dict = create_prot_schedule(
                 client_obj,

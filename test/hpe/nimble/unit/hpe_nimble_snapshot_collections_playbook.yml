@@ -1,0 +1,120 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  collections:
+    - hpe.nimble
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    #state: "create"
+    name: "snapcoll1"
+    description: "updated again by ansible 2"
+    volcoll: "ansible-volcoll"
+    volume: "ansible-vol1"
+
+  tasks:
+
+      # if state is create , then create a volcoll if not present. Fails if already present.
+      # if state is present, then create a volcoll if not present. Succeed if it already exists.
+    - name: Create snapshot collection {{name}}. Check for mandatory param volcoll.will fail as volcoll does not exist
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        volcoll: "{{ volcoll | mandatory}}"
+        description: "{{ description | default(None)}}"
+        state: "create"
+      register: output
+      failed_when: "'Invalid value for volcoll' not in output.exception"
+
+    - name: Create Volume collection if not present
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ present | default('present') }}"
+
+    - name: Create snapshot collection should fail with "SM_no_assoc_vols"
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volcoll: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+      register: output
+      failed_when: "'SM_no_assoc_vols' not in output.msg"
+
+    - name: Create Volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        size: 10
+        state: "{{ present | default('present') }}"
+        volcoll: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+      register: output
+
+    - name: Update volcoll for Volume
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ present | default('present') }}"
+        volcoll: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+      register: output
+
+    - name: Create snapshot collection
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volcoll: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ present | default('present') }}"
+      register: output
+
+    - name: Delete Snapshot Collection collection  (must be offline)
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        state: absent
+
+    - name: Disassociate volcoll from Volume
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ present | default('present') }}"
+        volcoll: ""
+        online: false
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+      register: output
+
+    - name: Delete volume. This should pass
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volume }}"
+        state: absent
+
+    - name: Delete vol coll
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
+        state: absent
+
+

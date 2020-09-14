@@ -1,0 +1,25 @@
+---
+# DO NOT CHANGE THE ORDERING OF ANY TASK IN THE IMPORTED PLAYBOOKS.
+- hosts: "localhost"
+- import_playbook: hpe_nimble_access_control_records_playbook.yml
+- import_playbook: hpe_nimble_array_playbook.yml
+- import_playbook: hpe_nimble_chap_user_playbook.yml
+- import_playbook: hpe_nimble_disk_playbook.yml
+- import_playbook: hpe_nimble_encryption_playbook.yml
+- import_playbook: hpe_nimble_fc_playbook.yml
+- import_playbook: hpe_nimble_group_playbook.yml
+- import_playbook: hpe_nimble_info_playbook.yml
+- import_playbook: hpe_nimble_initiator_groups_playbook.yml
+- import_playbook: hpe_nimble_network_playbook.yml
+- import_playbook: hpe_nimble_partner_playbook.yml
+- import_playbook: hpe_nimble_perf_policy_playbook.yml
+- import_playbook: hpe_nimble_pool_playbook.yml
+- import_playbook: hpe_nimble_prot_schedule_playbook.yml
+- import_playbook: hpe_nimble_prot_template_playbook.yml
+- import_playbook: hpe_nimble_shelf_playbook.yml
+- import_playbook: hpe_nimble_snapshot_collections_playbook.yml
+- import_playbook: hpe_nimble_snapshot_playbook.yml
+- import_playbook: hpe_nimble_user_playbook.yml
+- import_playbook: hpe_nimble_user_policy_playbook.yml
+- import_playbook: hpe_nimble_volume_collection_playbook.yml
+- import_playbook: hpe_nimble_volume_playbook.yml

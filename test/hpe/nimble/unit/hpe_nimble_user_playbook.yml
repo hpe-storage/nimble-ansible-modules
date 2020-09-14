@@ -1,0 +1,58 @@
+---
+- hosts: "localhost"
+  gather_facts: false
+  collections:
+    - hpe.nimble
+  vars_files: 'properties/storage_system_properties.yml'
+  vars:
+    # we should always use python3
+    ansible_python_interpreter: /usr/bin/python3
+    vol_name: "ansible-vol1"
+    state: "create"
+    name: "ansibleuser3"
+    user_password: "Password-1"
+    description: "updated by ansible"
+    auth_password: "Password-1"
+
+  tasks:
+    # - name: Load Storage System Vars
+    #   include_vars: 'properties/storage_system_properties.yml'
+    #   tags:
+    #     - create_user
+    #     - delete_user
+
+    # if state is create, then create User, fails if it exist or cannot create
+    # if state is present, then create User if not present ,else success
+    - name: Create User
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description }}"
+        #auth_password: "{{ auth_password }}"
+        user_password: "{{ user_password | mandatory }}"
+        state: "{{ state | default('present') }}"
+
+    # unlock the User
+    - name: Unlock User
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        unlock: true
+      tags:
+        - unlock_user
+
+    # delete the User
+    - name: Delete User
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "absent"
+      tags:
+        - delete_user
