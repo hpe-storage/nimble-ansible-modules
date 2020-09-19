@@ -191,7 +191,7 @@ def create_array(
         **kwargs):
 
     if utils.is_null_or_empty(array_name):
-        return (False, False, "Create array failed as array name is not present.", {})
+        return (False, False, "Create array failed as array name is not present.", {}, {})
 
     try:
         array_resp = client_obj.arrays.get(id=None, name=array_name)
@@ -199,11 +199,11 @@ def create_array(
             params = utils.remove_null_args(**kwargs)
             array_resp = client_obj.arrays.create(name=array_name, **params)
             if array_resp is not None:
-                return (True, True, f"Created array '{array_name}' successfully.", {})
+                return (True, True, f"Created array '{array_name}' successfully.", {}, array_resp.attrs)
         else:
-            return (False, False, f"Array '{array_name}' cannot be created as it is already present", {})
+            return (False, False, f"Array '{array_name}' cannot be created as it is already present", {}, array_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Array creation failed |{ex}", {})
+        return (False, False, f"Array creation failed |{ex}", {}, {})
 
 
 def update_array(
@@ -212,19 +212,20 @@ def update_array(
         **kwargs):
 
     if utils.is_null_or_empty(array_resp):
-        return (False, False, "Update array failed as array name is not present.", {})
+        return (False, False, "Update array failed as array name is not present.", {}, {})
 
     try:
         array_name = array_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(array_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             array_resp = client_obj.arrays.update(id=array_resp.attrs.get("id"), **params)
-            return (True, True, f"Array '{array_name}' already present. Modified the following fields:", changed_attrs_dict)
+            return (True, True, f"Array '{array_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, array_resp.attrs)
         else:
-            return (True, False, f"Array '{array_name}' already present.", {})
+            return (True, False, f"Array '{array_name}' already present in given state.", {}, array_resp.attrs)
 
     except Exception as ex:
-        return (False, False, f"Array update failed |{ex}", {})
+        return (False, False, f"Array update failed |{ex}", {}, {})
 
 
 def delete_array(
@@ -414,62 +415,67 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present" and failover is True:
-        return_status, changed, msg, changed_attrs_dict = failover_array(client_obj, array_name, force)
+        # States
+        if state == "present" and failover is True:
+            return_status, changed, msg, changed_attrs_dict = failover_array(client_obj, array_name, force)
 
-    elif state == "present" and halt is True:
-        return_status, changed, msg, changed_attrs_dict = halt_array(client_obj, array_name)
+        elif state == "present" and halt is True:
+            return_status, changed, msg, changed_attrs_dict = halt_array(client_obj, array_name)
 
-    elif state == "present" and reboot is True:
-        return_status, changed, msg, changed_attrs_dict = reboot_array(client_obj, array_name)
+        elif state == "present" and reboot is True:
+            return_status, changed, msg, changed_attrs_dict = reboot_array(client_obj, array_name)
 
-    elif ((failover is None or failover is False)
-          and (halt is None or halt is False)
-          and (reboot is None or reboot is False)
-          and (state == "create" or state == "present")):
+        elif ((failover is None or failover is False)
+              and (halt is None or halt is False)
+              and (reboot is None or reboot is False)
+              and (state == "create" or state == "present")):
 
-        array_resp = client_obj.arrays.get(name=array_name)
-        if array_resp is None or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_array(
-                client_obj,
-                array_name,
-                pool_name=pool_name,
-                serial=serial,
-                create_pool=create_pool,
-                pool_description=pool_description,
-                allow_lower_limits=allow_lower_limits,
-                ctrlr_a_support_ip=ctrlr_a_support_ip,
-                ctrlr_b_support_ip=ctrlr_b_support_ip,
-                nic_list=nic_list,
-                secondary_mgmt_ip=secondary_mgmt_ip,
-                force=force,
-                failover=failover,
-                halt=halt,
-                reboot=reboot)
-        else:
-            return_status, changed, msg, changed_attrs_dict = update_array(
-                client_obj,
-                array_resp,
-                name=change_name,
-                force=force)
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_array(client_obj, array_name)
+            array_resp = client_obj.arrays.get(name=array_name)
+            if array_resp is None or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_array(
+                    client_obj,
+                    array_name,
+                    pool_name=pool_name,
+                    serial=serial,
+                    create_pool=create_pool,
+                    pool_description=pool_description,
+                    allow_lower_limits=allow_lower_limits,
+                    ctrlr_a_support_ip=ctrlr_a_support_ip,
+                    ctrlr_b_support_ip=ctrlr_b_support_ip,
+                    nic_list=nic_list,
+                    secondary_mgmt_ip=secondary_mgmt_ip,
+                    force=force,
+                    failover=failover,
+                    halt=halt,
+                    reboot=reboot)
+            else:
+                return_status, changed, msg, changed_attrs_dict, resp = update_array(
+                    client_obj,
+                    array_resp,
+                    name=change_name,
+                    force=force)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_array(client_obj, array_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

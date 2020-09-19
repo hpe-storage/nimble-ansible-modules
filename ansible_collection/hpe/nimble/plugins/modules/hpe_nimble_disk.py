@@ -97,13 +97,13 @@ def update_disk(
         force=False):
 
     if utils.is_null_or_empty(shelf_location):
-        return (False, False, "Disk update failed as no shelf location provided.", {})
+        return (False, False, "Disk update failed as no shelf location provided.", {}, {})
 
     try:
         # get the details of the disk for a given slot and shelf_location
         disk_resp = client_obj.disks.list(detail=True)
         if disk_resp is None:
-            return (False, False, "No Disk is present on array.", {})
+            return (False, False, "No Disk is present on array.", {}, {})
         else:
             disk_id = None
             changed_attrs_dict = {}
@@ -112,11 +112,13 @@ def update_disk(
                     disk_id = disk_obj.attrs.get("id")
                     break
             disk_resp = client_obj.disks.update(id=disk_id, disk_op=disk_op, force=force)
+            if hasattr(disk_resp, 'attrs'):
+                disk_resp = disk_resp.attrs
             changed_attrs_dict['slot'] = slot
             changed_attrs_dict['shelf_location'] = shelf_location
-            return (True, True, f"Successfully updated disk to slot '{slot}' at shelf location '{shelf_location}'.", changed_attrs_dict)
+            return (True, True, f"Successfully updated disk to slot '{slot}' at shelf location '{shelf_location}'.", changed_attrs_dict, disk_resp)
     except Exception as ex:
-        return (False, False, f"Disk update failed |'{ex}'", {})
+        return (False, False, f"Disk update failed |'{ex}'", {}, {})
 
 
 def main():
@@ -168,29 +170,34 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present":
-        return_status, changed, msg, changed_attrs_dict = update_disk(
-            client_obj,
-            slot,
-            shelf_location,
-            disk_op,
-            force)
+        # States
+        if state == "present":
+            return_status, changed, msg, changed_attrs_dict, resp = update_disk(
+                client_obj,
+                slot,
+                shelf_location,
+                disk_op,
+                force)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if not utils.is_null_or_empty(changed_attrs_dict) and changed_attrs_dict.__len__() > 0:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
+        if utils.is_null_or_empty(resp):
+            module.exit_json(return_status=return_status, changed=changed, msg=msg)
         else:
-            module.exit_json(return_status=return_status, changed=changed, message=msg)
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

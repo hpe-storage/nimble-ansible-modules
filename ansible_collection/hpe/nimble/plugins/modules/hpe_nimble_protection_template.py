@@ -168,17 +168,17 @@ def create_prot_template(
         **kwargs):
 
     if utils.is_null_or_empty(prot_template_name):
-        return (False, False, "Create protection template failed as protection template name is not present.", {})
+        return (False, False, "Create protection template failed as protection template name is not present.", {}, {})
     try:
         prot_template_resp = client_obj.protection_templates.get(id=None, name=prot_template_name)
         if utils.is_null_or_empty(prot_template_resp):
             params = utils.remove_null_args(**kwargs)
             prot_template_resp = client_obj.protection_templates.create(name=prot_template_name, **params)
-            return (True, True, f"Protection template '{prot_template_name}' created successfully.", {})
+            return (True, True, f"Protection template '{prot_template_name}' created successfully.", {}, prot_template_resp.attrs)
         else:
-            return (False, False, f"Protection template '{prot_template_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Protection template '{prot_template_name}' cannot be created as it is already present in given state.", {}, prot_template_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Protection template creation failed | {ex}", {})
+        return (False, False, f"Protection template creation failed | {ex}", {}, {})
 
 
 def update_prot_template(
@@ -187,17 +187,18 @@ def update_prot_template(
         **kwargs):
 
     if utils.is_null_or_empty(prot_template_resp):
-        return (False, False, "Update protection template failed as protection template is not present.", {})
+        return (False, False, "Update protection template failed as protection template is not present.", {}, {})
     try:
         prot_template_name = prot_template_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(prot_template_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             prot_template_resp = client_obj.protection_templates.update(id=prot_template_resp.attrs.get("id"), **params)
-            return (True, True, f"Protection template '{prot_template_name}' already Present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Protection template '{prot_template_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, prot_template_resp.attrs)
         else:
-            return (True, False, f"Protection template '{prot_template_name}' already present.", {})
+            return (True, False, f"Protection template '{prot_template_name}' already present in given state.", {}, prot_template_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Protection template update failed | {ex}", {})
+        return (False, False, f"Protection template update failed | {ex}", {}, {})
 
 
 def delete_prot_template(client_obj, prot_template_name):
@@ -329,60 +330,65 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username, password and protection template is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        prot_template_resp = client_obj.protection_templates.get(id=None, name=prot_template_name)
-        if utils.is_null_or_empty(prot_template_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_prot_template(
-                client_obj,
-                prot_template_name,
-                description=description,
-                app_sync=app_sync,
-                app_server=app_server,
-                app_id=app_id,
-                app_cluster_name=app_cluster,
-                app_service_name=app_service_name,
-                vcenter_hostname=vcenter_hostname,
-                vcenter_username=vcenter_username,
-                vcenter_password=vcenter_password,
-                agent_hostname=agent_hostname,
-                agent_username=agent_username,
-                agent_password=agent_password)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_prot_template(
-                client_obj,
-                prot_template_resp,
-                name=change_name,
-                description=description,
-                app_sync=app_sync,
-                app_server=app_server,
-                app_id=app_id, app_cluster_name=app_cluster,
-                app_service_name=app_service_name,
-                vcenter_hostname=vcenter_hostname,
-                vcenter_username=vcenter_username,
-                vcenter_password=vcenter_password,
-                agent_hostname=agent_hostname,
-                agent_username=agent_username,
-                agent_password=agent_password)
+        # States
+        if state == "create" or state == "present":
+            prot_template_resp = client_obj.protection_templates.get(id=None, name=prot_template_name)
+            if utils.is_null_or_empty(prot_template_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_prot_template(
+                    client_obj,
+                    prot_template_name,
+                    description=description,
+                    app_sync=app_sync,
+                    app_server=app_server,
+                    app_id=app_id,
+                    app_cluster_name=app_cluster,
+                    app_service_name=app_service_name,
+                    vcenter_hostname=vcenter_hostname,
+                    vcenter_username=vcenter_username,
+                    vcenter_password=vcenter_password,
+                    agent_hostname=agent_hostname,
+                    agent_username=agent_username,
+                    agent_password=agent_password)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_prot_template(
+                    client_obj,
+                    prot_template_resp,
+                    name=change_name,
+                    description=description,
+                    app_sync=app_sync,
+                    app_server=app_server,
+                    app_id=app_id, app_cluster_name=app_cluster,
+                    app_service_name=app_service_name,
+                    vcenter_hostname=vcenter_hostname,
+                    vcenter_username=vcenter_username,
+                    vcenter_password=vcenter_password,
+                    agent_hostname=agent_hostname,
+                    agent_username=agent_username,
+                    agent_password=agent_password)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_prot_template(client_obj, prot_template_name)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_prot_template(client_obj, prot_template_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

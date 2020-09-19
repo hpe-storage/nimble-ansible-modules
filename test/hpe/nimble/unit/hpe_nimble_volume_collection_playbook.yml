@@ -57,7 +57,7 @@
         demote: True
         replication_partner: "abc-xyz.rtpvlab.nimblestorage.com"
       register: output
-      failed_when: " 'Invalid value for replication partner' not in output.exception"
+      failed_when: " 'Invalid value for replication partner' not in output.msg"
 
     - name: Validate vol coll
       hpe_nimble_volume_collection:

@@ -154,20 +154,20 @@ def create_user(
         **kwargs):
 
     if utils.is_null_or_empty(user_name):
-        return (False, False, "Create user failed as user is not present.", {})
+        return (False, False, "Create user failed as user is not present.", {}, {})
     if utils.is_null_or_empty(password):
-        return (False, False, "Create user failed as password is not present.", {})
+        return (False, False, "Create user failed as password is not present.", {}, {})
 
     try:
         user_resp = client_obj.users.get(id=None, name=user_name)
         if utils.is_null_or_empty(user_resp):
             params = utils.remove_null_args(**kwargs)
             user_resp = client_obj.users.create(name=user_name, password=password, **params)
-            return (True, True, f"User '{user_name}' created successfully.", {})
+            return (True, True, f"User '{user_name}' created successfully.", {}, user_resp.attrs)
         else:
-            return (False, False, f"User '{user_name}' cannot be created as it is already present.", {})
+            return (False, False, f"User '{user_name}' cannot be created as it is already present in given state.", {}, {})
     except Exception as ex:
-        return (False, False, f"User creation failed | {ex}", {})
+        return (False, False, f"User creation failed | {ex}", {}, {})
 
 
 def update_user(
@@ -176,21 +176,22 @@ def update_user(
         **kwargs):
 
     if utils.is_null_or_empty(user_name):
-        return (False, False, "Update user failed as user is not present.", {})
+        return (False, False, "Update user failed as user is not present.", {}, {})
 
     try:
         user_resp = client_obj.users.get(id=None, name=user_name)
         if utils.is_null_or_empty(user_resp):
-            return (False, False, f"User '{user_name}' cannot be updated as it is not present.", {})
+            return (False, False, f"User '{user_name}' cannot be updated as it is not present.", {}, {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(user_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             user_resp = client_obj.users.update(id=user_resp.attrs.get("id"), **params)
-            return (True, True, f"User '{user_name}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"User '{user_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, user_resp.attrs)
         else:
-            return (True, False, f"User '{user_resp.attrs.get('name')}' already present.", {})
+            return (True, False, f"User '{user_resp.attrs.get('name')}' already present in given state.", {}, user_resp.attrs)
     except Exception as ex:
-        return (False, False, f"User update failed | {ex}", {})
+        return (False, False, f"User update failed | {ex}", {}, {})
 
 
 def delete_user(
@@ -329,54 +330,60 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if ((unlock is None or unlock is False) and (state == "create" or state == "present")):
-        if not client_obj.users.get(id=None, name=user_name) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_user(
-                client_obj,
-                user_name,
-                user_password,
-                description=description,
-                role=role,
-                inactivity_timeout=inactivity_timeout,
-                full_name=full_name,
-                email_addr=email_addr,
-                disabled=disabled)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_user(
-                client_obj,
-                user_name,
-                name=change_name,
-                password=user_password,
-                description=description,
-                role=role,
-                inactivity_timeout=inactivity_timeout,
-                full_name=full_name,
-                email_addr=email_addr,
-                disabled=disabled,
-                auth_password=auth_password)
+        # States
+        if ((unlock is None or unlock is False) and (state == "create" or state == "present")):
+            if not client_obj.users.get(id=None, name=user_name) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_user(
+                    client_obj,
+                    user_name,
+                    user_password,
+                    description=description,
+                    role=role,
+                    inactivity_timeout=inactivity_timeout,
+                    full_name=full_name,
+                    email_addr=email_addr,
+                    disabled=disabled)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_user(
+                    client_obj,
+                    user_name,
+                    name=change_name,
+                    password=user_password,
+                    description=description,
+                    role=role,
+                    inactivity_timeout=inactivity_timeout,
+                    full_name=full_name,
+                    email_addr=email_addr,
+                    disabled=disabled,
+                    auth_password=auth_password)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_user(client_obj, user_name)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_user(client_obj, user_name)
 
-    elif state == "present" and unlock is True:
-        return_status, changed, msg, changed_attrs_dict = unlock_user(client_obj, user_name)
+        elif state == "present" and unlock is True:
+            return_status, changed, msg, changed_attrs_dict = unlock_user(client_obj, user_name)
+
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

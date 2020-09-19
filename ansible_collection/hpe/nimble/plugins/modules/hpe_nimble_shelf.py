@@ -107,25 +107,25 @@ def update_shelve(
         **kwargs):
 
     if utils.is_null_or_empty(shelf_serial):
-        return (False, False, "Shelf update failed as no shelf id provided.")
+        return (False, False, "Shelf update failed as no shelf id provided.", {})
 
     try:
         shelf_resp = client_obj.shelves.get()
         if utils.is_null_or_empty(shelf_resp):
-            return (False, False, f"Shelf serial '{shelf_serial}' is not present on array.")
+            return (False, False, f"Shelf serial '{shelf_serial}' is not present on array.", {})
         else:
             # check if the given shelf serial is present on array
             if shelf_serial == shelf_resp.attrs.get("serial"):
                 changed_attrs_dict, params = utils.remove_unchanged_or_null_args(shelf_resp, **kwargs)
                 if changed_attrs_dict.__len__() > 0:
                     shelf_resp = client_obj.shelves.update(id=shelf_resp.attrs.get("id"), **params)
-                    return (True, True, f"Successfully updated Shelf '{shelf_serial}'.")
+                    return (True, True, f"Successfully updated Shelf '{shelf_serial}'.", shelf_resp.attrs)
                 else:
-                    return (True, False, f"Shelf serial '{shelf_serial}' already updated.", {})
+                    return (True, False, f"Shelf serial '{shelf_serial}' already updated.", shelf_resp.attrs)
             else:
-                return (False, False, f"Shelf serial '{shelf_serial}' not found.")
+                return (False, False, f"Shelf serial '{shelf_serial}' not found.", {})
     except Exception as e:
-        return (False, False, "Shelf update failed | %s" % str(e))
+        return (False, False, "Shelf update failed | %s" % str(e), {})
 
 
 def main():
@@ -194,29 +194,34 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present":
-        return_status, changed, msg = update_shelve(
-            client_obj,
-            shelf_serial,
-            activated=activated,
-            driveset=driveset,
-            force=force,
-            accept_foreign=accept_foreign,
-            accept_dedupe_impact=accept_dedupe_impact,
-            last_request=last_request)
+        # States
+        if state == "present":
+            return_status, changed, msg, resp = update_shelve(
+                client_obj,
+                shelf_serial,
+                activated=activated,
+                driveset=driveset,
+                force=force,
+                accept_foreign=accept_foreign,
+                accept_dedupe_impact=accept_dedupe_impact,
+                last_request=last_request)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

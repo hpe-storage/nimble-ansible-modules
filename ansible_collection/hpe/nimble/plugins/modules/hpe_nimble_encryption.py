@@ -144,17 +144,17 @@ def create_master_key(
         passphrase):
 
     if utils.is_null_or_empty(master_key):
-        return (False, False, "Create master key failed as no key is provided.", {})
+        return (False, False, "Create master key failed as no key is provided.", {}, {})
 
     try:
         master_key_resp = client_obj.master_key.get(id=None, name=master_key)
         if utils.is_null_or_empty(master_key_resp):
             master_key_resp = client_obj.master_key.create(name=master_key, passphrase=passphrase)
-            return (True, True, f"Master key '{master_key}' created successfully.", {})
+            return (True, True, f"Master key '{master_key}' created successfully.", {}, master_key_resp.attrs)
         else:
-            return (False, False, f"Master key '{master_key}' cannot be created as it is already present.", {})
+            return (False, False, f"Master key '{master_key}' cannot be created as it is already present in given state.", {}, master_key_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Master key creation failed |{ex}", {})
+        return (False, False, f"Master key creation failed |{ex}", {}, {})
 
 
 def update_master_key(
@@ -164,21 +164,22 @@ def update_master_key(
         **kwargs):
 
     if utils.is_null_or_empty(master_key):
-        return (False, False, "Update master key failed as master key is not present.", {})
+        return (False, False, "Update master key failed as master key is not present.", {}, {})
 
     try:
         master_key_resp = client_obj.master_key.get(id=None, name=master_key)
         if utils.is_null_or_empty(master_key_resp):
-            return (False, False, f"Master key '{master_key}' cannot be updated as it is not present.", {})
+            return (False, False, f"Master key '{master_key}' cannot be updated as it is not present.", {}, {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(master_key_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             master_key_resp = client_obj.master_key.update(id=master_key_resp.attrs.get("id"), name=master_key, active=active, **params)
-            return (True, True, f"Master key '{master_key}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Master key '{master_key}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, master_key_resp.attrs)
         else:
-            return (True, False, f"Master key '{master_key}' already present." % master_key_resp.attrs.get("name"), {})
+            return (True, False, f"Master key '{master_key}' already present." % master_key_resp.attrs.get("name"), {}, master_key_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Master key update failed |{ex}", {})
+        return (False, False, f"Master key update failed |{ex}", {}, {})
 
 
 def delete_master_key(
@@ -224,20 +225,20 @@ def group_encryption(
         encryption_config):
 
     if utils.is_null_or_empty(group_name):
-        return (False, False, "Encryption setting for group failed as group name is not present.", {})
+        return (False, False, "Encryption setting for group failed as group name is not present.", {}, {})
 
     try:
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
-            return (False, False, f"Encryption setting for group '{group_name}' cannot be done as it is not present.", {})
+            return (False, False, f"Encryption setting for group '{group_name}' cannot be done as it is not present.", {}, {})
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(group_resp, encryption_config=encryption_config)
         if changed_attrs_dict.__len__() > 0:
-            client_obj.groups.update(id=group_resp.attrs.get("id"), encryption_config=encryption_config)
-            return (True, True, f"Encryption setting for group '{group_name}' changed successfully.  Modified the following fields :", changed_attrs_dict)
+            group_resp = client_obj.groups.update(id=group_resp.attrs.get("id"), encryption_config=encryption_config)
+            return (True, True, f"Encryption setting for group '{group_name}' changed successfully. ", changed_attrs_dict, group_resp.attrs)
         else:
-            return (True, False, f"Encryption setting for group '{group_resp.attrs.get('name')}' is already in same state.", {})
+            return (True, False, f"Encryption setting for group '{group_resp.attrs.get('name')}' is already in same state.", {}, group_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Encryption setting for group failed |{ex}", {})
+        return (False, False, f"Encryption setting for group failed |{ex}", {}, {})
 
 
 def main():
@@ -317,57 +318,59 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if ((purge_inactive is None or purge_inactive is False)
-        and (group_encrypt is None or group_encrypt is False)
-            and (state == "create" or state == "present")):
-        if not client_obj.master_key.get(id=None, name=master_key) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_master_key(
+        # States
+        if ((purge_inactive is None or purge_inactive is False)
+            and (group_encrypt is None or group_encrypt is False)
+                and (state == "create" or state == "present")):
+            if not client_obj.master_key.get(id=None, name=master_key) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_master_key(
+                    client_obj,
+                    master_key,
+                    passphrase)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_master_key(
+                    client_obj,
+                    master_key,
+                    active,
+                    passphrase=passphrase,
+                    new_passphrase=new_passphrase)
+
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_master_key(client_obj, master_key)
+
+        elif state == "present" and purge_inactive is True:
+            return_status, changed, msg, changed_attrs_dict = purge_inactive_key(
                 client_obj,
                 master_key,
-                passphrase)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_master_key(
+                age=age)
+
+        elif state == "present" and group_encrypt is True:
+            group_name = module.params["name"]
+            return_status, changed, msg, changed_attrs_dict, resp = group_encryption(
                 client_obj,
-                master_key,
-                active,
-                passphrase=passphrase,
-                new_passphrase=new_passphrase)
-
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_master_key(client_obj, master_key)
-
-    elif state == "present" and purge_inactive is True:
-        return_status, changed, msg, changed_attrs_dict = purge_inactive_key(
-            client_obj,
-            master_key,
-            age=age)
-
-    elif state == "present" and group_encrypt is True:
-        group_name = module.params["name"]
-        return_status, changed, msg, changed_attrs_dict = group_encryption(
-            client_obj,
-            group_name,
-            encryption_config)
-
-    else:
-        msg = "alok test"
+                group_name,
+                encryption_config)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

@@ -150,7 +150,7 @@ def create_perf_policy(
         **kwargs):
 
     if utils.is_null_or_empty(perf_policy_name):
-        return (False, False, "Create performance policy failed. Performance policy name is not present.", {})
+        return (False, False, "Create performance policy failed. Performance policy name is not present.", {}, {})
 
     try:
         perf_policy_resp = client_obj.performance_policies.get(id=None, name=perf_policy_name)
@@ -159,11 +159,11 @@ def create_perf_policy(
             perf_policy_resp = client_obj.performance_policies.create(name=perf_policy_name,
                                                                       **params)
             if perf_policy_resp is not None:
-                return (True, True, f"Created performance policy '{perf_policy_name}' successfully.", {})
+                return (True, True, f"Created performance policy '{perf_policy_name}' successfully.", {}, perf_policy_resp.attrs)
         else:
-            return (False, False, f"Cannot create Performance policy '{perf_policy_name}' as it is already present", {})
+            return (False, False, f"Cannot create Performance policy '{perf_policy_name}' as it is already present", {}, {})
     except Exception as ex:
-        return (False, False, f"Performance policy creation failed | {ex}", {})
+        return (False, False, f"Performance policy creation failed | {ex}", {}, {})
 
 
 def update_perf_policy(
@@ -172,18 +172,19 @@ def update_perf_policy(
         **kwargs):
 
     if utils.is_null_or_empty(perf_policy_resp):
-        return (False, False, "Update performance policy failed. Performance policy name is not present.", {})
+        return (False, False, "Update performance policy failed. Performance policy name is not present.", {}, {})
 
     try:
         perf_policy_name = perf_policy_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(perf_policy_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             perf_policy_resp = client_obj.performance_policies.update(id=perf_policy_resp.attrs.get("id"), **params)
-            return (True, True, f"Performance policy '{perf_policy_name}' already present. Modified the following fields:", changed_attrs_dict)
+            return (True, True, f"Performance policy '{perf_policy_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, perf_policy_resp.attrs)
         else:
-            return (True, False, f"Performance policy '{perf_policy_name}' already present.", {})
+            return (True, False, f"Performance policy '{perf_policy_name}' already present in given state.", {}, perf_policy_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Performance policy update failed | {ex}", {})
+        return (False, False, f"Performance policy update failed | {ex}", {}, {})
 
 
 def delete_perf_policy(
@@ -293,54 +294,59 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        perf_policy_resp = client_obj.performance_policies.get(id=None, name=perf_policy_name)
-        if utils.is_null_or_empty(perf_policy_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_perf_policy(
-                client_obj,
-                perf_policy_name,
-                app_category=app_category,
-                block_size=block_size,
-                cache=cache,
-                cache_policy=cache_policy,
-                compress=compress,
-                description=description,
-                dedupe_enabled=dedupe,
-                space_policy=space_policy)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_perf_policy(
-                client_obj,
-                perf_policy_resp,
-                name=change_name,
-                app_category=app_category,
-                cache=cache,
-                cache_policy=cache_policy,
-                compress=compress,
-                description=description,
-                dedupe_enabled=dedupe,
-                space_policy=space_policy)
+        # States
+        if state == "create" or state == "present":
+            perf_policy_resp = client_obj.performance_policies.get(id=None, name=perf_policy_name)
+            if utils.is_null_or_empty(perf_policy_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_perf_policy(
+                    client_obj,
+                    perf_policy_name,
+                    app_category=app_category,
+                    block_size=block_size,
+                    cache=cache,
+                    cache_policy=cache_policy,
+                    compress=compress,
+                    description=description,
+                    dedupe_enabled=dedupe,
+                    space_policy=space_policy)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_perf_policy(
+                    client_obj,
+                    perf_policy_resp,
+                    name=change_name,
+                    app_category=app_category,
+                    cache=cache,
+                    cache_policy=cache_policy,
+                    compress=compress,
+                    description=description,
+                    dedupe_enabled=dedupe,
+                    space_policy=space_policy)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_perf_policy(
-            client_obj,
-            perf_policy_name)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_perf_policy(
+                client_obj,
+                perf_policy_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

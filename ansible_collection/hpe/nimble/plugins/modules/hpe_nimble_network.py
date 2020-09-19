@@ -180,7 +180,7 @@ def create_update_network_config(
         **kwargs):
 
     if utils.is_null_or_empty(name):
-        return (False, False, "Create network config failed as name is not present.", {})
+        return (False, False, "Create network config failed as name is not present.", {}, {})
 
     try:
         network_resp = client_obj.network_configs.get(id=None, name=name)
@@ -191,10 +191,10 @@ def create_update_network_config(
                                                              iscsi_connection_rebalancing=iscsi_connection_rebalancing,
                                                              mgmt_ip=mgmt_ip,
                                                              **params)
-            return (True, True, f"Network config '{name}' created successfully.", {})
+            return (True, True, f"Network config '{name}' created successfully.", {}, network_resp.attrs)
         else:
             if state == "create":
-                return (False, False, f"Network config '{name}' cannot be created as it is already present.", {})
+                return (False, False, f"Network config '{name}' cannot be created as it is already present in given state.", {}, network_resp.attrs)
 
             # update case
             kwargs['name'] = change_name
@@ -205,11 +205,12 @@ def create_update_network_config(
                                                                  iscsi_connection_rebalancing=iscsi_connection_rebalancing,
                                                                  mgmt_ip=mgmt_ip,
                                                                  **params)
-                return (True, True, f"Network config '{name}' already present. Modified the following fields:", changed_attrs_dict)
+                return (True, True, f"Network config '{name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                        changed_attrs_dict, network_resp.attrs)
             else:
-                return (True, False, f"Network config '{network_resp.attrs.get('name')}' already present.", {})
+                return (True, False, f"Network config '{network_resp.attrs.get('name')}' already present in given state.", {}, network_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Network config creation failed |'{ex}'", {})
+        return (False, False, f"Network config creation failed |'{ex}'", {}, {})
 
 
 def delete_network_config(
@@ -380,48 +381,53 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if ((validate is None or validate is False)
-        and (activate is None or activate is False)
-            and (state == "create" or state == "present")):
-        # if not client_obj.network_configs.get(id=None, name=name) or state == "create":
-        return_status, changed, msg, changed_attrs_dict = create_update_network_config(
-            client_obj,
-            name,
-            state,
-            iscsi_automatic_connection_method,
-            iscsi_connection_rebalancing,
-            mgmt_ip,
-            change_name,
-            array_list=array,
-            ignore_validation_mask=ignore_validation_mask,
-            secondary_mgmt_ip=secondary_mgmt_ip,
-            subnet_list=subnet,
-            route_list=route)
+        # States
+        if ((validate is None or validate is False)
+            and (activate is None or activate is False)
+                and (state == "create" or state == "present")):
+            # if not client_obj.network_configs.get(id=None, name=name) or state == "create":
+            return_status, changed, msg, changed_attrs_dict, resp = create_update_network_config(
+                client_obj,
+                name,
+                state,
+                iscsi_automatic_connection_method,
+                iscsi_connection_rebalancing,
+                mgmt_ip,
+                change_name,
+                array_list=array,
+                ignore_validation_mask=ignore_validation_mask,
+                secondary_mgmt_ip=secondary_mgmt_ip,
+                subnet_list=subnet,
+                route_list=route)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_network_config(client_obj, name)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_network_config(client_obj, name)
 
-    elif state == "present" and validate is True:
-        return_status, changed, msg, changed_attrs_dict = validate_network_config(client_obj, name, ignore_validation_mask)
+        elif state == "present" and validate is True:
+            return_status, changed, msg, changed_attrs_dict = validate_network_config(client_obj, name, ignore_validation_mask)
 
-    elif state == "present" and activate is True:
-        return_status, changed, msg, changed_attrs_dict = activate_network_config(client_obj, name, ignore_validation_mask)
+        elif state == "present" and activate is True:
+            return_status, changed, msg, changed_attrs_dict = activate_network_config(client_obj, name, ignore_validation_mask)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

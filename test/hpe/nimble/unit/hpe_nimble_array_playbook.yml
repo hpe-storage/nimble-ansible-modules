@@ -54,7 +54,7 @@
       register: output
       failed_when: "'SM_http_not_found' not in output.msg"
 
-    - name: Delete array.Should fail with 'cannot be deleted as it is not present'
+    - name: Delete array. Should fail with 'cannot be deleted as it is not present'
       hpe_nimble_array:
         host: "{{ host }}"
         username: "{{ username }}"

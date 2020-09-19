@@ -149,7 +149,7 @@ def create_igroup(
         **kwargs):
 
     if utils.is_null_or_empty(initiator_group_name):
-        return (False, False, "Initiator group creation failed. Initiator group name is null.", {})
+        return (False, False, "Initiator group creation failed. Initiator group name is null.", {}, {})
 
     try:
         ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group_name)
@@ -157,12 +157,12 @@ def create_igroup(
             # remove unchanged and null arguments from kwargs
             params = utils.remove_null_args(**kwargs)
             ig_resp = client_obj.initiator_groups.create(name=initiator_group_name, **params)
-            return (True, True, f"Created initiator Group '{initiator_group_name}' successfully.", {})
+            return (True, True, f"Created initiator Group '{initiator_group_name}' successfully.", {}, ig_resp.attrs)
         else:
-            return (False, False, f"Cannot create initiator Group '{initiator_group_name}' as it is already present.", {})
+            return (False, False, f"Cannot create initiator Group '{initiator_group_name}' as it is already present in given state.", {}, {})
 
     except Exception as ex:
-        return (False, False, f"Initiator group creation failed | {ex}", {})
+        return (False, False, f"Initiator group creation failed | {ex}", {}, {})
 
 
 def update_igroup(
@@ -171,17 +171,18 @@ def update_igroup(
         **kwargs):
 
     if utils.is_null_or_empty(ig_resp):
-        return (False, False, "Update initiator group failed as it is not present.", {})
+        return (False, False, "Update initiator group failed as it is not present.", {}, {})
     try:
         ig_name = ig_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(ig_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             ig_resp = client_obj.initiator_groups.update(id=ig_resp.attrs.get("id"), **params)
-            return (True, True, f"Initiator group '{ig_name}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Initiator group '{ig_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, ig_resp.attrs)
         else:
-            return (True, False, f"Initiator group '{ig_name}' already present.", {})
+            return (True, False, f"Initiator group '{ig_name}' already present in given state.", {}, ig_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Initiator group update failed | {ex}", {})
+        return (False, False, f"Initiator group update failed | {ex}", {}, {})
 
 
 def delete_igroup(
@@ -307,53 +308,58 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group_name)
-        if utils.is_null_or_empty(ig_resp) or state == "create":
+        # States
+        if state == "create" or state == "present":
+            ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group_name)
+            if utils.is_null_or_empty(ig_resp) or state == "create":
 
-            return_status, changed, msg, changed_attrs_dict = create_igroup(
-                client_obj,
-                initiator_group_name,
-                description=description,
-                access_protocol=access_protocol,
-                host_type=host_type,
-                fc_tdz_ports=fc_tdz_ports,
-                target_subnets=target_subnets,
-                iscsi_initiators=iscsi_initiators,
-                fc_initiators=fc_initiators,
-                app_uuid=app_uuid,
-                metadata=metadata)
-        else:
-            return_status, changed, msg, changed_attrs_dict = update_igroup(
-                client_obj,
-                ig_resp,
-                name=change_name,
-                description=description,
-                host_type=host_type,
-                fc_tdz_ports=fc_tdz_ports,
-                target_subnets=target_subnets,
-                iscsi_initiators=iscsi_initiators,
-                fc_initiators=fc_initiators,
-                metadata=metadata)
+                return_status, changed, msg, changed_attrs_dict, resp = create_igroup(
+                    client_obj,
+                    initiator_group_name,
+                    description=description,
+                    access_protocol=access_protocol,
+                    host_type=host_type,
+                    fc_tdz_ports=fc_tdz_ports,
+                    target_subnets=target_subnets,
+                    iscsi_initiators=iscsi_initiators,
+                    fc_initiators=fc_initiators,
+                    app_uuid=app_uuid,
+                    metadata=metadata)
+            else:
+                return_status, changed, msg, changed_attrs_dict, resp = update_igroup(
+                    client_obj,
+                    ig_resp,
+                    name=change_name,
+                    description=description,
+                    host_type=host_type,
+                    fc_tdz_ports=fc_tdz_ports,
+                    target_subnets=target_subnets,
+                    iscsi_initiators=iscsi_initiators,
+                    fc_initiators=fc_initiators,
+                    metadata=metadata)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_igroup(client_obj, initiator_group_name)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_igroup(client_obj, initiator_group_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if not utils.is_null_or_empty(changed_attrs_dict) and changed_attrs_dict.__len__() > 0:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
+        if utils.is_null_or_empty(resp):
+            module.exit_json(return_status=return_status, changed=changed, msg=msg)
         else:
-            module.exit_json(return_status=return_status, changed=changed, message=msg)
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

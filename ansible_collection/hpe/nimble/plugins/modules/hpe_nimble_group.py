@@ -540,21 +540,22 @@ def update_group(
         **kwargs):
 
     if utils.is_null_or_empty(group_name):
-        return (False, False, "Update group failed as it is not present.", {})
+        return (False, False, "Update group failed as it is not present.", {}, {})
 
     try:
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
-            return (False, False, f"Group '{group_name}' cannot be updated as it is not present.", {})
+            return (False, False, f"Group '{group_name}' cannot be updated as it is not present.", {}, {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(group_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             group_resp = client_obj.groups.update(id=group_resp.attrs.get("id"), **params)
-            return (True, True, f"Group '{group_name}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Group '{group_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, group_resp.attrs)
         else:
-            return (True, False, f"Group '{group_resp.attrs.get('name')}' already present.", {})
+            return (True, False, f"Group '{group_resp.attrs.get('name')}' already present in given state.", {}, group_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Group update failed | '{ex}'", {})
+        return (False, False, f"Group update failed | '{ex}'", {}, {})
 
 
 def reboot_group(
@@ -623,14 +624,14 @@ def validate_merge_group(
         src_passphrase=None):
 
     if utils.is_null_or_empty(group_name):
-        return (False, False, "Validate merge for group failed as it is not present.", {})
+        return (False, False, "Validate merge for group failed as it is not present.", {}, {})
 
     try:
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
-            return (False, False, f"Validate merge for group '{group_name}' cannot be done as it is not present.", {})
+            return (False, False, f"Validate merge for group '{group_name}' cannot be done as it is not present.", {}, {})
 
-        client_obj.groups.validate_merge(
+        validate_merge_resp = client_obj.groups.validate_merge(
             id=group_resp.attrs.get("id"),
             src_group_ip=src_group_ip,
             src_group_name=src_group_name,
@@ -638,10 +639,12 @@ def validate_merge_group(
             src_username=src_username,
             skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
             src_passphrase=src_passphrase)
+        if hasattr(validate_merge_resp, 'attrs'):
+            validate_merge_resp = validate_merge_resp.attrs
 
-        return (True, True, f"Validated merge for group '{group_name}' successfully.", {})
+        return (True, True, f"Validated merge for group '{group_name}' successfully.", {}, validate_merge_resp)
     except Exception as ex:
-        return (False, False, f"Validate merge for group failed | '{ex}'", {})
+        return (False, False, f"Validate merge for group failed | '{ex}'", {}, {})
 
 
 def merge_group(
@@ -656,14 +659,14 @@ def merge_group(
         src_passphrase=None):
 
     if utils.is_null_or_empty(group_name):
-        return (False, False, "Merge for group failed as it is not present.", {})
+        return (False, False, "Merge for group failed as it is not present.", {}, {})
 
     try:
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
-            return (False, False, f"Merge for group '{group_name}' cannot be done as it is not present.", {})
+            return (False, False, f"Merge for group '{group_name}' cannot be done as it is not present.", {}, {})
 
-        client_obj.groups.merge(
+        merge_resp = client_obj.groups.merge(
             id=group_resp.attrs.get("id"),
             src_group_ip=src_group_ip,
             src_group_name=src_group_name,
@@ -673,9 +676,11 @@ def merge_group(
             skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
             src_passphrase=src_passphrase)
 
-        return (True, True, f"Merged group '{group_name}' successfully.", {})
+        if hasattr(merge_resp, 'attrs'):
+            merge_resp = merge_resp.attrs
+        return (True, True, f"Merged group '{group_name}' successfully.", {}, merge_resp)
     except Exception as ex:
-        return (False, False, f"Merge for group failed | '{ex}'", {})
+        return (False, False, f"Merge for group failed | '{ex}'", {}, {})
 
 
 def check_migrate_group(
@@ -824,6 +829,7 @@ def main():
         "force": {
             "required": False,
             "type": "bool",
+            "default": False,
             "no_log": False
         },
         "group_snapshot_ttl": {
@@ -1203,127 +1209,132 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present":
-        if reboot is True:
+        # States
+        if state == "present":
+            if reboot is True:
+                return_status, changed, msg, changed_attrs_dict = reboot_group(client_obj, group_name)
+
+            elif halt is True:
+                return_status, changed, msg, changed_attrs_dict = halt_group(client_obj, group_name, force=force)
+
+            elif test_alert is True:
+                return_status, changed, msg, changed_attrs_dict = test_alert_group(client_obj, group_name, level)
+
+            elif validate_merge is True:
+                return_status, changed, msg, changed_attrs_dict, resp = validate_merge_group(
+                    client_obj,
+                    group_name,
+                    src_group_ip,
+                    src_group_name,
+                    src_password,
+                    src_username,
+                    skip_secondary_mgmt_ip,
+                    src_passphrase)
+
+            elif merge is True:
+                return_status, changed, msg, changed_attrs_dict, resp = merge_group(
+                    client_obj,
+                    group_name,
+                    src_group_ip,
+                    src_group_name,
+                    src_password,
+                    src_username,
+                    force,
+                    skip_secondary_mgmt_ip,
+                    src_passphrase)
+
+            elif check_migrate is True:
+                return_status, changed, msg, changed_attrs_dict = check_migrate_group(client_obj, group_name)
+
+            elif migrate is True:
+                return_status, changed, msg, changed_attrs_dict = migrate_group(client_obj, group_name)
+
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_group(
+                    client_obj,
+                    group_name,
+                    name=change_name,
+                    alarms=alarms,
+                    alert_to_email_addrs=alert_to_email_addrs,
+                    alert_from_email_addrs=alert_from_email_addrs,
+                    alert_min_level=alert_min_level,
+                    allow_analytics_gui=allow_analytics_gui,
+                    allow_support_tunnel=allow_support_tunnel,
+                    auto_switchover=auto_switchover,
+                    autoclean_unmanaged_snapshots=autoclean_unmanaged_snapshots,
+                    autoclean_unmanaged_snapshots_ttl_unit=autoclean_unmanaged_snapshots_ttl_unit,
+                    autosupport=autosupport,
+                    cc_mode=cc_mode,
+                    date=date,
+                    default_iscsi_target_scope=default_iscsi_target_scope,
+                    default_volume_limit=default_volume_limit,
+                    domain_name=domain_name,
+                    dns_servers=dns_servers,
+                    fc_enabled=fc_enabled,
+                    group_snapshot_ttl=group_snapshot_ttl,
+                    group_target_enabled=group_target_enabled,
+                    group_target_name=group_target_name,
+                    iscsi_enabled=iscsi_enabled,
+                    isns_enabled=isns_enabled,
+                    isns_port=isns_port,
+                    isns_server=isns_server,
+                    login_banner_after_auth=login_banner_after_auth,
+                    login_banner_message=login_banner_message,
+                    login_banner_reset=login_banner_reset,
+                    ntp_server=ntp_server,
+                    proxy_port=proxy_port,
+                    proxy_password=proxy_password,
+                    proxy_server=proxy_server,
+                    proxy_username=proxy_username,
+                    repl_throttle_list=repl_throttle_list,
+                    send_alert_to_support=send_alert_to_support,
+                    smtp_auth_enabled=smtp_auth_enabled,
+                    smtp_auth_password=smtp_auth_password,
+                    smtp_auth_username=smtp_auth_username,
+                    smtp_port=smtp_port,
+                    smtp_encrypt_type=smtp_encrypt_type,
+                    snmp_community=snmp_community,
+                    snmp_get_enabled=snmp_get_enabled,
+                    snmp_get_port=snmp_get_port,
+                    snmp_trap_enabled=snmp_trap_enabled,
+                    snmp_trap_host=snmp_trap_host,
+                    snmp_trap_port=snmp_trap_port,
+                    snmp_sys_contact=snmp_sys_contact,
+                    snmp_sys_location=snmp_sys_location,
+                    syslogd_enabled=syslogd_enabled,
+                    syslogd_port=syslogd_port,
+                    syslogd_server=syslogd_server,
+                    tdz_enabled=tdz_enabled,
+                    tdz_prefix=tdz_prefix,
+                    timezone=timezone,
+                    tlsv1_enabled=tlsv1_enabled,
+                    user_inactivity_timeout=user_inactivity_timeout,
+                    vss_validation_timeout=vss_validation_timeout,
+                    vvol_enabled=vvol_enabled)
+
+        elif state == "absent":
             return_status, changed, msg, changed_attrs_dict = reboot_group(client_obj, group_name)
-
-        elif halt is True:
-            return_status, changed, msg, changed_attrs_dict = halt_group(client_obj, group_name, force=force)
-
-        elif test_alert is True:
-            return_status, changed, msg, changed_attrs_dict = test_alert_group(client_obj, group_name, level)
-
-        elif validate_merge is True:
-            return_status, changed, msg, changed_attrs_dict = validate_merge_group(
-                client_obj,
-                group_name,
-                src_group_ip,
-                src_group_name,
-                src_password,
-                src_username,
-                skip_secondary_mgmt_ip,
-                src_passphrase)
-
-        elif merge is True:
-            return_status, changed, msg, changed_attrs_dict = merge_group(
-                client_obj,
-                group_name,
-                src_group_ip,
-                src_group_name,
-                src_password,
-                src_username,
-                force,
-                skip_secondary_mgmt_ip,
-                src_passphrase)
-
-        elif check_migrate is True:
-            return_status, changed, msg, changed_attrs_dict = check_migrate_group(client_obj, group_name)
-
-        elif migrate is True:
-            return_status, changed, msg, changed_attrs_dict = migrate_group(client_obj, group_name)
-
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_group(
-                client_obj,
-                group_name,
-                name=change_name,
-                alarms=alarms,
-                alert_to_email_addrs=alert_to_email_addrs,
-                alert_from_email_addrs=alert_from_email_addrs,
-                alert_min_level=alert_min_level,
-                allow_analytics_gui=allow_analytics_gui,
-                allow_support_tunnel=allow_support_tunnel,
-                auto_switchover=auto_switchover,
-                autoclean_unmanaged_snapshots=autoclean_unmanaged_snapshots,
-                autoclean_unmanaged_snapshots_ttl_unit=autoclean_unmanaged_snapshots_ttl_unit,
-                autosupport=autosupport,
-                cc_mode=cc_mode,
-                date=date,
-                default_iscsi_target_scope=default_iscsi_target_scope,
-                default_volume_limit=default_volume_limit,
-                domain_name=domain_name,
-                dns_servers=dns_servers,
-                fc_enabled=fc_enabled,
-                group_snapshot_ttl=group_snapshot_ttl,
-                group_target_enabled=group_target_enabled,
-                group_target_name=group_target_name,
-                iscsi_enabled=iscsi_enabled,
-                isns_enabled=isns_enabled,
-                isns_port=isns_port,
-                isns_server=isns_server,
-                login_banner_after_auth=login_banner_after_auth,
-                login_banner_message=login_banner_message,
-                login_banner_reset=login_banner_reset,
-                ntp_server=ntp_server,
-                proxy_port=proxy_port,
-                proxy_password=proxy_password,
-                proxy_server=proxy_server,
-                proxy_username=proxy_username,
-                repl_throttle_list=repl_throttle_list,
-                send_alert_to_support=send_alert_to_support,
-                smtp_auth_enabled=smtp_auth_enabled,
-                smtp_auth_password=smtp_auth_password,
-                smtp_auth_username=smtp_auth_username,
-                smtp_port=smtp_port,
-                smtp_encrypt_type=smtp_encrypt_type,
-                snmp_community=snmp_community,
-                snmp_get_enabled=snmp_get_enabled,
-                snmp_get_port=snmp_get_port,
-                snmp_trap_enabled=snmp_trap_enabled,
-                snmp_trap_host=snmp_trap_host,
-                snmp_trap_port=snmp_trap_port,
-                snmp_sys_contact=snmp_sys_contact,
-                snmp_sys_location=snmp_sys_location,
-                syslogd_enabled=syslogd_enabled,
-                syslogd_port=syslogd_port,
-                syslogd_server=syslogd_server,
-                tdz_enabled=tdz_enabled,
-                tdz_prefix=tdz_prefix,
-                timezone=timezone,
-                tlsv1_enabled=tlsv1_enabled,
-                user_inactivity_timeout=user_inactivity_timeout,
-                vss_validation_timeout=vss_validation_timeout,
-                vvol_enabled=vvol_enabled)
-
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = reboot_group(client_obj, group_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

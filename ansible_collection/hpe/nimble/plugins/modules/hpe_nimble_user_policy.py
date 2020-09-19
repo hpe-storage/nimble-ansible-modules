@@ -118,16 +118,16 @@ def update_user_policy(
     try:
         user_resp = client_obj.user_policies.get()
         if utils.is_null_or_empty(user_resp):
-            return (False, False, "User policy is not present on Array", {})
+            return (False, False, "User policy is not present on Array", {}, {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(user_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             user_resp = client_obj.user_policies.update(id=user_resp.attrs.get("id"), **params)
-            return (True, True, "Updated user policy successfully.", changed_attrs_dict)
+            return (True, True, f"Updated user policy successfully with following attributes '{changed_attrs_dict}'.", changed_attrs_dict, user_resp.attrs)
         else:
-            return (True, False, "User Policy already present in given state.", {})
+            return (True, False, "User Policy already present in given state.", {}, user_resp.attrs)
     except Exception as ex:
-        return (False, False, f"User Policy Update failed | {ex}", {})
+        return (False, False, f"User Policy Update failed | {ex}", {}, {})
 
 
 def main():
@@ -208,32 +208,41 @@ def main():
     if (username is None or password is None or hostname is None):
         module.fail_json(
             msg="Storage system IP or username or password is null")
+    # defaults
+    return_status = changed = False
+    msg = "No task to run."
+    resp = None
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present":
-        return_status, changed, msg, changed_attrs_dict = update_user_policy(
-            client_obj,
-            allowed_attempts=allowed_attempts,
-            min_length=min_length,
-            upper=upper,
-            lower=lower,
-            digit=digit,
-            special=special,
-            previous_diff=previous_diff,
-            no_reuse=no_reuse,
-            max_sessions=max_sessions)
+        # States
+        if state == "present":
+            return_status, changed, msg, changed_attrs_dict, resp = update_user_policy(
+                client_obj,
+                allowed_attempts=allowed_attempts,
+                min_length=min_length,
+                upper=upper,
+                lower=lower,
+                digit=digit,
+                special=special,
+                previous_diff=previous_diff,
+                no_reuse=no_reuse,
+                max_sessions=max_sessions)
+
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

@@ -7,7 +7,7 @@
   vars:
     # we should always use python3
     ansible_python_interpreter: /usr/bin/python3
-    #state: "create"
+    state: "present"
     name: "snapcoll1"
     description: "updated again by ansible 2"
     volcoll: "ansible-volcoll"
@@ -25,9 +25,9 @@
         name: "{{ansible_default_ipv4['address']}}-{{ name }}"
         volcoll: "{{ volcoll | mandatory}}"
         description: "{{ description | default(None)}}"
-        state: "create"
+        state: "present"
       register: output
-      failed_when: "'Invalid value for volcoll' not in output.exception"
+      failed_when: "'Invalid value for volcoll' not in output.msg"
 
     - name: Create Volume collection if not present
       hpe_nimble_volume_collection:
@@ -88,6 +88,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        volcoll: "{{ansible_default_ipv4['address']}}-{{ volcoll }}"
         state: absent
 
     - name: Disassociate volcoll from Volume

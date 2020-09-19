@@ -49,7 +49,7 @@
       tags:
         - purge_inactive
 
-    - name: group encryption ,will fail as the group name does not exist
+    - name: Group encryption, will fail as the group name does not exist
       hpe_nimble_encryption:
         host: "{{ host }}"
         username: "{{ username }}"

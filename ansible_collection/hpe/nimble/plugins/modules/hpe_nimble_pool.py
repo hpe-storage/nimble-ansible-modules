@@ -133,7 +133,7 @@ def create_pool(
         **kwargs):
 
     if utils.is_null_or_empty(pool_name):
-        return (False, False, "Create pool failed as pool name is not present.", {})
+        return (False, False, "Create pool failed as pool name is not present.", {}, {})
 
     try:
         pool_resp = client_obj.pools.get(id=None, name=pool_name)
@@ -142,11 +142,11 @@ def create_pool(
             pool_resp = client_obj.pools.create(name=pool_name,
                                                 **params)
             if pool_resp is not None:
-                return (True, True, f"Created pool '{pool_name}' successfully.", {})
+                return (True, True, f"Created pool '{pool_name}' successfully.", {}, pool_resp.attrs)
         else:
-            return (False, False, f"Pool '{pool_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Pool '{pool_name}' cannot be created as it is already present in given state.", {}, pool_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Pool creation failed | {ex}", {})
+        return (False, False, f"Pool creation failed | {ex}", {}, {})
 
 
 def update_pool(
@@ -155,19 +155,19 @@ def update_pool(
         **kwargs):
 
     if utils.is_null_or_empty(pool_resp):
-        return (False, False, "Update pool failed as pool name is not present.", {})
-
+        return (False, False, "Update pool failed as pool name is not present.", {}, {})
     try:
         pool_name = pool_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(pool_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             pool_resp = client_obj.pools.update(id=pool_resp.attrs.get("id"), **params)
-            return (True, True, f"Pool '{pool_name}' already present. Modified the following fields:", changed_attrs_dict)
+            return (True, True, f"Pool '{pool_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, pool_resp.attrs)
         else:
-            return (True, False, f"Pool '{pool_name}' already present.", {})
+            return (True, False, f"Pool '{pool_name}' already present in given state.", {}, pool_resp.attrs)
 
     except Exception as ex:
-        return (False, False, f"Pool update failed | {ex}", {})
+        return (False, False, f"Pool update failed | {ex}", {}, {})
 
 
 def delete_pool(
@@ -195,25 +195,27 @@ def merge_pool(
         force=False):
 
     if utils.is_null_or_empty(pool_name):
-        return (False, False, "Merge pool failed as pool name is not present.", {})
+        return (False, False, "Merge pool failed as pool name is not present.", {}, {})
     if utils.is_null_or_empty(target):
-        return (False, False, "Delete pool failed as target pool name is not present.", {})
+        return (False, False, "Delete pool failed as target pool name is not present.", {}, {})
 
     try:
         pool_resp = client_obj.pools.get(id=None, name=pool_name)
         if utils.is_null_or_empty(pool_resp):
-            return (False, False, f"Merge pools failed as source pool '{pool_name}' is not present.", {})
+            return (False, False, f"Merge pools failed as source pool '{pool_name}' is not present.", {}, {})
 
         target_pool_resp = client_obj.pools.get(id=None, name=target)
         if utils.is_null_or_empty(target_pool_resp):
-            return (False, False, f"Merge pools failed as target pool '{target}' is not present.", {})
+            return (False, False, f"Merge pools failed as target pool '{target}' is not present.", {}, {})
 
-        client_obj.pools.merge(id=pool_resp.attrs.get("id"),
-                               target_pool_id=target_pool_resp.attrs.get("id"),
-                               force=force)
-        return (True, True, f"Merged target pool '{target}' to pool '{pool_name}' successfully.", {})
+        resp = client_obj.pools.merge(id=pool_resp.attrs.get("id"),
+                                      target_pool_id=target_pool_resp.attrs.get("id"),
+                                      force=force)
+        if hasattr(resp, 'attrs'):
+            resp = resp.attrs
+        return (True, True, f"Merged target pool '{target}' to pool '{pool_name}' successfully.", {}, resp)
     except Exception as ex:
-        return (False, False, f"Merge pool failed | {ex}", {})
+        return (False, False, f"Merge pool failed | {ex}", {}, {})
 
 
 def main():
@@ -300,54 +302,60 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == 'present' and merge is True:
-        return_status, changed, msg, changed_attrs_dict = merge_pool(
-            client_obj,
-            pool_name,
-            target,
-            force)
-
-    elif (merge is None or merge is False) and (state == "create" or state == "present"):
-        pool_resp = client_obj.pools.get(id=None, name=pool_name)
-        if utils.is_null_or_empty(pool_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_pool(
+        # States
+        if state == 'present' and merge is True:
+            return_status, changed, msg, changed_attrs_dict, resp = merge_pool(
                 client_obj,
                 pool_name,
-                description=description,
-                array_list=array_list,
-                dedupe_all_volumes=dedupe_all_volumes)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_pool(
-                client_obj,
-                pool_resp,
-                name=change_name,
-                description=description,
-                array_list=array_list,
-                force=force,
-                dedupe_all_volumes=dedupe_all_volumes,
-                is_default=is_default)
+                target,
+                force)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_pool(
-            client_obj,
-            pool_name)
+        elif (merge is None or merge is False) and (state == "create" or state == "present"):
+            pool_resp = client_obj.pools.get(id=None, name=pool_name)
+
+            if utils.is_null_or_empty(pool_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_pool(
+                    client_obj,
+                    pool_name,
+                    description=description,
+                    array_list=array_list,
+                    dedupe_all_volumes=dedupe_all_volumes)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_pool(
+                    client_obj,
+                    pool_resp,
+                    name=change_name,
+                    description=description,
+                    array_list=array_list,
+                    force=force,
+                    dedupe_all_volumes=dedupe_all_volumes,
+                    is_default=is_default)
+
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_pool(
+                client_obj,
+                pool_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

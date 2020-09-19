@@ -115,18 +115,18 @@ def create_acr(
         **kwargs):
 
     if utils.is_null_or_empty(initiator_group):
-        return (False, False, "Access control record creation failed. No initiator group provided.")
+        return (False, False, "Access control record creation failed. No initiator group provided.", {})
     if utils.is_null_or_empty(volume):
-        return (False, False, "Access control record creation failed. No volume name provided.")
+        return (False, False, "Access control record creation failed. No volume name provided.", {})
 
     try:
         # see if the igroup is already present
         ig_resp = client_obj.initiator_groups.get(id=None, name=initiator_group)
         if ig_resp is None:
-            return (False, False, f"Initiator Group '{initiator_group}' is not present on array.")
+            return (False, False, f"Initiator Group '{initiator_group}' is not present on array.", {})
         vol_resp = client_obj.volumes.get(id=None, name=volume)
         if vol_resp is None:
-            return (False, False, f"Volume name '{volume}' is not present on array.")
+            return (False, False, f"Volume name '{volume}' is not present on array.", {})
 
         acr_resp = client_obj.access_control_records.get(vol_name=volume, initiator_group_name=initiator_group, apply_to=kwargs['apply_to'])
         if utils.is_null_or_empty(acr_resp) is False:
@@ -137,17 +137,17 @@ def create_acr(
             acr_resp = client_obj.access_control_records.create(initiator_group_id=ig_resp.attrs.get("id"),
                                                                 vol_id=vol_resp.attrs.get("id"),
                                                                 **params)
-            params['volume'] = volume
-            params['initiator_group'] = initiator_group
-            return (True, True, f"Successfully created access control record with attributes: {params}.")
+            # params['volume'] = volume
+            # params['initiator_group'] = initiator_group
+            return (True, True, "Successfully created access control record.", acr_resp.attrs)
         else:
             # if state is set to present, we pass
             if state == "present":
-                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.")
+                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.", acr_resp.attrs)
         return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot "
-                "be created as it is already present.")
+                "be created as it is already present.", {})
     except Exception as ex:
-        return (False, False, f"Access control record creation failed | {ex}")
+        return (False, False, f"Access control record creation failed | {ex}", {})
 
 
 def delete_acr(
@@ -229,37 +229,43 @@ def main():
     if (username is None or password is None or hostname is None):
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
-
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
-
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        return_status, changed, msg = create_acr(
-            client_obj,
-            state,
-            initiator_group,
-            volume,
-            apply_to=apply_to,
-            chap_user_id=utils.get_chap_user_id(client_obj, chap_user),
-            lun=lun)
+        # States
+        if state == "create" or state == "present":
+            return_status, changed, msg, resp = create_acr(
+                client_obj,
+                state,
+                initiator_group,
+                volume,
+                apply_to=apply_to,
+                chap_user_id=utils.get_chap_user_id(client_obj, chap_user),
+                lun=lun)
 
-    elif state == "absent":
-        return_status, changed, msg = delete_acr(
-            client_obj,
-            initiator_group,
-            volume,
-            chap_user=chap_user)
+        elif state == "absent":
+            return_status, changed, msg = delete_acr(
+                client_obj,
+                initiator_group,
+                volume,
+                chap_user=chap_user)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        if utils.is_null_or_empty(resp):
+            module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

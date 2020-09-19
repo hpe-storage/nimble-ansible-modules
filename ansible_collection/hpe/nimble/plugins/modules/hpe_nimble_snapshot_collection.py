@@ -182,18 +182,18 @@ def create_snapcoll(
         **kwargs):
 
     if utils.is_null_or_empty(snapcoll_name):
-        return (False, False, "Create snapshot collection failed. snapshot collection name is not present.", {})
+        return (False, False, "Create snapshot collection failed. snapshot collection name is not present.", {}, {})
     try:
         snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll_name)
         if utils.is_null_or_empty(snapcoll_resp):
             params = utils.remove_null_args(**kwargs)
             snapcoll_resp = client_obj.snapshot_collections.create(name=snapcoll_name, **params)
-            return (True, True, f"Created snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' successfully.", {})
+            return (True, True, f"Created snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' successfully.", {}, snapcoll_resp.attrs)
         else:
             return (False, False, f"Snapshot collection '{snapcoll_name}' for volume collection '{volcoll_name}' cannot be created"
-                    "as it is already present.", {})
+                    "as it is already present in given state.", {}, snapcoll_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Snapshot collection creation failed | {ex}", {})
+        return (False, False, f"Snapshot collection creation failed | {ex}", {}, {})
 
 
 def update_snapcoll(
@@ -202,17 +202,18 @@ def update_snapcoll(
         **kwargs):
 
     if utils.is_null_or_empty(snapcoll_resp):
-        return (False, False, "Update snapshot collection failed as snapshot collection is not present.", {})
+        return (False, False, "Update snapshot collection failed as snapshot collection is not present.", {}, {})
     try:
         snapcoll_name = snapcoll_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(snapcoll_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             snapcoll_resp = client_obj.snapshot_collections.update(id=snapcoll_resp.attrs.get("id"), **params)
-            return (True, True, f"Snapshot collection '{snapcoll_name}' already Present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Snapshot collection '{snapcoll_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, snapcoll_resp.attrs)
         else:
-            return (True, False, f"Snapshot collection '{snapcoll_name}' already present.", {})
+            return (True, False, f"Snapshot collection '{snapcoll_name}' already present in given state.", {}, snapcoll_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Snapshot collection update failed | {ex}", {})
+        return (False, False, f"Snapshot collection update failed | {ex}", {}, {})
 
 
 def delete_snapcoll(client_obj, snapcoll_name, volcoll_name):
@@ -363,58 +364,63 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username, password and snapshot collection name is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll)
-        if utils.is_null_or_empty(snapcoll_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_snapcoll(
-                client_obj,
-                snapcoll_name,
-                volcoll,
-                description=description,
-                volcoll_id=utils.get_volcoll_id(client_obj, volcoll),
-                is_external_trigger=is_external_trigger,
-                vol_snap_attr_list=vol_snap_attr_list,
-                replicate_to=replicate_to,
-                start_online=start_online,
-                allow_writes=allow_writes,
-                disable_appsync=disable_appsync,
-                snap_verify=snap_verify,
-                skip_db_consistency_check=skip_db_consistency_check,
-                invoke_on_upstream_partner=invoke_on_upstream_partner,
-                agent_type=agent_type,
-                metadata=metadata)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_snapcoll(
-                client_obj,
-                snapcoll_resp,
-                name=change_name,
-                description=description,
-                replicate_to=replicate_to,
-                expiry_after=expiry_after,
-                metadata=metadata,
-                force=force)
+        # States
+        if state == "create" or state == "present":
+            snapcoll_resp = client_obj.snapshot_collections.get(id=None, name=snapcoll_name, volcoll_name=volcoll)
+            if utils.is_null_or_empty(snapcoll_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_snapcoll(
+                    client_obj,
+                    snapcoll_name,
+                    volcoll,
+                    description=description,
+                    volcoll_id=utils.get_volcoll_id(client_obj, volcoll),
+                    is_external_trigger=is_external_trigger,
+                    vol_snap_attr_list=vol_snap_attr_list,
+                    replicate_to=replicate_to,
+                    start_online=start_online,
+                    allow_writes=allow_writes,
+                    disable_appsync=disable_appsync,
+                    snap_verify=snap_verify,
+                    skip_db_consistency_check=skip_db_consistency_check,
+                    invoke_on_upstream_partner=invoke_on_upstream_partner,
+                    agent_type=agent_type,
+                    metadata=metadata)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_snapcoll(
+                    client_obj,
+                    snapcoll_resp,
+                    name=change_name,
+                    description=description,
+                    replicate_to=replicate_to,
+                    expiry_after=expiry_after,
+                    metadata=metadata,
+                    force=force)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_snapcoll(client_obj,
-                                                                          snapcoll_name,
-                                                                          volcoll)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_snapcoll(client_obj,
+                                                                              snapcoll_name,
+                                                                              volcoll)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 
