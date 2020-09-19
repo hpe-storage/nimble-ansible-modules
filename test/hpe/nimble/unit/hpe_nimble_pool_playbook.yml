@@ -31,7 +31,7 @@
         array_list: "{{ array_list }} "
         description: "{{ description }}"
       register: output
-      failed_when: "'SM_http_bad_request' not in output.msg"
+      failed_when: "'SM_array_not_found' not in output.msg"
 
     - name: Delete pool should fail as ansiblepool is not present
       hpe_nimble_pool:

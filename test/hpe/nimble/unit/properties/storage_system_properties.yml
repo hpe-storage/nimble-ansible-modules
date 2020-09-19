@@ -1,5 +1,4 @@
-# host: "10.18.171.96"
-host: "10.18.161.229"
+host: "10.18.171.96"
 username: "admin"
 password: "admin"
 downstream_hostname: "10.18.175.96"

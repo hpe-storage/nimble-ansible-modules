@@ -55,7 +55,7 @@
         state: "present"
         validate_merge: true
       register: output
-      # failed_when: "'Failed logging in to the source group' not in output.msg"
+      failed_when: "'Failed logging in to the source group' not in output.msg"
 
     - name: Test alert group
       hpe_nimble_group:
@@ -89,7 +89,7 @@
         state: "present"
         check_migrate: true
       register: output
-      # failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
+      failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
 
     - name: Merge group. Should fail with 'specified for the argument 'src_passphrase'
       hpe_nimble_group:
