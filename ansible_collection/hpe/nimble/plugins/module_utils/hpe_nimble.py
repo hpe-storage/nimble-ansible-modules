@@ -32,6 +32,8 @@ def is_null_or_empty(name):
 def get_unique_string(baseName):
     unique_string = baseName + datetime.datetime.now().strftime(
         "-%d-%m-%Y") + '-' + str(uuid.uuid1().time)
+    # make sure the length is not more than 64 char as nimble array allows only up to 64 char
+    unique_string = unique_string[:63]
     return unique_string
 
 
