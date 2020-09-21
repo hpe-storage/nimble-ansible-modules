@@ -616,33 +616,27 @@ def test_alert_group(
 def validate_merge_group(
         client_obj,
         group_name,
-        src_group_ip,
-        src_group_name,
-        src_password,
-        src_username,
-        skip_secondary_mgmt_ip=False,
-        src_passphrase=None):
+        **kwargs):
 
     if utils.is_null_or_empty(group_name):
         return (False, False, "Validate merge for group failed as it is not present.", {}, {})
-
     try:
+
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
             return (False, False, f"Validate merge for group '{group_name}' cannot be done as it is not present.", {}, {})
 
-        validate_merge_resp = client_obj.groups.validate_merge(
-            id=group_resp.attrs.get("id"),
-            src_group_ip=src_group_ip,
-            src_group_name=src_group_name,
-            src_password=src_password,
-            src_username=src_username,
-            skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
-            src_passphrase=src_passphrase)
+        params = utils.remove_null_args(**kwargs)
+        validate_merge_resp = client_obj.groups.validate_merge(id=group_resp.attrs.get("id"), **params)
+
         if hasattr(validate_merge_resp, 'attrs'):
             validate_merge_resp = validate_merge_resp.attrs
 
-        return (True, True, f"Validated merge for group '{group_name}' successfully.", {}, validate_merge_resp)
+        if validate_merge_resp.get("validation_error_msg") is None:
+            return (True, False, f"Validate merge operation for group '{group_name}' done successfully.", {}, validate_merge_resp)
+        else:
+            msg = validate_merge_resp.get("validation_error_msg")
+            return (False, False, f"Validate merge operation for group '{group_name}' failed with error '{msg}'", {}, validate_merge_resp)
     except Exception as ex:
         return (False, False, f"Validate merge for group failed | '{ex}'", {}, {})
 
@@ -650,31 +644,17 @@ def validate_merge_group(
 def merge_group(
         client_obj,
         group_name,
-        src_group_ip,
-        src_group_name,
-        src_password,
-        src_username,
-        force=False,
-        skip_secondary_mgmt_ip=False,
-        src_passphrase=None):
+        **kwargs):
 
     if utils.is_null_or_empty(group_name):
         return (False, False, "Merge for group failed as it is not present.", {}, {})
-
     try:
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
             return (False, False, f"Merge for group '{group_name}' cannot be done as it is not present.", {}, {})
 
-        merge_resp = client_obj.groups.merge(
-            id=group_resp.attrs.get("id"),
-            src_group_ip=src_group_ip,
-            src_group_name=src_group_name,
-            src_password=src_password,
-            src_username=src_username,
-            force=force,
-            skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
-            src_passphrase=src_passphrase)
+        params = utils.remove_null_args(**kwargs)
+        merge_resp = client_obj.groups.merge(id=group_resp.attrs.get("id"), **params)
 
         if hasattr(merge_resp, 'attrs'):
             merge_resp = merge_resp.attrs
@@ -1235,24 +1215,24 @@ def main():
                 return_status, changed, msg, changed_attrs_dict, resp = validate_merge_group(
                     client_obj,
                     group_name,
-                    src_group_ip,
-                    src_group_name,
-                    src_password,
-                    src_username,
-                    skip_secondary_mgmt_ip,
-                    src_passphrase)
+                    src_group_ip=src_group_ip,
+                    src_group_name=src_group_name,
+                    src_password=src_password,
+                    src_username=src_username,
+                    skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
+                    src_passphrase=src_passphrase)
 
             elif merge is True:
                 return_status, changed, msg, changed_attrs_dict, resp = merge_group(
                     client_obj,
                     group_name,
-                    src_group_ip,
-                    src_group_name,
-                    src_password,
-                    src_username,
-                    force,
-                    skip_secondary_mgmt_ip,
-                    src_passphrase)
+                    src_group_ip=src_group_ip,
+                    src_group_name=src_group_name,
+                    src_password=src_password,
+                    src_username=src_username,
+                    force=force,
+                    skip_secondary_mgmt_ip=skip_secondary_mgmt_ip,
+                    src_passphrase=src_passphrase)
 
             elif check_migrate is True:
                 return_status, changed, msg, changed_attrs_dict = check_migrate_group(client_obj, group_name)
@@ -1336,7 +1316,10 @@ def main():
         else:
             module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
-        module.fail_json(return_status=return_status, changed=changed, msg=msg)
+        if utils.is_null_or_empty(resp):
+            module.fail_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.fail_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
 
 
 if __name__ == '__main__':
