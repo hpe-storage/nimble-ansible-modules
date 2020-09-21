@@ -190,7 +190,7 @@ options:
   size:
     type: int
     description:
-    - Volume size in mebibytes. Size is required for creating a volume but not for cloning an existing volume.
+    - Volume size in megabytes. Size is required for creating a volume but not for cloning an existing volume.
   snapshot:
     required: False
     type: str
