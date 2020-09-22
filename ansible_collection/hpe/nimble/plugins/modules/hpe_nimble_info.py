@@ -583,7 +583,11 @@ def add_to_valid_subset_list(valid_subset_list,
 
     if subset_options is not None:
         if 'fields' in subset_options and subset_options['fields'] is not None:
-            fields = subset_options['fields'].strip()
+            temp = ""
+            for item in subset_options['fields']:
+                temp += item + ','
+            fields = temp.strip(',')
+            # fields = subset_options['fields'].strip()
         if 'detail' in subset_options and subset_options['detail'] is not None:
             detail = subset_options['detail']
         if 'limit' in subset_options:
@@ -617,8 +621,8 @@ def is_subset_option_valid(subset_options):
             return (False, key, "Subset options 'limit' should be provided as integer.")
         if key == 'detail' and type(value) is not bool:
             return (False, key, "Subset options 'detail' should be provided as bool.")
-        if key == 'fields' and type(value) is not str:
-            return (False, key, "Subset options 'fields' should be provided as string.")
+        if key == 'fields' and type(value) is not list:
+            return (False, key, "Subset options 'fields' should be provided as list.")
         if key == 'query' and type(value) is not dict:
             return (False, key, "Subset options 'query' should be provided as dict.")
     return (True, "", "")
@@ -1007,15 +1011,20 @@ def main():
     if (username is None or password is None or hostname is None):
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
-
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
-    return_status, changed, msg, result_dict = get_subset_info(client_obj, gather_subset)
+    msg = "No task to run."
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
+
+        return_status, changed, msg, result_dict = get_subset_info(client_obj, gather_subset)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
         if utils.is_null_or_empty(result_dict) is False and result_dict.__len__() > 0:
@@ -1024,7 +1033,7 @@ def main():
                              message=msg,
                              nimble_info=result_dict)
         else:
-            module.exit_json(return_status=return_status, changed=changed, message=msg)
+            module.exit_json(return_status=return_status, changed=changed, msg=msg)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

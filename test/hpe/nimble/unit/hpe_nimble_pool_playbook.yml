@@ -4,7 +4,6 @@
   collections:
     - hpe.nimble
   vars_files: 'properties/storage_system_properties.yml'
-  gather_facts: true
   vars:
     # we should always use python3
     ansible_python_interpreter: /usr/bin/python3

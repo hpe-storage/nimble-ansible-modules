@@ -299,17 +299,17 @@ def create_volcoll(
         **kwargs):
 
     if utils.is_null_or_empty(volcoll_name):
-        return (False, False, "Create volume collection failed as volume collection is not present.", {})
+        return (False, False, "Create volume collection failed as volume collection is not present.", {}, {})
     try:
         volcoll_resp = client_obj.volume_collections.get(id=None, name=volcoll_name)
         if utils.is_null_or_empty(volcoll_resp):
             params = utils.remove_null_args(**kwargs)
             volcoll_resp = client_obj.volume_collections.create(name=volcoll_name, **params)
-            return (True, True, f"Created volume collection '{volcoll_name}' successfully.", {})
+            return (True, True, f"Created volume collection '{volcoll_name}' successfully.", {}, volcoll_resp.attrs)
         else:
-            return (False, False, f"Volume collection '{volcoll_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Volume collection '{volcoll_name}' cannot be created as it is already present in given state.", {}, {})
     except Exception as ex:
-        return (False, False, f"Volume collection creation failed | {ex}", {})
+        return (False, False, f"Volume collection creation failed | {ex}", {}, {})
 
 
 def update_volcoll(
@@ -318,17 +318,18 @@ def update_volcoll(
         **kwargs):
 
     if utils.is_null_or_empty(volcoll_resp):
-        return (False, False, "Update volume collection failed as volume collection is not present.", {})
+        return (False, False, "Update volume collection failed as volume collection is not present.", {}, {})
     try:
         volcoll_name = volcoll_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(volcoll_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             volcoll_resp = client_obj.volume_collections.update(id=volcoll_resp.attrs.get("id"), **params)
-            return (True, True, f"Volume collection '{volcoll_name}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Volume collection '{volcoll_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, volcoll_resp.attrs)
         else:
-            return (True, False, f"Volume collection '{volcoll_name}' already present.", {})
+            return (True, False, f"Volume collection '{volcoll_name}' already present in given state.", {}, volcoll_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Volume collection update failed | {ex}", {})
+        return (False, False, f"Volume collection update failed | {ex}", {}, {})
 
 
 def delete_volcoll(client_obj, volcoll_name):
@@ -427,17 +428,19 @@ def validate_volcoll(
         volcoll_name):
 
     if utils.is_null_or_empty(volcoll_name):
-        return (False, False, "Validate volume collection failed as volume collection name is null.", {})
+        return (False, False, "Validate volume collection failed as volume collection name is null.", {}, {})
 
     try:
         volcoll_resp = client_obj.volume_collections.get(id=None, name=volcoll_name)
         if utils.is_null_or_empty(volcoll_resp):
-            return (False, False, f"Volume collection '{volcoll_name}' not present for validation.", {})
+            return (False, False, f"Volume collection '{volcoll_name}' not present for validation.", {}, {})
         else:
-            client_obj.volume_collections.validate(id=volcoll_resp.attrs.get("id"))
-            return (True, False, f"Validation of volume collection '{volcoll_name}' done successfully.", {})
+            volcoll_validate_resp = client_obj.volume_collections.validate(id=volcoll_resp.attrs.get("id"))
+            if hasattr(volcoll_validate_resp, 'attrs'):
+                volcoll_validate_resp = volcoll_validate_resp.attrs
+            return (True, False, f"Validation of volume collection '{volcoll_name}' done successfully.", {}, volcoll_validate_resp)
     except Exception as ex:
-        return (False, False, f"Validation of volume collection failed | {ex}", {})
+        return (False, False, f"Validation of volume collection failed | {ex}", {}, {})
 
 
 def main():
@@ -532,7 +535,7 @@ def main():
         "agent_password": {
             "required": False,
             "type": "str",
-            "no_log": False
+            "no_log": True
         },
         "is_standalone_volcoll": {
             "required": False,
@@ -631,97 +634,104 @@ def main():
     if (username is None or password is None or hostname is None):
         module.fail_json(msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
 
-    # States.
-    if state == 'present' and promote is True:
-        return_status, changed, msg, changed_attrs_dict = promote_volcoll(client_obj, volcoll_name)
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    elif state == 'present' and demote is True:
-        return_status, changed, msg, changed_attrs_dict = demote_volcoll(
-            client_obj,
-            volcoll_name,
-            invoke_on_upstream_partner=invoke_on_upstream_partner,
-            replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
+        # States.
+        if state == 'present' and promote is True:
+            return_status, changed, msg, changed_attrs_dict = promote_volcoll(client_obj, volcoll_name)
 
-    elif state == 'present' and handover is True:
-        return_status, changed, msg, changed_attrs_dict = handover_volcoll(
-            client_obj,
-            volcoll_name,
-            invoke_on_upstream_partner,
-            no_reverse,
-            override_upstream_down,
-            replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
-
-    elif state == 'present' and abort_handover is True:
-        return_status, changed, msg, changed_attrs_dict = abort_handover_volcoll(client_obj, volcoll_name)
-
-    elif state == 'present' and validate is True:
-        return_status, changed, msg, changed_attrs_dict = validate_volcoll(client_obj, volcoll_name)
-
-    elif ((promote is None or promote is False)
-          and (demote is None or demote is False)
-          and (abort_handover is None or abort_handover is False)
-          and (handover is None or handover is False)
-          and (validate is None or validate is False)
-          and (state == "create" or state == "present")):
-
-        volcoll_resp = client_obj.volume_collections.get(id=None, name=volcoll_name)
-        if utils.is_null_or_empty(volcoll_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_volcoll(
+        elif state == 'present' and demote is True:
+            return_status, changed, msg, changed_attrs_dict = demote_volcoll(
                 client_obj,
                 volcoll_name,
-                prottmpl_id=utils.get_prottmpl_id(client_obj, prot_template),
-                description=description,
-                replication_type=replication_type,
-                app_sync=app_sync,
-                app_server=app_server,
-                app_id=app_id,
-                app_cluster=app_cluster,
-                app_service=app_service,
-                vcenter_hostname=vcenter_hostname,
-                vcenter_username=vcenter_username,
-                vcenter_password=vcenter_password,
-                agent_hostname=agent_hostname,
-                agent_username=agent_username,
-                agent_password=agent_password,
-                is_standalone_volcoll=is_standalone_volcoll,
-                metadata=metadata)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_volcoll(
-                client_obj,
-                volcoll_resp,
-                name=change_name,
-                description=description,
-                app_sync=app_sync,
-                app_server=app_server,
-                app_id=app_id,
-                app_cluster=app_cluster,
-                app_service=app_service,
-                vcenter_hostname=vcenter_hostname,
-                vcenter_username=vcenter_username,
-                vcenter_password=vcenter_password,
-                agent_hostname=agent_hostname,
-                agent_username=agent_username,
-                agent_password=agent_password,
-                metadata=metadata)
+                invoke_on_upstream_partner=invoke_on_upstream_partner,
+                replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_volcoll(client_obj, volcoll_name)
+        elif state == 'present' and handover is True:
+            return_status, changed, msg, changed_attrs_dict = handover_volcoll(
+                client_obj,
+                volcoll_name,
+                invoke_on_upstream_partner,
+                no_reverse,
+                override_upstream_down,
+                replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
+
+        elif state == 'present' and abort_handover is True:
+            return_status, changed, msg, changed_attrs_dict = abort_handover_volcoll(client_obj, volcoll_name)
+
+        elif state == 'present' and validate is True:
+            return_status, changed, msg, changed_attrs_dict, resp = validate_volcoll(client_obj, volcoll_name)
+
+        elif ((promote is None or promote is False)
+            and (demote is None or demote is False)
+            and (abort_handover is None or abort_handover is False)
+            and (handover is None or handover is False)
+            and (validate is None or validate is False)
+            and (state == "create" or state == "present")):
+
+            volcoll_resp = client_obj.volume_collections.get(id=None, name=volcoll_name)
+            if utils.is_null_or_empty(volcoll_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_volcoll(
+                    client_obj,
+                    volcoll_name,
+                    prottmpl_id=utils.get_prottmpl_id(client_obj, prot_template),
+                    description=description,
+                    replication_type=replication_type,
+                    app_sync=app_sync,
+                    app_server=app_server,
+                    app_id=app_id,
+                    app_cluster=app_cluster,
+                    app_service=app_service,
+                    vcenter_hostname=vcenter_hostname,
+                    vcenter_username=vcenter_username,
+                    vcenter_password=vcenter_password,
+                    agent_hostname=agent_hostname,
+                    agent_username=agent_username,
+                    agent_password=agent_password,
+                    is_standalone_volcoll=is_standalone_volcoll,
+                    metadata=metadata)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_volcoll(
+                    client_obj,
+                    volcoll_resp,
+                    name=change_name,
+                    description=description,
+                    app_sync=app_sync,
+                    app_server=app_server,
+                    app_id=app_id,
+                    app_cluster=app_cluster,
+                    app_service=app_service,
+                    vcenter_hostname=vcenter_hostname,
+                    vcenter_username=vcenter_username,
+                    vcenter_password=vcenter_password,
+                    agent_hostname=agent_hostname,
+                    agent_username=agent_username,
+                    agent_password=agent_password,
+                    metadata=metadata)
+
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_volcoll(client_obj, volcoll_name)
+
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

@@ -7,7 +7,7 @@
   vars:
     # we should always use python3
     ansible_python_interpreter: /usr/bin/python3
-    state: "create"
+    state: "present"
     name: "ansible-prot-schedule1"
     description: "modified 2"
     volcoll_or_prottmpl_type: "volume_collection"
@@ -46,6 +46,8 @@
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ansible_default_ipv4['address']}}-{{ name }}"
+        volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
+        volcoll_name: "{{ansible_default_ipv4['address']}}-{{ volcoll_name }}"
         state: absent
 
     - name: Delete vol coll (it's can have volumes)

@@ -8,7 +8,7 @@
   vars:
     # we should always use python3
     ansible_python_interpreter: /usr/bin/python3
-    name: "group-alokr1-va"
+    # name: "group-alokr1-va"
     alert_to_email_addrs: "ansible.rnjxsfxx@hpe.com"
     send_alert_to_support: true
     src_group_ip: "10.18.175.96"
@@ -24,7 +24,7 @@
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "{{ group_name }}"
         send_alert_to_support: "{{ send_alert_to_support }}"
         alert_to_email_addrs: "{{ alert_to_email_addrs }}"
         state: "present"
@@ -47,7 +47,7 @@
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "{{ group_name }}"
         src_group_ip: "{{ src_group_ip }}"
         src_password: "{{ src_password }}"
         skip_secondary_mgmt_ip: "{{ skip_secondary_mgmt_ip }}"
@@ -62,54 +62,54 @@
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "{{ group_name }}"
         level: 'info'
         state: "present"
         test_alert: true
       tags:
         - test_alert_group
 
-    - name: Migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'
+    - name: Migrate group. Should fail with 'cannot be done as it is not present'
       hpe_nimble_group:
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "invalid name"
         state: "present"
         migrate: true
       register: output
-      failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
+      failed_when: "'cannot be done as it is not present' not in output.msg"
 
-    - name: Check migrate group.Should fail with 'Backup Group Leader Array has not been setup yet'
+    - name: Check migrate group.
       hpe_nimble_group:
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "{{ group_name }}"
         state: "present"
         check_migrate: true
       register: output
       failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
 
-    - name: Merge group.Should fail with 'specified for the argument 'src_passphrase''
+    - name: Merge group. Should fail with 'specified for the argument 'src_passphrase'
       hpe_nimble_group:
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "{{ group_name }}"
         state: "present"
         merge: true
       register: output
       failed_when: "'SM_invalid_arg_value' not in output.msg"
 
-    - name: Halt group.Should fail with 'SM_invalid_arg_value'
+    - name: Halt group. Should fail with 'SM_invalid_arg_value'
       hpe_nimble_group:
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        name: "{{ name }}"
+        name: "invalid name"
         state: "present"
         #force: false
         halt: true
       register: output
-      failed_when: "'SM_invalid_arg_value' not in output.msg"
+      failed_when: "'cannot be halted as it is not present' not in output.msg"

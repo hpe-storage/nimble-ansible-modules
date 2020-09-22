@@ -10,7 +10,7 @@ Unit tests for Ansible modules for nimble array
 
 2. Download and install Nimble python SDK using pip command. ex : "pip3 install nimble-sdk" Or from the link [nimble-python-sdk](https://github.com/hpe-storage/nimble-python-sdk)
 
-3. Edit the "storage_system_properties.yml" file present under unit\properties folder. Provide the nimble array credentials.
+3. Edit the "storage_system_properties.yml" file present under unit\properties folder. Populate the varibales with correct values.
 
 4. Install ansible using command : 'pip3 install ansible --user'
 

@@ -16,18 +16,18 @@
 
   tasks:
 
-    - name: Update shelf. should fail with SM_shelf_no_eloc_id
-      hpe_nimble_shelf:
-        host: "{{ host }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        shelf_serial: "{{ shelf_serial | mandatory }}"
-        accept_foreign: "{{ accept_foreign }}"
-        activated: "{{ activated }}"
-        force: "{{ force }}"
-        state: "{{ 'present' }}"
-      register: output
-      failed_when: "'SM_shelf_no_eloc_id' not in output.msg"
+    # - name: Update shelf. should fail with SM_shelf_no_eloc_id
+    #   hpe_nimble_shelf:
+    #     host: "{{ host }}"
+    #     username: "{{ username }}"
+    #     password: "{{ password }}"
+    #     shelf_serial: "{{ shelf_serial | mandatory }}"
+    #     accept_foreign: "{{ accept_foreign }}"
+    #     activated: "{{ activated }}"
+    #     force: "{{ force }}"
+    #     state: "{{ 'present' }}"
+    #   register: output
+    #   failed_when: "'SM_shelf_no_eloc_id' not in output.msg"
 
     - name: Update shelf. should fail with shelf serial not found
       hpe_nimble_shelf:

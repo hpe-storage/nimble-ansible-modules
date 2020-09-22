@@ -155,7 +155,7 @@ def update_fc_interface(
                 changed_attrs_dict, params = utils.remove_unchanged_or_null_args(fc_result, online=online)
                 if changed_attrs_dict.__len__() > 0:
                     fc_result = client_obj.fibre_channel_interfaces.update(id=fc_result.attrs.get("id"), online=online)
-                    return (True, True, f"Updated fibre channel interface '{fc_result.attrs.get('name')}'. Modified the following fields :", {})
+                    return (True, True, f"Updated fibre channel interface '{fc_result.attrs.get('name')}'.", {})
                 else:
                     return (True, False, f"Fibre channel interface '{fc_result.attrs.get('name')}' already in given state.", {})
     except Exception as ex:
@@ -275,42 +275,46 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "present":
-        if regenerate is True:
-            return_status, changed, msg, changed_attrs_dict = regenerate_wwn(
-                client_obj,
-                array_name_or_serial,
-                wwnn_base_str,
-                precheck)
+        # States
+        if state == "present":
+            if regenerate is True:
+                return_status, changed, msg, changed_attrs_dict = regenerate_wwn(
+                    client_obj,
+                    array_name_or_serial,
+                    wwnn_base_str,
+                    precheck)
 
-        elif hw_upgrade is True:
-            return_status, changed, msg, changed_attrs_dict = upgrade_hardware(
-                client_obj,
-                array_name_or_serial)
+            elif hw_upgrade is True:
+                return_status, changed, msg, changed_attrs_dict = upgrade_hardware(
+                    client_obj,
+                    array_name_or_serial)
 
-        else:
-            return_status, changed, msg, changed_attrs_dict = update_fc_interface(
-                client_obj,
-                array_name_or_serial,
-                fc_name,
-                controller,
-                online)
+            else:
+                return_status, changed, msg, changed_attrs_dict = update_fc_interface(
+                    client_obj,
+                    array_name_or_serial,
+                    fc_name,
+                    controller,
+                    online)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
         if not utils.is_null_or_empty(changed_attrs_dict) and changed_attrs_dict.__len__() > 0:
             module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
         else:
-            module.exit_json(return_status=return_status, changed=changed, message=msg)
+            module.exit_json(return_status=return_status, changed=changed, msg=msg)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

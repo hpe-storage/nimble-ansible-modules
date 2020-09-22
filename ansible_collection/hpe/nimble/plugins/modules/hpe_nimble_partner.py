@@ -208,11 +208,11 @@ def create_partner(
         if utils.is_null_or_empty(upstream_repl_resp):
             params = utils.remove_null_args(**kwargs)
             upstream_repl_resp = client_obj.replication_partners.create(hostname=downstream_hostname, **params)
-            return (True, True, f"Replication partner '{downstream_hostname}' created successfully.", {})
+            return (True, True, f"Replication partner '{downstream_hostname}' created successfully.", {}, upstream_repl_resp.attrs)
         else:
-            return (False, False, f"Replication partner '{downstream_hostname}' cannot be created as it is already present.", {})
+            return (False, False, f"Replication partner '{downstream_hostname}' cannot be created as it is already present in given state.", {}, upstream_repl_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Replication partner creation failed |{ex}", {})
+        return (False, False, f"Replication partner creation failed |{ex}", {}, {})
 
 
 def update_partner(
@@ -222,21 +222,22 @@ def update_partner(
         **kwargs):
 
     if utils.is_null_or_empty(downstream_hostname):
-        return (False, False, "Update replication partner failed as no downstream partner is provided.", {})
+        return (False, False, "Update replication partner failed as no downstream partner is provided.", {}, {})
 
     try:
         upstream_repl_resp = client_obj.replication_partners.get(id=None, hostname=downstream_hostname)
         if utils.is_null_or_empty(upstream_repl_resp):
-            return (False, False, f"Replication partner '{downstream_hostname}' cannot be updated as it is not present.", {})
+            return (False, False, f"Replication partner '{downstream_hostname}' cannot be updated as it is not present.", {}, {})
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(upstream_repl_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             upstream_repl_resp = client_obj.replication_partners.update(id=upstream_repl_resp.attrs.get("id"), secret=secret, **params)
-            return (True, True, f"Replication partner '{downstream_hostname}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Replication partner '{downstream_hostname}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, upstream_repl_resp.attrs)
         else:
-            return (True, False, f"Replication partner '{upstream_repl_resp.attrs.get('name')}' already present.", {})
+            return (True, False, f"Replication partner '{upstream_repl_resp.attrs.get('name')}' already present in given state.", {}, upstream_repl_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Replication partner update failed |{ex}", {})
+        return (False, False, f"Replication partner update failed |{ex}", {}, {})
 
 
 def delete_partner(
@@ -446,71 +447,76 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if ((test is None or test is False)
-        and (resume is None or resume is False)
-        and (pause is None or pause is False)
-            and (state == "create" or state == "present")):
-        if not client_obj.replication_partners.get(id=None, hostname=downstream_hostname) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_partner(
-                client_obj,
-                downstream_hostname,
-                control_port=control_port,
-                data_port=data_port,
-                description=description,
-                folder_id=utils.get_folder_id(client_obj, folder),
-                match_folder=match_folder,
-                name=repl_partner_name,  # downstream partner name
-                pool_id=utils.get_pool_id(client_obj, pool),
-                repl_hostname=repl_data_hostname,
-                secret=secret,
-                subnet_label=subnet_label,
-                subnet_type=subnet_type,
-                throttles=throttles)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_partner(
-                client_obj,
-                downstream_hostname,
-                secret,
-                control_port=control_port,
-                data_port=data_port,
-                description=description,
-                folder_id=utils.get_folder_id(client_obj, folder),
-                match_folder=match_folder,
-                name=repl_partner_name,  # downstream partner name
-                pool_id=utils.get_pool_id(client_obj, pool),
-                repl_hostname=repl_data_hostname,
-                subnet_label=subnet_label,
-                subnet_type=subnet_type,
-                throttles=throttles)
+        # States
+        if ((test is None or test is False)
+            and (resume is None or resume is False)
+            and (pause is None or pause is False)
+                and (state == "create" or state == "present")):
+            if not client_obj.replication_partners.get(id=None, hostname=downstream_hostname) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_partner(
+                    client_obj,
+                    downstream_hostname,
+                    control_port=control_port,
+                    data_port=data_port,
+                    description=description,
+                    folder_id=utils.get_folder_id(client_obj, folder),
+                    match_folder=match_folder,
+                    name=repl_partner_name,  # downstream partner name
+                    pool_id=utils.get_pool_id(client_obj, pool),
+                    repl_hostname=repl_data_hostname,
+                    secret=secret,
+                    subnet_label=subnet_label,
+                    subnet_type=subnet_type,
+                    throttles=throttles)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_partner(
+                    client_obj,
+                    downstream_hostname,
+                    secret,
+                    control_port=control_port,
+                    data_port=data_port,
+                    description=description,
+                    folder_id=utils.get_folder_id(client_obj, folder),
+                    match_folder=match_folder,
+                    name=repl_partner_name,  # downstream partner name
+                    pool_id=utils.get_pool_id(client_obj, pool),
+                    repl_hostname=repl_data_hostname,
+                    subnet_label=subnet_label,
+                    subnet_type=subnet_type,
+                    throttles=throttles)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_partner(client_obj, downstream_hostname)
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_partner(client_obj, downstream_hostname)
 
-    elif state == "present" and test is True:
-        return_status, changed, msg, changed_attrs_dict = test_partner(client_obj, downstream_hostname)
+        elif state == "present" and test is True:
+            return_status, changed, msg, changed_attrs_dict = test_partner(client_obj, downstream_hostname)
 
-    elif state == "present" and pause is True:
-        return_status, changed, msg, changed_attrs_dict = pause_partner(client_obj, downstream_hostname)
+        elif state == "present" and pause is True:
+            return_status, changed, msg, changed_attrs_dict = pause_partner(client_obj, downstream_hostname)
 
-    elif state == "present" and resume is True:
-        return_status, changed, msg, changed_attrs_dict = resume_partner(client_obj, downstream_hostname)
+        elif state == "present" and resume is True:
+            return_status, changed, msg, changed_attrs_dict = resume_partner(client_obj, downstream_hostname)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

@@ -149,14 +149,14 @@ def create_snapshot(
         **kwargs):
 
     if utils.is_null_or_empty(snapshot_name):
-        return (False, False, "Create snapshot failed as snapshot is not present.", {})
+        return (False, False, "Create snapshot failed as snapshot is not present.", {}, {})
     if utils.is_null_or_empty(vol_name):
-        return (False, False, "Create snapshot failed as volume is not present.", {})
+        return (False, False, "Create snapshot failed as volume is not present.", {}, {})
 
     try:
         vol_resp = client_obj.volumes.get(id=None, name=vol_name)
         if utils.is_null_or_empty(vol_resp):
-            return (False, False, f"Volume '{vol_name}' not present on array for taking snapshot.", {})
+            return (False, False, f"Volume '{vol_name}' not present on array for taking snapshot.", {}, {})
         snap_resp = client_obj.snapshots.get(id=None, vol_name=vol_name, name=snapshot_name)
         if utils.is_null_or_empty(snap_resp):
             params = utils.remove_null_args(**kwargs)
@@ -164,11 +164,11 @@ def create_snapshot(
                                                     vol_id=vol_resp.attrs.get("id"),
                                                     **params)
             if snap_resp is not None:
-                return (True, True, f"Snapshot '{snapshot_name}' created successfully.", {})
+                return (True, True, f"Snapshot '{snapshot_name}' created successfully.", {}, snap_resp.attrs)
         else:
-            return (False, False, f"Snapshot '{snapshot_name}' cannot be created as it is already present.", {})
+            return (False, False, f"Snapshot '{snapshot_name}' cannot be created as it is already present in given state.", {}, {})
     except Exception as ex:
-        return (False, False, f"Snapshot creation failed | {ex}", {})
+        return (False, False, f"Snapshot creation failed | {ex}", {}, {})
 
 
 def update_snapshot(
@@ -177,19 +177,20 @@ def update_snapshot(
         **kwargs):
 
     if utils.is_null_or_empty(snap_resp):
-        return (False, False, "Update snapshot failed as snapshot is not present.", {})
+        return (False, False, "Update snapshot failed as snapshot is not present.", {}, {})
 
     try:
         snapshot_name = snap_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(snap_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             snap_resp = client_obj.snapshots.update(id=snap_resp.attrs.get("id"), **params)
-            return (True, True, f"Snapshot '{snapshot_name}' already present. Modified the following fields:", changed_attrs_dict)
+            return (True, True, f"Snapshot '{snapshot_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, snap_resp.attrs)
         else:
-            return (True, False, f"Snapshot '{snapshot_name}' already present.", {})
+            return (True, False, f"Snapshot '{snapshot_name}' already present in given state.", {}, snap_resp.attrs)
 
     except Exception as ex:
-        return (False, False, f"Snapshot update failed | {ex}", {})
+        return (False, False, f"Snapshot update failed | {ex}", {}, {})
 
 
 def delete_snapshot(
@@ -310,53 +311,59 @@ def main():
         module.fail_json(
             msg="Storage system IP or username or password is null or snapshot name is null.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        snap_resp = client_obj.snapshots.get(id=None, vol_name=vol_name, name=snapshot_name)
-        if utils.is_null_or_empty(snap_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_snapshot(
+        # States
+        if state == "create" or state == "present":
+            snap_resp = client_obj.snapshots.get(id=None, vol_name=vol_name, name=snapshot_name)
+            if utils.is_null_or_empty(snap_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_snapshot(
+                    client_obj,
+                    vol_name,
+                    snapshot_name,
+                    description=description,
+                    online=online,
+                    writable=writable,
+                    app_uuid=app_uuid,
+                    metadata=metadata,
+                    agent_type=agent_type)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_snapshot(
+                    client_obj,
+                    snap_resp,
+                    name=change_name,
+                    description=description,
+                    online=online,
+                    expiry_after=expiry_after,
+                    app_uuid=app_uuid,
+                    metadata=metadata,
+                    force=force)
+
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_snapshot(
                 client_obj,
                 vol_name,
-                snapshot_name,
-                description=description,
-                online=online,
-                writable=writable,
-                app_uuid=app_uuid,
-                metadata=metadata,
-                agent_type=agent_type)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_snapshot(
-                client_obj,
-                snap_resp,
-                name=change_name,
-                description=description,
-                online=online,
-                expiry_after=expiry_after,
-                app_uuid=app_uuid,
-                metadata=metadata,
-                force=force)
+                snapshot_name)
 
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_snapshot(
-            client_obj,
-            vol_name,
-            snapshot_name)
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 

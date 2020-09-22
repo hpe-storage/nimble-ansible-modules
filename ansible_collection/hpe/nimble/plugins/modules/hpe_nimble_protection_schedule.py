@@ -226,7 +226,7 @@ def create_prot_schedule(
         **kwargs):
 
     if utils.is_null_or_empty(prot_schedule_name):
-        return (False, False, "Create protection schedule failed as protection schedule name is not present.", {})
+        return (False, False, "Create protection schedule failed as protection schedule name is not present.", {}, {})
     try:
         prot_schedule_resp = client_obj.protection_schedules.get(id=None,
                                                                  name=prot_schedule_name,
@@ -235,11 +235,11 @@ def create_prot_schedule(
         if utils.is_null_or_empty(prot_schedule_resp):
             params = utils.remove_null_args(**kwargs)
             prot_schedule_resp = client_obj.protection_schedules.create(name=prot_schedule_name, **params)
-            return (True, True, f"Created protection schedule '{prot_schedule_name}' successfully.", {})
+            return (True, True, f"Created protection schedule '{prot_schedule_name}' successfully.", {}, prot_schedule_resp.attrs)
         else:
-            return (False, False, f"Cannot create protection schedule '{prot_schedule_name}' as it is already present.", {})
+            return (False, False, f"Cannot create protection schedule '{prot_schedule_name}' as it is already present in given state.", {}, prot_schedule_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Protection schedule creation failed | {ex}", {})
+        return (False, False, f"Protection schedule creation failed | {ex}", {}, {})
 
 
 def update_prot_schedule(
@@ -248,17 +248,18 @@ def update_prot_schedule(
         **kwargs):
 
     if utils.is_null_or_empty(prot_schedule_resp):
-        return (False, False, "Update protection schedule failed as protection schedule is not present.", {})
+        return (False, False, "Update protection schedule failed as protection schedule is not present.", {}, {})
     try:
         prot_schedule_name = prot_schedule_resp.attrs.get("name")
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(prot_schedule_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
             prot_schedule_resp = client_obj.protection_schedules.update(id=prot_schedule_resp.attrs.get("id"), **params)
-            return (True, True, f"Protection schedule '{prot_schedule_name}' already present. Modified the following fields :", changed_attrs_dict)
+            return (True, True, f"Protection schedule '{prot_schedule_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
+                    changed_attrs_dict, prot_schedule_resp.attrs)
         else:
-            return (True, False, f"Protection schedule '{prot_schedule_name}' already present.", {})
+            return (True, False, f"Protection schedule '{prot_schedule_name}' already present in given state.", {}, prot_schedule_resp.attrs)
     except Exception as ex:
-        return (False, False, f"Protection schedule update failed |{ex}", {})
+        return (False, False, f"Protection schedule update failed |{ex}", {}, {})
 
 
 def delete_prot_schedule(client_obj,
@@ -449,85 +450,92 @@ def main():
         module.fail_json(
             msg="Missing variables: hostname, username and password is mandatory.")
 
-    client_obj = client.NimOSClient(
-        hostname,
-        username,
-        password
-    )
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
+    try:
+        client_obj = client.NimOSClient(
+            hostname,
+            username,
+            password
+        )
 
-    # States
-    if state == "create" or state == "present":
-        # we need to enforce the below params as mandatory as there can be a scenario where in a protection schedule with the same name
-        # exists in a different volume collection or in different protection tempalate. Hence, if a user wants to modify/update
-        # a protection schedule , they need to provide all the three params for us to query and find the exact protection schedule
-        if volcoll_name is None and prot_template_name is None or volcoll_or_prottmpl_type is None:
-            module.fail_json(msg='Please provide the Mandatory params : volcoll_or_prottmpl_type, and volcoll_name or prot_template_name.')
+        # States
+        if state == "create" or state == "present":
+            # we need to enforce the below params as mandatory as there can be a scenario where in a protection schedule with the same name
+            # exists in a different volume collection or in different protection tempalate. Hence, if a user wants to modify/update
+            # a protection schedule , they need to provide all the three params for us to query and find the exact protection schedule
+            if volcoll_name is None and prot_template_name is None or volcoll_or_prottmpl_type is None:
+                module.fail_json(msg='Please provide the Mandatory params : volcoll_or_prottmpl_type, and volcoll_name or prot_template_name.')
 
-        prot_schedule_resp = client_obj.protection_schedules.get(
-            id=None,
-            name=prot_schedule_name,
-            volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
-            volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
-        if utils.is_null_or_empty(prot_schedule_resp) or state == "create":
-            return_status, changed, msg, changed_attrs_dict = create_prot_schedule(
+            prot_schedule_resp = client_obj.protection_schedules.get(
+                id=None,
+                name=prot_schedule_name,
+                volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
+                volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
+
+            if utils.is_null_or_empty(prot_schedule_resp) or state == "create":
+                return_status, changed, msg, changed_attrs_dict, resp = create_prot_schedule(
+                    client_obj,
+                    prot_schedule_name,
+                    description=description,
+                    volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
+                    volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name),
+                    period=period,
+                    period_unit=period_unit,
+                    at_time=at_time,
+                    until_time=until_time,
+                    days=days,
+                    num_retain=num_retain,
+                    downstream_partner=downstream_partner,
+                    downstream_partner_id=utils.get_downstream_partner_id(client_obj, downstream_partner),
+                    replicate_every=replicate_every,
+                    num_retain_replica=num_retain_replica,
+                    repl_alert_thres=repl_alert_thres,
+                    snap_verify=snap_verify,
+                    skip_db_consistency_check=skip_db_consistency_check,
+                    disable_appsync=disable_appsync,
+                    schedule_type=schedule_type)
+            else:
+                # update op
+                return_status, changed, msg, changed_attrs_dict, resp = update_prot_schedule(
+                    client_obj,
+                    prot_schedule_resp,
+                    name=change_name,
+                    description=description,
+                    period=period,
+                    period_unit=period_unit,
+                    at_time=at_time,
+                    until_time=until_time,
+                    days=days,
+                    num_retain=num_retain,
+                    downstream_partner=downstream_partner,
+                    downstream_partner_id=utils.get_downstream_partner_id(client_obj, downstream_partner),
+                    replicate_every=replicate_every,
+                    num_retain_replica=num_retain_replica,
+                    repl_alert_thres=repl_alert_thres,
+                    snap_verify=snap_verify,
+                    skip_db_consistency_check=skip_db_consistency_check,
+                    disable_appsync=disable_appsync,
+                    schedule_type=schedule_type,
+                    use_downstream_for_DR=use_downstream_for_DR)
+
+        elif state == "absent":
+            return_status, changed, msg, changed_attrs_dict = delete_prot_schedule(
                 client_obj,
                 prot_schedule_name,
-                description=description,
-                volcoll_or_prottmpl_type=volcoll_or_prottmpl_type,
-                volcoll_or_prottmpl_id=utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name),
-                period=period,
-                period_unit=period_unit,
-                at_time=at_time,
-                until_time=until_time,
-                days=days,
-                num_retain=num_retain,
-                downstream_partner=downstream_partner,
-                downstream_partner_id=utils.get_downstream_partner_id(client_obj, downstream_partner),
-                replicate_every=replicate_every,
-                num_retain_replica=num_retain_replica,
-                repl_alert_thres=repl_alert_thres,
-                snap_verify=snap_verify,
-                skip_db_consistency_check=skip_db_consistency_check,
-                disable_appsync=disable_appsync,
-                schedule_type=schedule_type)
-        else:
-            # update op
-            return_status, changed, msg, changed_attrs_dict = update_prot_schedule(
-                client_obj,
-                prot_schedule_resp,
-                name=change_name,
-                description=description,
-                period=period,
-                period_unit=period_unit,
-                at_time=at_time,
-                until_time=until_time,
-                days=days,
-                num_retain=num_retain,
-                downstream_partner=downstream_partner,
-                downstream_partner_id=utils.get_downstream_partner_id(client_obj, downstream_partner),
-                replicate_every=replicate_every,
-                num_retain_replica=num_retain_replica,
-                repl_alert_thres=repl_alert_thres,
-                snap_verify=snap_verify,
-                skip_db_consistency_check=skip_db_consistency_check,
-                disable_appsync=disable_appsync,
-                schedule_type=schedule_type,
-                use_downstream_for_DR=use_downstream_for_DR)
-
-    elif state == "absent":
-        return_status, changed, msg, changed_attrs_dict = delete_prot_schedule(client_obj,
-                                                                               prot_schedule_name,
-                                                                               volcoll_or_prottmpl_type,
-                                                                               utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
+                volcoll_or_prottmpl_type,
+                utils.get_volcoll_or_prottmpl_id(client_obj, volcoll_name, prot_template_name))
+    except Exception as ex:
+        # failed for some reason.
+        msg = str(ex)
 
     if return_status:
-        if changed_attrs_dict:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 
