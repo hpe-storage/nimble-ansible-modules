@@ -579,7 +579,7 @@ def reboot_group(
 def halt_group(
         client_obj,
         group_name,
-        force=False):
+        **kwargs):
 
     if utils.is_null_or_empty(group_name):
         return (False, False, "Halt group failed as it is not present.", {})
@@ -588,7 +588,8 @@ def halt_group(
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
             return (False, False, f"Group '{group_name}' cannot be halted as it is not present.", {})
-        client_obj.groups.halt(id=group_resp.attrs.get("id"), force=force)
+            params = utils.remove_null_args(**kwargs)
+        client_obj.groups.halt(id=group_resp.attrs.get("id"), **params)
         return (True, True, f"Halted group '{group_name}' successfully.", {})
     except Exception as ex:
         return (False, False, f"Halt group failed | '{ex}'", {})
