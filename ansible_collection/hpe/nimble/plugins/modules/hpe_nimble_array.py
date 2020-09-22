@@ -249,7 +249,7 @@ def delete_array(
 def failover_array(
         client_obj,
         array_name,
-        force=False):
+        **kwargs):
 
     if utils.is_null_or_empty(array_name):
         return (False, False, "Failover array failed as array name is not present.", {})
@@ -258,7 +258,8 @@ def failover_array(
         if utils.is_null_or_empty(array_resp):
             return (False, False, f"Array '{array_name}' cannot failover as it is not present.", {})
         else:
-            array_resp = client_obj.arrays.failover(id=array_resp.attrs.get("id"), force=force)
+            params = utils.remove_null_args(**kwargs)
+            array_resp = client_obj.arrays.failover(id=array_resp.attrs.get("id"), **params)
             return (True, True, f"Failover array '{array_name}' successfully.", {})
     except Exception as ex:
         return (False, False, f"Array failover failed |{ex}", {})
@@ -428,7 +429,7 @@ def main():
 
         # States
         if state == "present" and failover is True:
-            return_status, changed, msg, changed_attrs_dict = failover_array(client_obj, array_name, force)
+            return_status, changed, msg, changed_attrs_dict = failover_array(client_obj, array_name, force=force)
 
         elif state == "present" and halt is True:
             return_status, changed, msg, changed_attrs_dict = halt_array(client_obj, array_name)

@@ -579,7 +579,7 @@ def reboot_group(
 def halt_group(
         client_obj,
         group_name,
-        force=False):
+        **kwargs):
 
     if utils.is_null_or_empty(group_name):
         return (False, False, "Halt group failed as it is not present.", {})
@@ -588,7 +588,8 @@ def halt_group(
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
             return (False, False, f"Group '{group_name}' cannot be halted as it is not present.", {})
-        client_obj.groups.halt(id=group_resp.attrs.get("id"), force=force)
+        params = utils.remove_null_args(**kwargs)
+        client_obj.groups.halt(id=group_resp.attrs.get("id"), **params)
         return (True, True, f"Halted group '{group_name}' successfully.", {})
     except Exception as ex:
         return (False, False, f"Halt group failed | '{ex}'", {})
@@ -632,7 +633,7 @@ def validate_merge_group(
         if hasattr(validate_merge_resp, 'attrs'):
             validate_merge_resp = validate_merge_resp.attrs
 
-        if validate_merge_resp.get("validation_error_msg") is None:
+        if utils.is_null_or_empty(validate_merge_resp.get("validation_error_msg")):
             return (True, False, f"Validate merge operation for group '{group_name}' done successfully.", {}, validate_merge_resp)
         else:
             msg = validate_merge_resp.get("validation_error_msg")

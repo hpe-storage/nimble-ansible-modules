@@ -192,7 +192,7 @@ def merge_pool(
         client_obj,
         pool_name,
         target,
-        force=False):
+        **kwargs):
 
     if utils.is_null_or_empty(pool_name):
         return (False, False, "Merge pool failed as pool name is not present.", {}, {})
@@ -203,14 +203,14 @@ def merge_pool(
         pool_resp = client_obj.pools.get(id=None, name=pool_name)
         if utils.is_null_or_empty(pool_resp):
             return (False, False, f"Merge pools failed as source pool '{pool_name}' is not present.", {}, {})
-
         target_pool_resp = client_obj.pools.get(id=None, name=target)
         if utils.is_null_or_empty(target_pool_resp):
             return (False, False, f"Merge pools failed as target pool '{target}' is not present.", {}, {})
 
+        params = utils.remove_null_args(**kwargs)
         resp = client_obj.pools.merge(id=pool_resp.attrs.get("id"),
                                       target_pool_id=target_pool_resp.attrs.get("id"),
-                                      force=force)
+                                      **params)
         if hasattr(resp, 'attrs'):
             resp = resp.attrs
         return (True, True, f"Merged target pool '{target}' to pool '{pool_name}' successfully.", {}, resp)
@@ -319,7 +319,7 @@ def main():
                 client_obj,
                 pool_name,
                 target,
-                force)
+                force=force)
 
         elif (merge is None or merge is False) and (state == "create" or state == "present"):
             pool_resp = client_obj.pools.get(id=None, name=pool_name)

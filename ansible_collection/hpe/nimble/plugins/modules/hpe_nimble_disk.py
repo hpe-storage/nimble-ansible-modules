@@ -93,8 +93,7 @@ def update_disk(
         client_obj,
         slot,
         shelf_location,
-        disk_op,
-        force=False):
+        **kwargs):
 
     if utils.is_null_or_empty(shelf_location):
         return (False, False, "Disk update failed as no shelf location provided.", {}, {})
@@ -111,7 +110,8 @@ def update_disk(
                 if slot == disk_obj.attrs.get("slot") and shelf_location == disk_obj.attrs.get("shelf_location"):
                     disk_id = disk_obj.attrs.get("id")
                     break
-            disk_resp = client_obj.disks.update(id=disk_id, disk_op=disk_op, force=force)
+            params = utils.remove_null_args(**kwargs)
+            disk_resp = client_obj.disks.update(id=disk_id, **params)
             if hasattr(disk_resp, 'attrs'):
                 disk_resp = disk_resp.attrs
             changed_attrs_dict['slot'] = slot
@@ -187,8 +187,8 @@ def main():
                 client_obj,
                 slot,
                 shelf_location,
-                disk_op,
-                force)
+                disk_op=disk_op,
+                force=force)
     except Exception as ex:
         # failed for some reason.
         msg = str(ex)
