@@ -588,7 +588,7 @@ def halt_group(
         group_resp = client_obj.groups.get(id=None, name=group_name)
         if utils.is_null_or_empty(group_resp):
             return (False, False, f"Group '{group_name}' cannot be halted as it is not present.", {})
-            params = utils.remove_null_args(**kwargs)
+        params = utils.remove_null_args(**kwargs)
         client_obj.groups.halt(id=group_resp.attrs.get("id"), **params)
         return (True, True, f"Halted group '{group_name}' successfully.", {})
     except Exception as ex:
