@@ -633,7 +633,7 @@ def validate_merge_group(
         if hasattr(validate_merge_resp, 'attrs'):
             validate_merge_resp = validate_merge_resp.attrs
 
-        if validate_merge_resp.get("validation_error_msg") is None:
+        if utils.is_null_or_empty(validate_merge_resp.get("validation_error_msg")):
             return (True, False, f"Validate merge operation for group '{group_name}' done successfully.", {}, validate_merge_resp)
         else:
             msg = validate_merge_resp.get("validation_error_msg")
