@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage storage pools on HPE Nimble Storage group.
+description: Manage the storage pools on an HPE Nimble Storage group.
 module: hpe_nimble_pool
 options:
   array_list:
@@ -73,7 +73,7 @@ options:
     required: True
     type: str
     description:
-    - Name of pool.
+    - Name of the pool.
   state:
     required: True
     choices:
@@ -82,14 +82,14 @@ options:
     - create
     type: str
     description:
-    - Choice for pool operation.
+    - The pool operation.
   target:
     required: False
     type: str
     description:
     - Name of the target pool.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage pools.
+short_description: Manage the HPE Nimble Storage pools.
 version_added: "2.9.0"
 '''
 

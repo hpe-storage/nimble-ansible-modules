@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage snapshots on HPE Nimble Storage group.
+description: Manage the snapshots on an HPE Nimble Storage group.
 module: hpe_nimble_snapshot
 options:
   agent_type:
@@ -74,7 +74,7 @@ options:
     required: True
     type: str
     description:
-    - Name of snapshot.
+    - Name of the snapshot.
   online:
     required: False
     type: bool
@@ -89,7 +89,7 @@ options:
     - create
     type: str
     description:
-    - Choice for snapshot state.
+    - The snapshot state.
   volume:
     required: True
     type: str
@@ -102,7 +102,7 @@ options:
     description:
     - Allow snapshot to be writable. Mandatory and must be set to 'true' for VSS application synchronized snapshots.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage snapshots.
+short_description: Manage the HPE Nimble Storage snapshots.
 version_added: "2.9.0"
 '''
 

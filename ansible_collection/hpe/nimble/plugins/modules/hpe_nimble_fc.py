@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
     - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage storage fibre channel on HPE Nimble Storage group.
+description: Manage storage Fibre Channel on an HPE Nimble Storage group.
 module: hpe_nimble_fc
 options:
   array_name_or_serial:
@@ -57,7 +57,7 @@ options:
     required: False
     type: bool
     description:
-    - Check if the interfaces are offline before regenerating the WWNN (World Wide Node Name). Possible values:- 'true' 'false'.
+    - Check if the interfaces are offline before regenerating the WWNN. Possible values:- 'true' 'false'.
   regenerate:
     required: False
     type: bool
@@ -69,14 +69,14 @@ options:
     - present
     type: str
     description:
-    - Choice for fibre channel operation.
+    - The fibre channel operation.
   wwnn_base_str:
     required: False
     type: str
     description:
-    - Base World Wide Node Name(WWNN). Six bytes expressed in hex separated by colons. Example:- 'af:32:f1'.
+    - Base WWNN. Six bytes expressed in hex separated by colons. Example:- 'af:32:f1'.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage fibre channel.
+short_description: Manage the HPE Nimble Storage Fibre Channel.
 version_added: "2.9.0"
 '''
 

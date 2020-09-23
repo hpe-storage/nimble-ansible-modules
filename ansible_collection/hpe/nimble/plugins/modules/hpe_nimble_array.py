@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage array on HPE Nimble Storage group.
+description: Manage the array on an HPE Nimble Storage group.
 module: hpe_nimble_array
 options:
   allow_lower_limits:
@@ -38,13 +38,13 @@ options:
     required: False
     type: str
     description:
-    - Change name of the existing array.
+    - Change the name of the existing array.
   create_pool:
     required: False
     type: bool
     default: False
     description:
-    - Whether to create associated pool during array create.
+    - Whether to create an associated pool during the array creation.
   ctrlr_a_support_ip:
     required: False
     type: str
@@ -74,7 +74,7 @@ options:
     required: True
     type: str
     description:
-    - The user provided name of the array. It is also the array's hostname.
+    - The user-provided name of the array. It is also the array's hostname.
   nic_list:
     required: False
     type: list
@@ -114,9 +114,9 @@ options:
           - absent
       type: str
       description:
-      - Choice for array operation
+      - The array operation
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage array.
+short_description: Manage the HPE Nimble Storage array.
 version_added: "2.9.0"
 '''
 

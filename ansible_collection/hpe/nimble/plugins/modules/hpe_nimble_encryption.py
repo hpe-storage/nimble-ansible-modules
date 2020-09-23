@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage encryption on a Nimble Storage group.
+description: Manage the encryption on an Nimble Storage group.
 module: hpe_nimble_encryption
 options:
   active:
@@ -78,9 +78,9 @@ options:
     -  absent
     type: str
     description:
-    - Choice for encryption operation.
+    - The encryption operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage encryption.
+short_description: Manage the HPE Nimble Storage encryption.
 version_added: "2.9.0"
 '''
 

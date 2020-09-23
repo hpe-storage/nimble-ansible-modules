@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage protection templates on HPE Nimble Storage group.
+description: Manage the protection templates on an HPE Nimble Storage group.
 module: hpe_nimble_protection_template
 options:
   agent_hostname:
@@ -98,7 +98,7 @@ options:
     required: True
     type: str
     description:
-    - Name of protection template.
+    - Name of the protection template.
   state:
     required: True
     choices:
@@ -107,7 +107,7 @@ options:
         - create
     type: str
     description:
-    - Choice for protection template operations.
+    - The protection template operations.
   vcenter_hostname:
     required: False
     type: str
@@ -125,7 +125,7 @@ options:
     - Application VMware vCenter username. String of up to 80 alphanumeric characters, beginning with a letter.
       It can include ampersand (@), backslash (\), dash (-), period (.), and underscore (_).
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage protection templates.
+short_description: Manage the HPE Nimble Storage protection templates.
 version_added: "2.9.0"
 '''
 

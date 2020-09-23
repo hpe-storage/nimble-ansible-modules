@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage access control records on HPE Nimble Storage group.
+description: Manage the access control records on an HPE Nimble Storage group.
 module: hpe_nimble_access_control_record
 options:
   apply_to:
@@ -36,7 +36,7 @@ options:
     - both
     type: str
     description:
-    - Type of object this access control record applies to.
+    - The type of object to which this access control record applies.
   chap_user:
     required: False
     type: str
@@ -46,13 +46,13 @@ options:
     required: True
     type: str
     description:
-    - The Initiator group name.
+    - The initiator group name.
   lun:
     required: False
     type: int
     description:
-    - If this access control record applies to a regular volume, this attribute is the volume's LUN Logical Unit Number.
-    - If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is fibre channel, the LUN will be in the range from 0 to 2047.
+    - If this access control record applies to a regular volume, this attribute is the volume's LUN (Logical Unit Number).
+    - If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is Fibre Channel, the LUN will be in the range from 0 to 2047.
   state:
     required: True
     choices:
@@ -61,14 +61,14 @@ options:
     - create
     type: str
     description:
-    - Choice for access control record operation.
+    - The access control record operation.
   volume:
     required: True
     type: str
     description:
-    - Name for the volume this access control record applies to.
+    - The name of the volume that this access control record applies to.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage access control records.
+short_description: Manage the HPE Nimble Storage access control records.
 version_added: "2.9.0"
 '''
 

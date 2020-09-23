@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage snapshot collections on HPE Nimble Storage group.
+description: Manage the snapshot collections on an HPE Nimble Storage group.
 module: hpe_nimble_snapshot_collection
 options:
   agent_type:
@@ -89,7 +89,7 @@ options:
     required: True
     type: str
     description:
-    - Name for snapshot collection.
+    - Name of the snapshot collection.
   replicate_to:
     required: False
     type: str
@@ -123,7 +123,7 @@ options:
       - create
       type: str
       description:
-      - Choice for snapshot collection operation.
+      - The snapshot collection operation.
   vol_snap_attr_list:
       required: False
       type: list
@@ -136,7 +136,7 @@ options:
       description:
       - Parent volume collection name.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage snapshot collections.
+short_description: Manage the HPE Nimble Storage snapshot collections.
 version_added: "2.9.0"
 '''
 

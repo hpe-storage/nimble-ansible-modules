@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage storage network config on HPE Nimble Storage group.
+description: Manage the storage network configuration on the HPE Nimble Storage group.
 module: hpe_nimble_network
 options:
   activate:
@@ -100,14 +100,14 @@ options:
     -  absent
     type: str
     description:
-    - Choice for network config operation.
+    - The network config operation.
   validate:
     required: False
     type: bool
     description:
     - Validate a network configuration.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage network configuration.
+short_description: Manage the HPE Nimble Storage network configuration.
 version_added: "2.9.0"
 '''
 

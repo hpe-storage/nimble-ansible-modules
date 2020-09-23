@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage group on a Nimble Storage array.
+description: Manage an HPE Nimble Storage group on an Nimble Storage array.
 module: hpe_nimble_group
 options:
   alarms:
@@ -371,7 +371,7 @@ options:
     - absent
     type: str
     description:
-    - Choice for group operation.
+    - The group operation.
   syslogd_enabled:
     required: False
     type: bool
@@ -432,9 +432,9 @@ options:
     required: False
     type: bool
     description:
-    - Are vvols enabled on this group.
+    - Are vVol enabled on this group.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage group.
+short_description: Manage the HPE Nimble Storage group.
 version_added: "2.9.0"
 '''
 

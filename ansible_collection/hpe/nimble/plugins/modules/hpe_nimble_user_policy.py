@@ -27,7 +27,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage user policies on HPE Nimble Storage group.
+description: Manage the user policies on an HPE Nimble Storage group.
 module: hpe_nimble_user_policy
 options:
   allowed_attempts:
@@ -76,14 +76,14 @@ options:
       - present
     type: str
     description:
-    - Choice for user policy operation.
+    - The user policy operation.
   upper:
     required: False
     type: int
     description:
     - Number of uppercase characters required in user passwords. Allowed range is [0, 255] inclusive.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage user policies.
+short_description: Manage the HPE Nimble Storage user policies.
 version_added: "2.9.0"
 '''
 

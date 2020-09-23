@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage volume collections on HPE Nimble Storage group.
+description: Manage the volume collections on an HPE Nimble Storage group.
 module: hpe_nimble_volume_collection
 options:
   abort_handover:
@@ -139,7 +139,7 @@ options:
     required: True
     type: str
     description:
-    - Name of volume collection.
+    - Name of the volume collection.
   no_reverse:
     required: False
     type: bool
@@ -188,7 +188,7 @@ options:
     - create
     type: str
     description:
-    - Choice for volume collection operations.
+    - The volume collection operations.
   validate:
     required: False
     type: bool
@@ -211,7 +211,7 @@ options:
     description:
     - Application VMware vCenter password. A password with few constraints.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage volume collections.
+short_description: Manage the HPE Nimble Storage volume collections.
 version_added: "2.9.0"
 '''
 
