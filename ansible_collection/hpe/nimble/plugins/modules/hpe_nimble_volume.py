@@ -26,7 +26,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage volumes on HPE Nimble Storage group.
+description: Manage the volumes on an HPE Nimble Storage group.
 module: hpe_nimble_volume
 options:
   agent_type:
@@ -198,7 +198,7 @@ options:
     - Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation.
   state:
     description:
-    - Choice for volume operations.
+    - The volume operations.
     choices:
     - present
     - absent
@@ -218,7 +218,7 @@ options:
     - Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from
       volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage volumes.
+short_description: Manage the HPE Nimble Storage volumes.
 version_added: "2.9.0"
 '''
 

@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
     - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage disks on HPE Nimble Storage group.
+description: Manage disks on an HPE Nimble Storage group.
 module: hpe_nimble_disk
 options:
   disk_op:
@@ -58,9 +58,9 @@ options:
     - present
     type: str
     description:
-    - Choice for disk operation.
+    - The disk operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage disk.
+short_description: Manage the HPE Nimble Storage disk.
 version_added: "2.9.0"
 '''
 

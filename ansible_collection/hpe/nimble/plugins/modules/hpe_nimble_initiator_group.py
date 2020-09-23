@@ -26,7 +26,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage HPE Nimble Storage initiator groups.
+description: Manage the HPE Nimble Storage initiator groups.
 module: hpe_nimble_initiator_group
 options:
   access_protocol:
@@ -86,7 +86,7 @@ options:
     required: True
     type: str
     description:
-    - Name of initiator group.
+    - Name of the initiator group.
   state:
     required: True
     choices:
@@ -95,7 +95,7 @@ options:
     - create
     type: str
     description:
-    - Choice for initiator group operation.
+    - The initiator group operation.
   target_subnets:
     required: False
     type: list
@@ -103,7 +103,7 @@ options:
     description:
     - List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage initiator groups.
+short_description: Manage the HPE Nimble Storage initiator groups.
 version_added: "2.9.0"
 '''
 

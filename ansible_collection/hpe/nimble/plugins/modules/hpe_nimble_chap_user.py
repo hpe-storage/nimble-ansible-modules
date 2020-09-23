@@ -25,14 +25,14 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description: Manage CHAP user on HPE Nimble Storage group.
+description: Manage the CHAP user on an HPE Nimble Storage group.
 module: hpe_nimble_chap_user
 options:
   change_name:
     required: False
     type: str
     description:
-    - Change name of the existing CHAP user.
+    - Change the name of the existing CHAP user.
   description:
     required: False
     type: str
@@ -50,7 +50,7 @@ options:
     required: True
     type: str
     description:
-    - Name of CHAP user.
+    - The CHAP user name.
   state:
     required: True
     choices:
@@ -59,7 +59,7 @@ options:
     -  absent
     type: str
     description:
-    - Choice for chap user operation.
+    - The CHAP user operation.
   user_password:
     required: False
     type: str
@@ -67,7 +67,7 @@ options:
     - CHAP secret. The CHAP secret should be between 12-16 characters and cannot contain spaces or most punctuation.
       string of 12 to 16 printable ASCII characters excluding ampersand and ^[];`
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage CHAP user.
+short_description: Manage the HPE Nimble Storage CHAP user.
 version_added: "2.9.0"
 '''
 

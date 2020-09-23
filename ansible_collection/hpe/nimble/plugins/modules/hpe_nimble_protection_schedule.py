@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - Alok Ranjan (@ranjanal)
-description: Manage protection schedules on HPE Nimble Storage group.
+description: Manage the protection schedules on an HPE Nimble Storage group.
 module: hpe_nimble_protection_schedule
 options:
   at_time:
@@ -65,7 +65,7 @@ options:
     required: True
     type: str
     description:
-    - Name of protection schedule to create.
+    - Name of the protection schedule to create.
   num_retain:
     required: False
     type: int
@@ -144,7 +144,7 @@ options:
       - create
     type: str
     description:
-    - Choice for protection schedule operations
+    - The protection schedule operations
   until_time:
     required: False
     type: int
@@ -178,7 +178,7 @@ options:
     description:
     - Name of the volume collection in which this protection schedule is attached to.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage protection schedules.
+short_description: Manage the HPE Nimble Storage protection schedules.
 version_added: "2.9.0"
 '''
 

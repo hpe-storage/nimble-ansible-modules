@@ -25,7 +25,7 @@ DOCUMENTATION = r'''
 ---
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
-description:  Manage performance policies on HPE Nimble Storage group.
+description:  Manage the performance policies on an HPE Nimble Storage group.
 module: hpe_nimble_performance_policy
 options:
   app_category:
@@ -103,9 +103,9 @@ options:
     - create
     type: str
     description:
-    - Choice for performance policy operation.
+    - The performance policy operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage HPE Nimble Storage performance policies
+short_description: Manage the HPE Nimble Storage performance policies
 version_added: "2.9.0"
 '''
 

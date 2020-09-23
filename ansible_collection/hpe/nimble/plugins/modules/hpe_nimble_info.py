@@ -26,9 +26,9 @@ DOCUMENTATION = r'''
 author:
   - HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
 description:
-  - Collect information from a HPE Nimble Storage array. By default, the module will collect basic
-    information including array, groups config, protection template, protection schedules, snapshots, snapshot collection, volume collection
-    and volume counts. Additional information can be collected based on the configured set of arguments.
+  - Collect information from a HPE Nimble Storage array. By default, the module will collect basic information
+    including array, groups config, protection templates, protection schedules, snapshots, snapshot collections, volume
+    collections and volume counts. Additional information can be collected based on the configured set of arguments.
 module: hpe_nimble_info
 options:
   gather_subset:
@@ -37,7 +37,7 @@ options:
     type: list
     elements: raw
     description:
-      - When supplied, this argument will define the information to be collected. Possible values for this include
+      - When supplied, this argument defines the information that is collected. Possible values for this include
         "all"
         "minimum"
         "config"
@@ -75,15 +75,15 @@ options:
         "volumes",
         "volume_collections"
       - NOTE:-
-      - Each subset except all, minimum and config supports four types of subset options.
-      - Subset 'all' just supports limit and detail as subset options.
-      - Subset 'config' and 'minimum' does not support any subset options.
+      - Except for "all", "minimum" and "config" subsets, each subset supports four types of subset options.
 
-      - Subset options:-
-      - fields - A string representing which attributes to display for a given subset.
-      - limit - An integer value which represents how many latest items to show for a given subset.
-      - detail - A bool flag when set to true fetches everything for a given subset. Default is True.
-      - query - A Key-Value pair to query.
+      - fields - A list representing attributes that are displayed for a given subset.
+      - limit - An integer value that represents how many latest items to show for a given subset.
+      - detail - A bool flag that when set to 'True' fetches everything for a given subset. The default is 'True'.
+      - query - A Key-Value pair used to perform a query.
+
+      - Subset 'all' just supports "limit" and "detail" as subset options.
+      - Subset 'config' and 'minimum' does not support any subset options.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Collect information from HPE Nimble Storage array.
 version_added: "2.9.0"
