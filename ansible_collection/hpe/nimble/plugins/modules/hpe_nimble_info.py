@@ -37,53 +37,21 @@ options:
     type: list
     elements: raw
     description:
-      - When supplied, this argument defines the information that is collected. Possible values for this include
-        "all"
-        "minimum"
-        "config"
-        "access_control_records",
-        "alarms",
-        "application_servers",
-        "application_categories",
-        "arrays",
-        "chap_users",
-        "controllers",
-        "disks",
-        "fibre_channel_interfaces",
-        "fibre_channel_configs",
-        "fibre_channel_initiator_aliases",
-        "fibre_channel_ports",
-        "folders",
-        "groups",
-        "initiator_groups",
-        "initiators",
-        "master_key",
-        "network_configs",
-        "performance_policies",
-        "pools",
-        "protection_schedules",
-        "protection_templates",
-        "protocol_endpoints",
-        "replication_partners",
-        "shelves",
-        "snapshots",
-        "snapshot_collections",
-        "software_versions",
-        "user_groups",
-        "user_policies",
-        "users",
-        "volumes",
-        "volume_collections"
-      - NOTE:-
-      - Except for "all", "minimum" and "config" subsets, each subset supports four types of subset options.
+      - When supplied, this argument will define the information to be collected. Possible values for this include "all" "minimum" "config"
+        "access_control_records", "alarms", "application_servers", "application_categories", "arrays", "chap_users", "controllers", "disks",
+        "fibre_channel_interfaces", "fibre_channel_configs", "fibre_channel_initiator_aliases", "fibre_channel_ports", "folders", "groups",
+        "initiator_groups", "initiators", "master_key", "network_configs", "performance_policies", "pools", "protection_schedules",
+        "protection_templates", "protocol_endpoints", "replication_partners", "shelves", "snapshots", "snapshot_collections", "software_versions",
+        "user_groups", "user_policies", "users", "volumes", "volume_collections".
 
-      - fields - A list representing attributes that are displayed for a given subset.
-      - limit - An integer value that represents how many latest items to show for a given subset.
-      - detail - A bool flag that when set to 'True' fetches everything for a given subset. The default is 'True'.
-      - query - A Key-Value pair used to perform a query.
+      - Each subset except "all", "minimum" and "config" supports four types of subset options. Subset "all" supports limit and detail as subset options.
+        Subset "config" and "minimum" does not support any subset options.
 
-      - Subset 'all' just supports "limit" and "detail" as subset options.
-      - Subset 'config' and 'minimum' does not support any subset options.
+      - See the example section for usage of the following subset options.
+      - fields - A string representing which attributes to display for a given subset.
+      - limit - An integer value which represents how many latest items to show for a given subset.
+      - detail - A bool flag when set to true fetches everything for a given subset. Default is "True".
+      - query - A key-value pair to query.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Collect information from HPE Nimble Storage array.
 version_added: "2.9.0"
