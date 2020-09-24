@@ -593,6 +593,7 @@ def add_to_valid_subset_list(valid_subset_list,
         if 'limit' in subset_options:
             count = limit = subset_options['limit']
             if fetch_all is True:
+                # few subset do not support limit option. hence in case of subset 'all' ,set it to none
                 if subset_name in limit_not_supported:
                     limit = None
 
@@ -637,7 +638,7 @@ def is_subset_already_added(key, valid_subset_list):
     return False
 
 
-def handle_all_subset(info_subset, valid_subset_list, subset_options, detail):
+def handle_all_subset(info_subset, valid_subset_list, subset_options):
 
     if valid_subset_list is None or info_subset is None:
         return []
@@ -693,7 +694,7 @@ def parse_subset_list(info_subset, gather_subset):
                         if key == 'all':
                             if is_subset_already_added('minimum', valid_subset_list) is True:
                                 raise_subset_mutually_exclusive_ex()
-                            handle_all_subset(info_subset, valid_subset_list, subset_options, True)
+                            handle_all_subset(info_subset, valid_subset_list, subset_options)
                             continue
                         if key == 'minimum' or key == 'config':
                             if subset_options is not None:
@@ -708,8 +709,15 @@ def parse_subset_list(info_subset, gather_subset):
                 key = object_set.strip()
                 if info_subset.get(key, None) is None:
                     raise_invalid_subset_ex(key)
+
                 if is_subset_already_added(key, valid_subset_list) is True:
                     raise_repeat_subset_ex(key)
+
+                if key == 'all':
+                    if is_subset_already_added('minimum', valid_subset_list) is True:
+                        raise_subset_mutually_exclusive_ex()
+                    handle_all_subset(info_subset, valid_subset_list, None)
+                    continue
 
                 add_to_valid_subset_list(valid_subset_list, key, None)
         return (valid_subset_list)
@@ -719,7 +727,7 @@ def parse_subset_list(info_subset, gather_subset):
 
 def generate_dict(name, resp):
     temp_dict = {}
-    if resp is None or name is None:
+    if utils.is_null_or_empty(resp) or name is None:
         return {}
     for item in resp:
         key = item.attrs.get(name)
@@ -875,8 +883,9 @@ def fetch_snapshots_for_all_subset(subset, client_obj):
                 if subset['limit'] is not None and total_snap.__len__() >= subset['limit']:
                     total_snap = total_snap[0:subset['limit']]
                     break
-        result['snapshots'] = generate_dict('snapshots', total_snap)['snapshots']
-        return result
+        if total_snap.__len__() > 0:
+            result['snapshots'] = generate_dict('snapshots', total_snap)['snapshots']
+    return result
 
 
 def fetch_subset(valid_subset_list, info_subset):
