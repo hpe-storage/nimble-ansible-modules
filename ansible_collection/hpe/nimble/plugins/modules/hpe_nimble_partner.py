@@ -210,7 +210,8 @@ def create_partner(
             upstream_repl_resp = client_obj.replication_partners.create(hostname=downstream_hostname, **params)
             return (True, True, f"Replication partner '{downstream_hostname}' created successfully.", {}, upstream_repl_resp.attrs)
         else:
-            return (False, False, f"Replication partner '{downstream_hostname}' cannot be created as it is already present in given state.", {}, upstream_repl_resp.attrs)
+            return (False, False, f"Replication partner '{downstream_hostname}' cannot be created as it is already present in given state.",
+                    {}, upstream_repl_resp.attrs)
     except Exception as ex:
         return (False, False, f"Replication partner creation failed |{ex}", {}, {})
 

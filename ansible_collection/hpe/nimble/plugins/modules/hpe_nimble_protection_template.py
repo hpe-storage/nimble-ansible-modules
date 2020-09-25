@@ -176,7 +176,8 @@ def create_prot_template(
             prot_template_resp = client_obj.protection_templates.create(name=prot_template_name, **params)
             return (True, True, f"Protection template '{prot_template_name}' created successfully.", {}, prot_template_resp.attrs)
         else:
-            return (False, False, f"Protection template '{prot_template_name}' cannot be created as it is already present in given state.", {}, prot_template_resp.attrs)
+            return (False, False, f"Protection template '{prot_template_name}' cannot be created as it is already present in given state.",
+                    {}, prot_template_resp.attrs)
     except Exception as ex:
         return (False, False, f"Protection template creation failed | {ex}", {}, {})
 

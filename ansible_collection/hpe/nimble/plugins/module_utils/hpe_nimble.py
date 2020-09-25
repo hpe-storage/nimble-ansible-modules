@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Copyright 2020 Hewlett Packard Enterprise Development LP
 #

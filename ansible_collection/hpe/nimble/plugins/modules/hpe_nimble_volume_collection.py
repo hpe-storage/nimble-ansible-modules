@@ -673,11 +673,11 @@ def main():
             return_status, changed, msg, changed_attrs_dict, resp = validate_volcoll(client_obj, volcoll_name)
 
         elif ((promote is None or promote is False)
-            and (demote is None or demote is False)
-            and (abort_handover is None or abort_handover is False)
-            and (handover is None or handover is False)
-            and (validate is None or validate is False)
-            and (state == "create" or state == "present")):
+              and (demote is None or demote is False)
+              and (abort_handover is None or abort_handover is False)
+              and (handover is None or handover is False)
+              and (validate is None or validate is False)
+              and (state == "create" or state == "present")):
 
             volcoll_resp = client_obj.volume_collections.get(id=None, name=volcoll_name)
             if utils.is_null_or_empty(volcoll_resp) or state == "create":
