@@ -465,7 +465,7 @@ def create_clone_from_snapshot(
         or utils.is_null_or_empty(vol_name)
             or utils.is_null_or_empty(snap_list_resp)
             or utils.is_null_or_empty(snapshot_to_clone)):
-        return (False, "Create clone from snapshot failed as valid arguments are not provided. Please check the arguments provided for volume and snapshot.", {})
+        return (False, "Create clone from snapshot failed as valid arguments are not provided. Please check the argument provided for volume and snapshot.", {})
     try:
         # to_return = Vol_Operation.FAILED  # assume failed
         # find the snapshot from snapshot list

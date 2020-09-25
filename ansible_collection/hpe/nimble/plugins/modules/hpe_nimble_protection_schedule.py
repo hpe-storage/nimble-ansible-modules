@@ -237,7 +237,8 @@ def create_prot_schedule(
             prot_schedule_resp = client_obj.protection_schedules.create(name=prot_schedule_name, **params)
             return (True, True, f"Created protection schedule '{prot_schedule_name}' successfully.", {}, prot_schedule_resp.attrs)
         else:
-            return (False, False, f"Cannot create protection schedule '{prot_schedule_name}' as it is already present in given state.", {}, prot_schedule_resp.attrs)
+            return (False, False, f"Cannot create protection schedule '{prot_schedule_name}' as it is already present in given state.",
+                    {}, prot_schedule_resp.attrs)
     except Exception as ex:
         return (False, False, f"Protection schedule creation failed | {ex}", {}, {})
 

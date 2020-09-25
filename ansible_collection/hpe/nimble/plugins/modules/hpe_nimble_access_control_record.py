@@ -143,7 +143,8 @@ def create_acr(
         else:
             # if state is set to present, we pass
             if state == "present":
-                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.", acr_resp.attrs)
+                return (True, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' is already present.",
+                        acr_resp.attrs)
         return (False, False, f"Access control record for volume '{volume}' with initiator group '{initiator_group}' cannot "
                 "be created as it is already present.", {})
     except Exception as ex:
