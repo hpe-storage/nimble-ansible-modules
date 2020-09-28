@@ -110,20 +110,25 @@ def update_shelve(
         return (False, False, "Shelf update failed as no shelf id provided.", {})
 
     try:
-        shelf_resp = client_obj.shelves.get()
-        if utils.is_null_or_empty(shelf_resp):
+        shelf_list_resp = client_obj.shelves.list(detail=True)
+        if utils.is_null_or_empty(shelf_list_resp):
             return (False, False, f"Shelf serial '{shelf_serial}' is not present on array.", {})
         else:
+            shelf_resp = None
             # check if the given shelf serial is present on array
-            if shelf_serial == shelf_resp.attrs.get("serial"):
+            for resp in shelf_list_resp:
+                if shelf_serial == resp.attrs.get("serial"):
+                    shelf_resp = resp
+                    break
+            if utils.is_null_or_empty(shelf_resp):
+                return (False, False, f"Shelf serial '{shelf_serial}' is not present on array.", {})
+            else:
                 changed_attrs_dict, params = utils.remove_unchanged_or_null_args(shelf_resp, **kwargs)
                 if changed_attrs_dict.__len__() > 0:
                     shelf_resp = client_obj.shelves.update(id=shelf_resp.attrs.get("id"), **params)
                     return (True, True, f"Successfully updated Shelf '{shelf_serial}'.", shelf_resp.attrs)
                 else:
                     return (True, False, f"Shelf serial '{shelf_serial}' already updated.", shelf_resp.attrs)
-            else:
-                return (False, False, f"Shelf serial '{shelf_serial}' not found.", {})
     except Exception as e:
         return (False, False, "Shelf update failed | %s" % str(e), {})
 
