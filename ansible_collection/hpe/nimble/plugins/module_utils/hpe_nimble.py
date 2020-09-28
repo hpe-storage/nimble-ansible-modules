@@ -41,7 +41,8 @@ def get_unique_string(baseName):
 def remove_null_args(**kwargs):
     tosearch = kwargs.copy()
     for key, value in tosearch.items():
-        if type(value) is not bool:
+        # list can be empty in case of update. Hence we should not remove that arg
+        if type(value) is not bool and type(value) is not list:
             if is_null_or_empty(value):
                 kwargs.pop(key)
     return kwargs
@@ -101,8 +102,6 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
 
         elif type(server_value) is list and type(value) is list:
             found_changed_list = False
-            if len(value) == 0:
-                continue
             if len(value) != len(server_value):
                 changed_attrs_dict[key] = value
                 continue
@@ -122,6 +121,15 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
             if found_changed_list is False:
                 params.pop(key)
 
+        elif server_value is None and type(value) is list:
+            # this is a special case wherein the user has provided an empty list and
+            # server already has null value for that list. in this case we should not add the
+            # argument to changed_attrs_dict
+            if len(value) == 0:
+                # don't add empty list for update
+                continue
+            else:
+                changed_attrs_dict[key] = value
         elif server_value != value:
             # This is a special key used to force any operation for object.
             # So, that is never updated as a server attribute.
