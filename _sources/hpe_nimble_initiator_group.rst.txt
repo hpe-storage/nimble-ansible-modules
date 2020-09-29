@@ -1,0 +1,155 @@
+.. _hpe_nimble_initiator_group_module:
+
+
+hpe_nimble_initiator_group -- Manage the HPE Nimble Storage initiator groups.
+=============================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the HPE Nimble Storage initiator groups.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  access_protocol (False, str, None)
+    Initiator group access protocol.
+
+
+  app_uuid (False, str, None)
+    Application identifier of initiator group. String of up to 255 alphanumeric characters, hyphen, colon, dot and underscore are allowed.
+
+
+  change_name (False, str, None)
+    Change name of the existing initiator group.
+
+
+  description (False, str, None)
+    Text description of initiator group.
+
+
+  fc_initiators (False, list, None)
+    List of FC initiators. When create/update fc_initiators, WWPN is required.
+
+
+  fc_tdz_ports (False, list, None)
+    List of target fibre channel ports with target driven zoning configured on this initiator group.
+
+
+  host_type (False, str, None)
+    Initiator group host type. Available options are auto and hpux. The default option is auto. This attribute will be applied to all the initiators in the initiator group. Initiators with different host OSes should not be kept in the same initiator group having a non-default host type attribute.
+
+
+  iscsi_initiators (False, list, None)
+    List of iSCSI initiators. When create/update iscsi_initiators, either iqn or ip_address is always required with label.
+
+
+  metadata (False, dict, None)
+    Key-value pairs that augment an initiator group's attributes. List of key-value pairs. Keys must be unique and non-empty.
+
+
+  name (True, str, None)
+    Name of the initiator group.
+
+
+  state (True, str, None)
+    The initiator group operation.
+
+
+  target_subnets (False, list, None)
+    List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create ig. Fails if already present.
+    # if state is present, then create ig if not present. Succeeds if it already exists.
+    - name: Create an igroup
+      hpe_nimble_initiator_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        access_protocol: "{{ access_protocol | default('iscsi')}}"
+        name: "{{ name }}"
+        iscsi_initiators: "{{ iscsi_initiators | default([])}}"  # list of dictionaries. Each entry in the dictionary has one initiator details.
+        description: "{{ description | default(None) }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete igroup
+      hpe_nimble_initiator_group:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        access_protocol: "{{ access_protocol | default('iscsi')}}"
+        name: "{{ name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

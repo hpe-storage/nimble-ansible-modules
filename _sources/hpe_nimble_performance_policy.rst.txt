@@ -1,0 +1,150 @@
+.. _hpe_nimble_performance_policy_module:
+
+
+hpe_nimble_performance_policy -- Manage the HPE Nimble Storage performance policies
+===================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the performance policies on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  app_category (False, str, None)
+    Specifies the application category of the associated volume.
+
+
+  block_size (False, int, None)
+    Block Size in bytes to be used by the volumes created with this specific performance policy. Supported block sizes are 4096 bytes (4 KB), 8192 bytes (8 KB), 16384 bytes(16 KB), and 32768 bytes (32 KB). Block size of a performance policy cannot be changed once the performance policy is created.
+
+
+  cache (False, bool, None)
+    Flag denoting if data in the associated volume should be cached.
+
+
+  cache_policy (False, str, None)
+    Specifies how data of associated volume should be cached. Normal policy caches data but skips in certain conditions such as sequential I/O. Aggressive policy will accelerate caching of all data belonging to this volume, regardless of sequentiality.
+
+
+  change_name (False, str, None)
+    Change name of the existing performance policy.
+
+
+  compress (False, bool, None)
+    Flag denoting if data in the associated volume should be compressed.
+
+
+  description (False, str, None)
+    Description of a performance policy.
+
+
+  dedupe (False, bool, False)
+    Specifies if dedupe is enabled for volumes created with this performance policy.
+
+
+  name (True, str, None)
+    Name of the performance policy.
+
+
+  space_policy (False, str, None)
+    Specifies the state of the volume upon space constraint violation such as volume limit violation or volumes above their volume reserve, if the pool free space is exhausted. Supports two policies, 'offline' and 'non_writable'.
+
+
+  state (True, str, None)
+    The performance policy operation.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a performance policy if not present. Fails if already present.
+    # if state is present, then create a performance policy if not present. Succeed if it already exists.
+    - name: Create performance policy if not present
+      hpe_nimble_performance_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        name: "{{ name }}"
+        description: "{{ description }}"
+        block_size: "{{ block_size }}"
+        compress: "{{ compress }}"
+
+    - name: Delete performance policy
+      hpe_nimble_performance_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

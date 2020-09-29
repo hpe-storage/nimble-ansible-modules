@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hpe_nimble_access_control_record – Manage the HPE Nimble Storage access control records. &#8212; HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/hpedev.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hpe_nimble_array – Manage the HPE Nimble Storage array." href="hpe_nimble_array.html" />
+    <link rel="prev" title="HPE Nimble Storage Content Collection for Ansible" href="index.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_array.html" title="hpe_nimble_array – Manage the HPE Nimble Storage array."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="HPE Nimble Storage Content Collection for Ansible"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hpe-nimble-access-control-record-manage-the-hpe-nimble-storage-access-control-records">
+<span id="hpe-nimble-access-control-record-module"></span><h1>hpe_nimble_access_control_record – Manage the HPE Nimble Storage access control records.<a class="headerlink" href="#hpe-nimble-access-control-record-manage-the-hpe-nimble-storage-access-control-records" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements" id="id2">Requirements</a></li>
+<li><a class="reference internal" href="#parameters" id="id3">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id4">Notes</a></li>
+<li><a class="reference internal" href="#examples" id="id5">Examples</a></li>
+<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+</ul>
+</div>
+<div class="section" id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<p>Manage the access control records on an HPE Nimble Storage group.</p>
+</div>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li>Ansible 2.9 or later</li>
+<li>NimbleOS 5.0 or later</li>
+<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+</ul>
+</div>
+<div class="section" id="parameters">
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt>apply_to (False, str, None)</dt>
+<dd>The type of object to which this access control record applies.</dd>
+<dt>chap_user (False, str, None)</dt>
+<dd>Name for the CHAP user.</dd>
+<dt>initiator_group (True, str, None)</dt>
+<dd>The initiator group name.</dd>
+<dt>lun (False, int, None)</dt>
+<dd><p class="first">If this access control record applies to a regular volume, this attribute is the volume’s LUN (Logical Unit Number).</p>
+<p class="last">If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is Fibre Channel, the LUN will be in the range from 0 to 2047.</p>
+</dd>
+<dt>state (True, str, None)</dt>
+<dd>The access control record operation.</dd>
+<dt>volume (True, str, None)</dt>
+<dd>The name of the volume that this access control record applies to.</dd>
+<dt>host (True, str, None)</dt>
+<dd>HPE Nimble Storage IP address.</dd>
+<dt>password (True, str, None)</dt>
+<dd>HPE Nimble Storage password.</dd>
+<dt>username (True, str, None)</dt>
+<dd>HPE Nimble Storage user name.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="notes">
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>check_mode is not supported.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># If state is &quot;create&quot;, create access control record for given volume, fails if it exist.</span>
+<span class="c1"># if state is present, create access control record if not already present.</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create access control record for volume</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_access_control_record</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">volume</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">initiator_group</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">initiator_group</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">state</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;present&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+
+<span class="c1"># Delete the access control record for a given volume name</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Delete access control record for volume</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_access_control_record</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">volume</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">initiator_group</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">initiator_group</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;absent&quot;</span> <span class="c1"># fail if volume does not exist</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="status">
+<h2><a class="toc-backref" href="#id6">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>This module is not guaranteed to have a backwards compatible interface. <em>[preview]</em></li>
+<li>This module is maintained by community.</li>
+</ul>
+<div class="section" id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>HPE Nimble Storage Ansible Team (&#64;ar-india) &lt;<a class="reference external" href="mailto:nimble-dcs-storage-automation-eng&#37;&#52;&#48;hpe&#46;com">nimble-dcs-storage-automation-eng<span>&#64;</span>hpe<span>&#46;</span>com</a>&gt;</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hpe_nimble_access_control_record – Manage the HPE Nimble Storage access control records.</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#status">Status</a><ul>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_array.html" title="hpe_nimble_array – Manage the HPE Nimble Storage array."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="HPE Nimble Storage Content Collection for Ansible"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Copyright 2020 Hewlett Packard Enterprise Development LP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

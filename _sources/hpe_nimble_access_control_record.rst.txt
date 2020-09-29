@@ -1,0 +1,132 @@
+.. _hpe_nimble_access_control_record_module:
+
+
+hpe_nimble_access_control_record -- Manage the HPE Nimble Storage access control records.
+=========================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the access control records on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  apply_to (False, str, None)
+    The type of object to which this access control record applies.
+
+
+  chap_user (False, str, None)
+    Name for the CHAP user.
+
+
+  initiator_group (True, str, None)
+    The initiator group name.
+
+
+  lun (False, int, None)
+    If this access control record applies to a regular volume, this attribute is the volume's LUN (Logical Unit Number).
+
+    If the access protocol is iSCSI, the LUN will be 0. However, if the access protocol is Fibre Channel, the LUN will be in the range from 0 to 2047.
+
+
+  state (True, str, None)
+    The access control record operation.
+
+
+  volume (True, str, None)
+    The name of the volume that this access control record applies to.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # If state is "create", create access control record for given volume, fails if it exist.
+    # if state is present, create access control record if not already present.
+    - name: Create access control record for volume
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ volume }}"
+        initiator_group: "{{ initiator_group }}"
+        state: "{{ state | default('present') }}"
+
+    # Delete the access control record for a given volume name
+    - name: Delete access control record for volume
+      hpe_nimble_access_control_record:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ volume }}"
+        initiator_group: "{{ initiator_group }}"
+        state: "absent" # fail if volume does not exist
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

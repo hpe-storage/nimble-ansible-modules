@@ -1,0 +1,197 @@
+.. _hpe_nimble_protection_schedule_module:
+
+
+hpe_nimble_protection_schedule -- Manage the HPE Nimble Storage protection schedules.
+=====================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the protection schedules on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  at_time (False, int, 0)
+    Time of day when snapshot should be taken. In case repeat frequency specifies more than one snapshot in a day then the until_time option specifies until what time of day to take snapshots.
+
+
+  change_name (False, str, None)
+    Change the name of existing protection schedule.
+
+
+  days (False, str, None)
+    Specifies which days snapshots should be taken. Comma separated list of days of the week or 'all'.
+
+
+  description (False, str, None)
+    Description of the schedule.
+
+
+  disable_appsync (False, bool, False)
+    Disables application synchronized snapshots and creates crash consistent snapshots instead.
+
+
+  downstream_partner (False, str, None)
+    Specifies the partner name if snapshots created by this schedule should be replicated.
+
+
+  name (True, str, None)
+    Name of the protection schedule to create.
+
+
+  num_retain (False, int, None)
+    Number of snapshots to retain. If replication is enabled on this schedule the array will always retain the latest replicated snapshot, which may exceed the specified retention value. This is necessary to ensure efficient replication performance.
+
+
+  num_retain_replica (False, int, 0)
+    Number of snapshots to retain on the replica.
+
+
+  period (False, int, None)
+    Repeat interval for snapshots with respect to the period_unit. For example, a value of 2 with the 'period_unit' of 'hours' results in one snapshot every 2 hours.
+
+
+  period_unit (False, str, None)
+    Time unit over which to take the number of snapshots specified in 'period'. For example, a value of 'days' with a 'period' of '1' results in one snapshot every day.
+
+
+  prot_template_name (False, str, None)
+    Name of the protection template in which this protection schedule is attached to.
+
+
+  repl_alert_thres (False, int, None)
+    Replication alert threshold in seconds. If the replication of a snapshot takes more than this amount of time to complete an alert will be generated. Enter 0 to disable this alert.
+
+
+  replicate_every (False, int, None)
+    Specifies which snapshots should be replicated. If snapshots are replicated and this option is not specified, every snapshot is replicated.
+
+
+  schedule_type (False, str, None)
+    Normal schedules have internal timers which drive snapshot creation. An externally driven schedule has no internal timers. All snapshot activity is driven by an external trigger. In other words, these schedules are used only for externally driven manual snapshots.
+
+
+  skip_db_consistency_check (False, bool, False)
+    Skip consistency check for database files on snapshots created by this schedule. This option only applies to snapshot schedules of a protection template with application synchronization set to VSS, application ID set to MS Exchange 2010 or later w/DAG, this schedule's snap_verify option set to yes, and its disable_appsync option set to false. Skipping consistency checks is only recommended if each database in a DAG has multiple copies.
+
+
+  snap_verify (False, bool, False)
+    Run verification tool on snapshot created by this schedule. This option can only be used with snapshot schedules of a protection template that has application synchronization. The tool used to verify snapshot depends on the type of application. For example, if application synchronization is VSS and the application ID is Exchange, eseutil tool is run on the snapshots. If verification fails, the logs are not truncated.
+
+
+  state (True, str, None)
+    The protection schedule operations
+
+
+  until_time (False, int, None)
+    Time of day to stop taking snapshots. Applicable only when repeat frequency specifies more than one snapshot in a day.
+
+
+  use_downstream_for_DR (False, bool, None)
+    Break synchronous replication for the specified volume collection and present downstream volumes to host(s). Downstream volumes in the volume collection will be set to online and presented to the host(s) using new serial and LUN numbers. No changes will be made to the upstream volumes, their serial and LUN numbers, and their online state. The existing ACLs on the upstream volumes will be copied to the downstream volumes. Use this in conjunction with an empty downstream_partner_id. This unconfigures synchronous replication when the partner is removed from the last replicating schedule in the specified volume collection and presents the downstream volumes to host(s). Host(s) will need to be configured to access the new volumes with the newly assigned serial and LUN numbers. Use this option to expose downstream volumes in a synchronously replicated volume collection to host(s) only when the upstream partner is confirmed to be down and there is no communication between partners. Do not execute this operation if a previous Group Management Service takeover has been performed on a different array. Do not perform a subsequent Group Management Service takeover on a different array as it will lead to irreconcilable conflicts. This limitation is cleared once the Group management service backup array has successfully synchronized after reconnection.
+
+
+  volcoll_or_prottmpl_type (True, str, None)
+    Type of the protection policy this schedule is attached to.
+
+
+  volcoll_name (False, str, None)
+    Name of the volume collection in which this protection schedule is attached to.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a protection schedule if not present. Fails if already present.
+    # if state is present, then create a protection schedule if not present. Succeed if it already exists.
+    - name: Create protection schedule if not present
+      hpe_nimble_protection_schedule:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+        volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
+        prot_template_name: "{{ prot_template_name }}"
+        num_retain: "{{ num_retain }}"
+
+    - name: Delete protection schedule
+      hpe_nimble_protection_schedule:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        volcoll_or_prottmpl_type: "{{ volcoll_or_prottmpl_type }}"
+        volcoll_name: "{{ volcoll_name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- Alok Ranjan (@ranjanal)
+

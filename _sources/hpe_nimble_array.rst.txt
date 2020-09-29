@@ -1,0 +1,200 @@
+.. _hpe_nimble_array_module:
+
+
+hpe_nimble_array -- Manage the HPE Nimble Storage array.
+========================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the array on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  allow_lower_limits (False, bool, False)
+    A True setting will allow you to add an array with lower limits to a pool with higher limits.
+
+
+  change_name (False, str, None)
+    Change the name of the existing array.
+
+
+  create_pool (False, bool, False)
+    Whether to create an associated pool during the array creation.
+
+
+  ctrlr_a_support_ip (False, str, None)
+    Controller A Support IP Address. Four numbers in the range (0,255) separated by periods.
+
+
+  ctrlr_b_support_ip (False, str, None)
+    Controller B Support IP Address. Four numbers in the range (0,255) separated by periods.
+
+
+  failover (False, bool, None)
+    Perform a failover on the specified array.
+
+
+  force (False, bool, None)
+    Forcibly delete the specified array.
+
+
+  halt (False, bool, None)
+    Halt the specified array. Restarting the array will require physically powering it back on.
+
+
+  name (True, str, None)
+    The user-provided name of the array. It is also the array's hostname.
+
+
+  nic_list (False, list, None)
+    List NICs information. Used when creating an array.
+
+
+  pool_description (False, str, None)
+    Text description of the pool to be created during array creation.
+
+
+  pool_name (False, str, None)
+    Name of pool to which this is a member.
+
+
+  reboot (False, bool, None)
+    Reboot the specified array.
+
+
+  secondary_mgmt_ip (False, str, None)
+    Secondary management IP address for the group.
+
+
+  serial (False, str, None)
+    Serial number of the array.
+
+
+  state (True, str, None)
+    The array operation
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a array if not present. Fails if already present.
+    # if state is present, then create a array if not present. Succeed if it already exists.
+    - name: Create array if not present
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        name: "{{ name }}"
+        ctrlr_b_support_ip: "{{ ctrlr_b_support_ip | mandatory}}"
+        ctrlr_a_support_ip: "{{ ctrlr_a_support_ip | mandatory}}"
+        serial: "{{ serial | mandatory}}"
+        nic_list: "{{ nic_list | mandatory}}"
+        pool_name: "{{ pool_name | mandatory}}"
+
+    - name: Delete array
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        vol_name: "{{ansible_default_ipv4['address']}}-{{ vol_name }}"
+        name: "{{ name }}"
+        state: absent
+
+    - name: Failover array
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        failover: true
+        state: present
+
+    - name: halt array
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        halt: true
+
+    - name: Reboot array
+      hpe_nimble_array:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        reboot: true
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

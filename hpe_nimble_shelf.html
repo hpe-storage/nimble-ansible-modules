@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hpe_nimble_shelf – Manage the HPE Nimble Storage shelves. &#8212; HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/hpedev.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hpe_nimble_snapshot – Manage the HPE Nimble Storage snapshots." href="hpe_nimble_snapshot.html" />
+    <link rel="prev" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates." href="hpe_nimble_protection_template.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_snapshot.html" title="hpe_nimble_snapshot – Manage the HPE Nimble Storage snapshots."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_protection_template.html" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates."
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hpe-nimble-shelf-manage-the-hpe-nimble-storage-shelves">
+<span id="hpe-nimble-shelf-module"></span><h1>hpe_nimble_shelf – Manage the HPE Nimble Storage shelves.<a class="headerlink" href="#hpe-nimble-shelf-manage-the-hpe-nimble-storage-shelves" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements" id="id2">Requirements</a></li>
+<li><a class="reference internal" href="#parameters" id="id3">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id4">Notes</a></li>
+<li><a class="reference internal" href="#examples" id="id5">Examples</a></li>
+<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+</ul>
+</div>
+<div class="section" id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<p>Manage the shelves on an HPE Nimble Storage group.</p>
+</div>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li>Ansible 2.9 or later</li>
+<li>NimbleOS 5.0 or later</li>
+<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+</ul>
+</div>
+<div class="section" id="parameters">
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt>accept_dedupe_impact (False, bool, None)</dt>
+<dd>Accept the reduction or elimination of deduplication capability on the system as a result of activating a shelf that does not meet the necessary deduplication requirements.</dd>
+<dt>accept_foreign (False, bool, None)</dt>
+<dd>Accept the removal of data on the shelf disks and activate foreign shelf.</dd>
+<dt>activated (True, bool, None)</dt>
+<dd>Activated state for shelf or disk set means it is available to store date on. An activated shelf may not be deactivated.</dd>
+<dt>driveset (False, int, None)</dt>
+<dd>Driveset to activate.</dd>
+<dt>force (False, bool, None)</dt>
+<dd>Forcibly activate shelf.</dd>
+<dt>last_request (False, bool, None)</dt>
+<dd>Indicates this is the last request in a series of shelf add requests.</dd>
+<dt>state (True, str, None)</dt>
+<dd>The shelf operation.</dd>
+<dt>shelf_serial (True, str, None)</dt>
+<dd>Serial number of shelf.</dd>
+<dt>host (True, str, None)</dt>
+<dd>HPE Nimble Storage IP address.</dd>
+<dt>password (True, str, None)</dt>
+<dd>HPE Nimble Storage password.</dd>
+<dt>username (True, str, None)</dt>
+<dd>HPE Nimble Storage user name.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="notes">
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>check_mode is not supported.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Update shelf</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_shelf</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">shelf_serial</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">shelf_serial</span> <span class="o">|</span> <span class="nf">mandatory</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">accept_foreign</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">accept_foreign</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">force</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">force</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">activated</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">activated</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="status">
+<h2><a class="toc-backref" href="#id6">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>This module is not guaranteed to have a backwards compatible interface. <em>[preview]</em></li>
+<li>This module is maintained by community.</li>
+</ul>
+<div class="section" id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>HPE Nimble Storage Ansible Team (&#64;ar-india) &lt;<a class="reference external" href="mailto:nimble-dcs-storage-automation-eng&#37;&#52;&#48;hpe&#46;com">nimble-dcs-storage-automation-eng<span>&#64;</span>hpe<span>&#46;</span>com</a>&gt;</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hpe_nimble_shelf – Manage the HPE Nimble Storage shelves.</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#status">Status</a><ul>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_snapshot.html" title="hpe_nimble_snapshot – Manage the HPE Nimble Storage snapshots."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_protection_template.html" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates."
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Copyright 2020 Hewlett Packard Enterprise Development LP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,261 @@
+.. _hpe_nimble_volume_collection_module:
+
+
+hpe_nimble_volume_collection -- Manage the HPE Nimble Storage volume collections.
+=================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the volume collections on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  abort_handover (False, bool, None)
+    Abort in-progress handover. If for some reason a previously invoked handover request is unable to complete, this action can be used to cancel it. This operation is not supported for synchronous replication volume collections.
+
+
+  agent_hostname (False, str, None)
+    Generic backup agent hostname.
+
+
+  agent_password (False, str, None)
+    Generic backup agent password.
+
+
+  agent_username (False, str, None)
+    Generic backup agent username.
+
+
+  app_cluster (False, str, None)
+    If the application is running within a Windows cluster environment, this is the cluster name.
+
+
+  app_id (False, str, None)
+    Application ID running on the server.
+
+
+  app_server (False, str, None)
+    Application server hostname.
+
+
+  app_service (False, str, None)
+    If the application is running within a windows cluster environment then this is the instance name of the service running within the cluster environment.
+
+
+  app_sync (False, str, None)
+    Application synchronization.
+
+
+  change_name (False, str, None)
+    Change name of the existing volume collection.
+
+
+  demote (False, bool, None)
+    Release ownership of the specified volume collection. The volumes associated with the volume collection will be set to offline and a snapshot will be created, then full control over the volume collection will be transferred to the new owner. This option can be used following a promote to revert the volume collection back to its prior configured state. This operation does not alter the configuration on the new owner itself, but does require the new owner to be running in order to obtain its identity information. This operation is not supported for synchronous replication volume collections.
+
+
+  description (False, str, None)
+    Text description of volume collection.
+
+
+  handover (False, bool, None)
+    Gracefully transfer ownership of the specified volume collection. This action can be used to pass control of the volume collection to the downstream replication partner. Ownership and full control over the volume collection will be given to the downstream replication partner. The volumes associated with the volume collection will be set to offline prior to the final snapshot being taken and replicated, thus ensuring full data synchronization as part of the transfer. By default, the new owner will automatically begin replicating the volume collection back to this node when the handover completes.
+
+
+  invoke_on_upstream_partner (False, bool, None)
+    Invoke handover request on upstream partner. This operation is not supported for synchronous replication volume vollections.
+
+
+  is_standalone_volcoll (False, bool, False)
+    Indicates whether this is a standalone volume collection.
+
+
+  metadata (False, dict, None)
+    User defined key-value pairs that augment a volume collection attributes. List of key-value pairs. Keys must be unique and non-empty. When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
+
+
+  name (True, str, None)
+    Name of the volume collection.
+
+
+  no_reverse (False, bool, False)
+    Do not automatically reverse direction of replication. Using this argument will prevent the new owner from automatically replicating the volume collection to this node when the handover completes.
+
+
+  override_upstream_down (False, bool, None)
+    Allow the handover request to proceed even if upstream array is down. The default behavior is to return an error when upstream is down. This option is applicable for synchronous replication only.
+
+
+  promote (False, bool, None)
+    Take ownership of the specified volume collection. The volumes associated with the volume collection will be set to online and be available for reading and writing. Replication will be disabled on the affected schedules and must be re-configured if desired. Snapshot retention for the affected schedules will be set to the greater of the current local or replica retention values. This operation is not supported for synchronous replication volume collections.
+
+
+  prot_template (False, str, None)
+    Name of the protection template whose attributes will be used to create this volume collection. This attribute is only used for input when creating a volume collection and is not outputed.
+
+
+  replication_partner (False, str, None)
+    Name of the new volume collection owner.
+
+
+  replication_type (False, str, None)
+    Type of replication configured for the volume collection.
+
+
+  state (True, str, None)
+    The volume collection operations.
+
+
+  validate (False, bool, None)
+    Validate a volume collection with either Microsoft VSS or VMware application synchronization.
+
+
+  vcenter_hostname (False, str, None)
+    VMware vCenter hostname.
+
+
+  vcenter_username (False, str, None)
+    Application VMware vCenter username. String of up to 80 alphanumeric characters, beginning with a letter. It can include ampersand (@), backslash (\), dash (-), period (.), and underscore (_).
+
+
+  vcenter_password (False, str, None)
+    Application VMware vCenter password. A password with few constraints.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a volcoll if not present. Fails if already present.
+    # if state is present, then create a volcoll if not present. Succeed if it already exists.
+    - name: Create volume collection if not present
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+
+    - name: Promote volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        promote: True
+
+    - name: Demote volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        demote: True
+
+    - name: Handover volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        handover: True
+
+    - name: Abort handover volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        abort_handover: True
+
+    - name: Validate volume collection
+      hpe_nimble_volume_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: present
+        validate: True
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

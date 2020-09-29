@@ -1,0 +1,408 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hpe_nimble_group – Manage the HPE Nimble Storage group. &#8212; HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/hpedev.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hpe_nimble_info – Collect information from HPE Nimble Storage array." href="hpe_nimble_info.html" />
+    <link rel="prev" title="hpe_nimble_fc – Manage the HPE Nimble Storage Fibre Channel." href="hpe_nimble_fc.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_info.html" title="hpe_nimble_info – Collect information from HPE Nimble Storage array."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_fc.html" title="hpe_nimble_fc – Manage the HPE Nimble Storage Fibre Channel."
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hpe-nimble-group-manage-the-hpe-nimble-storage-group">
+<span id="hpe-nimble-group-module"></span><h1>hpe_nimble_group – Manage the HPE Nimble Storage group.<a class="headerlink" href="#hpe-nimble-group-manage-the-hpe-nimble-storage-group" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements" id="id2">Requirements</a></li>
+<li><a class="reference internal" href="#parameters" id="id3">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id4">Notes</a></li>
+<li><a class="reference internal" href="#examples" id="id5">Examples</a></li>
+<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+</ul>
+</div>
+<div class="section" id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<p>Manage an HPE Nimble Storage group on an Nimble Storage array.</p>
+</div>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li>Ansible 2.9 or later</li>
+<li>NimbleOS 5.0 or later</li>
+<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+</ul>
+</div>
+<div class="section" id="parameters">
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt>alarms (False, bool, None)</dt>
+<dd>Whether alarm feature is enabled.</dd>
+<dt>alert_to_email_addrs (False, str, None)</dt>
+<dd>Comma-separated list of email addresss to receive emails. Comma separated email list.</dd>
+<dt>alert_from_email_addrs (False, str, None)</dt>
+<dd>From email address to use while sending emails. Case insensitive email address.</dd>
+<dt>alert_min_level (False, str, None)</dt>
+<dd>Minimum level of alert to be notified.</dd>
+<dt>allow_analytics_gui (False, bool, None)</dt>
+<dd>Specify whether to allow HPE Nimble Storage to use Google Analytics in the GUI. HPE Nimble Storage uses Google Analytics to gather data related to GUI usage. The data gathered is used to evaluate and improve the product.</dd>
+<dt>allow_support_tunnel (False, bool, None)</dt>
+<dd>Whether to allow support tunnel.</dd>
+<dt>auto_switchover (False, bool, None)</dt>
+<dd>Whether automatic switchover of Group management services feature is enabled.</dd>
+<dt>autoclean_unmanaged_snapshots (False, bool, None)</dt>
+<dd>Whether autoclean unmanaged snapshots feature is enabled.</dd>
+<dt>autoclean_unmanaged_snapshots_ttl_unit (False, int, None)</dt>
+<dd>Unit for unmanaged snapshot time to live.</dd>
+<dt>autosupport (False, bool, None)</dt>
+<dd>Whether to send autosupport.</dd>
+<dt>cc_mode (False, bool, None)</dt>
+<dd>Enable or disable Common Criteria mode.</dd>
+<dt>change_name (False, str, None)</dt>
+<dd>Change name of the existing group.</dd>
+<dt>check_migrate (False, bool, None)</dt>
+<dd>Check if the group Management Service can be migrated to the group Management Service backup array.</dd>
+<dt>date (False, int, None)</dt>
+<dd>Unix epoch time local to the group. Seconds since last epoch. Example- 3400.</dd>
+<dt>default_iscsi_target_scope (False, str, None)</dt>
+<dd>Newly created volumes are exported under iSCSI Group Target or iSCSI Volume Target.</dd>
+<dt>default_volume_limit (False, int, None)</dt>
+<dd>Default limit for a volume space usage as a percentage of volume size. Volume will be taken offline/made non-writable on exceeding its limit. Percentage as integer from 0 to 100.</dd>
+<dt>domain_name (False, str, None)</dt>
+<dd>Domain name for this group. String of alphanumeric characters, valid range is from 2 to 255; Each label must be between 1 and 63 characters long; - and . are allowed after the first and before the last character.</dd>
+<dt>dns_servers (False, list, None)</dt>
+<dd>IP addresses for this group’s dns servers.</dd>
+<dt>fc_enabled (False, bool, None)</dt>
+<dd>Whether FC is enabled on this group.</dd>
+<dt>force (False, bool, False)</dt>
+<dd>Can be used with halt or merge flag. Halt remaining arrays when one or more is unreachable. Ignore warnings and forcibly merge specified group with this group.</dd>
+<dt>group_snapshot_ttl (False, int, None)</dt>
+<dd>Snapshot Time-to-live(TTL) configured at group level for automatic deletion of unmanaged snapshots. Value 0 indicates unlimited TTL.</dd>
+<dt>group_target_enabled (False, bool, None)</dt>
+<dd>Is group_target enabled on this group.</dd>
+<dt>group_target_name (False, str, None)</dt>
+<dd>Iscsi target name for this group. String of up to 255 alphanumeric, hyphenated, colon, or period-separated characters; but cannot begin with hyphen, colon or period. This type is used for the group target name.</dd>
+<dt>halt (False, bool, None)</dt>
+<dd>Halt all arrays in the group.</dd>
+<dt>iscsi_enabled (False, bool, None)</dt>
+<dd>Whether iSCSI is enabled on this group.</dd>
+<dt>isns_enabled (False, bool, None)</dt>
+<dd>Whether iSNS is enabled.</dd>
+<dt>isns_port (False, int, None)</dt>
+<dd>Port number for iSNS Server. Positive integer value up to 65535 representing TCP/IP port.</dd>
+<dt>isns_server (False, str, None)</dt>
+<dd>Hostname or IP Address of iSNS Server.</dd>
+<dt>level (False, str, None)</dt>
+<dd>Level of the test alert.</dd>
+<dt>login_banner_after_auth (False, bool, None)</dt>
+<dd>Should the banner be displayed before the user credentials are prompted or after prompting the user credentials.</dd>
+<dt>login_banner_message (False, str, None)</dt>
+<dd>The message for the login banner that is displayed during user login activity. String upto 2048 characters.</dd>
+<dt>login_banner_reset (False, str, None)</dt>
+<dd>This will reset the banner to the version of the installed NOS. When login_banner_after_auth is specified, login_banner_reset can not be set to true.</dd>
+<dt>merge (False, bool, None)</dt>
+<dd>Perform group merge with the specified group.</dd>
+<dt>migrate (False, bool, None)</dt>
+<dd>Migrate the group Management Service to the current group Management Service backup array.</dd>
+<dt>name (True, str, None)</dt>
+<dd>Name of the group.</dd>
+<dt>ntp_server (False, str, None)</dt>
+<dd>Either IP address or hostname of the NTP server for this group. Plain string.</dd>
+<dt>proxy_port (False, int, None)</dt>
+<dd>Proxy Port of HTTP Proxy Server. Integer value between 0-65535 representing TCP/IP port.</dd>
+<dt>proxy_server (False, str, None)</dt>
+<dd>Hostname or IP Address of HTTP Proxy Server. Setting this attribute to an empty string will unset all proxy settings.</dd>
+<dt>proxy_username (False, str, None)</dt>
+<dd>Username to authenticate with HTTP Proxy Server. HTTP proxy server username, string up to 255 characters, special
+characters are not allowed.</dd>
+<dt>proxy_password (False, str, None)</dt>
+<dd>Password to authenticate with HTTP Proxy Server.</dd>
+<dt>reboot (False, bool, None)</dt>
+<dd>Reboot all arrays in the group.</dd>
+<dt>repl_throttle_list (False, list, None)</dt>
+<dd>All the replication bandwidth limits on the system. All the throttles for the partner.</dd>
+<dt>send_alert_to_support (False, bool, None)</dt>
+<dd>Whether to send alert to Support.</dd>
+<dt>skip_secondary_mgmt_ip (False, bool, None)</dt>
+<dd>Skip check for secondary management IP address.</dd>
+<dt>smtp_auth_enabled (False, bool, None)</dt>
+<dd>Whether SMTP Server requires authentication.</dd>
+<dt>smtp_auth_password (False, str, None)</dt>
+<dd>Password to authenticate with SMTP Server.</dd>
+<dt>smtp_auth_username (False, str, None)</dt>
+<dd>Username to authenticate with SMTP Server.</dd>
+<dt>smtp_port (False, int, None)</dt>
+<dd>Port number of SMTP Server.</dd>
+<dt>smtp_encrypt_type (False, str, None)</dt>
+<dd>Level of encryption for SMTP.</dd>
+<dt>snmp_community (False, str, None)</dt>
+<dd>Community string to be used with SNMP.</dd>
+<dt>snmp_get_enabled (False, bool, None)</dt>
+<dd>Whether to accept SNMP get commands.</dd>
+<dt>snmp_get_port (False, int, None)</dt>
+<dd>Port number to which SNMP get requests should be sent.</dd>
+<dt>snmp_trap_enabled (False, bool, None)</dt>
+<dd>Whether to enable SNMP traps.</dd>
+<dt>snmp_trap_host (False, str, None)</dt>
+<dd>Hostname or IP Address to send SNMP traps.</dd>
+<dt>snmp_trap_port (False, int, None)</dt>
+<dd>Port number of SNMP trap host.</dd>
+<dt>snmp_sys_contact (False, str, None)</dt>
+<dd>Name of the SNMP administrator. Plain string.</dd>
+<dt>snmp_sys_location (False, str, None)</dt>
+<dd>Location of the group. Plain string.</dd>
+<dt>src_group_ip (False, str, None)</dt>
+<dd>IP address of the source group.</dd>
+<dt>src_group_name (False, str, None)</dt>
+<dd>Name of the source group.</dd>
+<dt>src_username (False, str, None)</dt>
+<dd>Username of the source group.</dd>
+<dt>src_passphrase (False, str, None)</dt>
+<dd>Source group encryption passphrase. Encryption passphrase. String with size from 8 to 64 printable characters.</dd>
+<dt>src_password (False, str, None)</dt>
+<dd>Password of the source group.</dd>
+<dt>state (True, str, None)</dt>
+<dd>The group operation.</dd>
+<dt>syslogd_enabled (False, bool, None)</dt>
+<dd>Is syslogd enabled on this system.</dd>
+<dt>syslogd_port (False, int, None)</dt>
+<dd>Port number for syslogd server.</dd>
+<dt>syslogd_server (False, str, None)</dt>
+<dd>Hostname of the syslogd server.</dd>
+<dt>tdz_enabled (False, bool, None)</dt>
+<dd>Is Target Driven Zoning (TDZ) enabled on this group.</dd>
+<dt>tdz_prefix (False, str, None)</dt>
+<dd>arget Driven Zoning (TDZ) prefix for peer zones created by TDZ.</dd>
+<dt>test_alert (False, bool, None)</dt>
+<dd>Generate a test alert.</dd>
+<dt>timezone (False, str, None)</dt>
+<dd>Timezone in which this group is located. Plain string.</dd>
+<dt>tlsv1_enabled (False, bool, None)</dt>
+<dd>Enable or disable TLSv1.0 and TLSv1.1.</dd>
+<dt>user_inactivity_timeout (False, int, None)</dt>
+<dd>The amount of time in seconds that the user session is inactive before timing out. User inactivity timeout in second, valid range is from 1 to 43200.</dd>
+<dt>validate_merge (False, bool, None)</dt>
+<dd>Perform group merge validation.</dd>
+<dt>vss_validation_timeout (False, int, None)</dt>
+<dd>The amount of time in seconds to validate Microsoft VSS application synchronization before timing out. VSS validation timeout in second, valid range is from 1 to 3600.</dd>
+<dt>vvol_enabled (False, bool, None)</dt>
+<dd>Are vVol enabled on this group.</dd>
+<dt>host (True, str, None)</dt>
+<dd>HPE Nimble Storage IP address.</dd>
+<dt>password (True, str, None)</dt>
+<dd>HPE Nimble Storage password.</dd>
+<dt>username (True, str, None)</dt>
+<dd>HPE Nimble Storage user name.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="notes">
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>check_mode is not supported.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Update group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">send_alert_to_support</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">send_alert_to_support</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">alert_to_email_addrs</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">alert_to_email_addrs</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Reboot group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">reboot</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Halt group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">halt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Validate merge group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_group_ip</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_group_ip</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">skip_secondary_mgmt_ip</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">skip_secondary_mgmt_ip</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_passphrase</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_passphrase</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">validate_merge</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Merge group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_group_ip</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_group_ip</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">skip_secondary_mgmt_ip</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">skip_secondary_mgmt_ip</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">src_passphrase</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">src_passphrase</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">merge</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Test alert group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">level</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">level</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">test_alert</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Migrate group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">migrate</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Check migrate group</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;present&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">check_migrate</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="status">
+<h2><a class="toc-backref" href="#id6">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>This module is not guaranteed to have a backwards compatible interface. <em>[preview]</em></li>
+<li>This module is maintained by community.</li>
+</ul>
+<div class="section" id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>HPE Nimble Storage Ansible Team (&#64;ar-india) &lt;<a class="reference external" href="mailto:nimble-dcs-storage-automation-eng&#37;&#52;&#48;hpe&#46;com">nimble-dcs-storage-automation-eng<span>&#64;</span>hpe<span>&#46;</span>com</a>&gt;</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hpe_nimble_group – Manage the HPE Nimble Storage group.</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#status">Status</a><ul>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_info.html" title="hpe_nimble_info – Collect information from HPE Nimble Storage array."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_fc.html" title="hpe_nimble_fc – Manage the HPE Nimble Storage Fibre Channel."
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Copyright 2020 Hewlett Packard Enterprise Development LP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

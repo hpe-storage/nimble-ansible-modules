@@ -1,0 +1,128 @@
+.. _hpe_nimble_shelf_module:
+
+
+hpe_nimble_shelf -- Manage the HPE Nimble Storage shelves.
+==========================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the shelves on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  accept_dedupe_impact (False, bool, None)
+    Accept the reduction or elimination of deduplication capability on the system as a result of activating a shelf that does not meet the necessary deduplication requirements.
+
+
+  accept_foreign (False, bool, None)
+    Accept the removal of data on the shelf disks and activate foreign shelf.
+
+
+  activated (True, bool, None)
+    Activated state for shelf or disk set means it is available to store date on. An activated shelf may not be deactivated.
+
+
+  driveset (False, int, None)
+    Driveset to activate.
+
+
+  force (False, bool, None)
+    Forcibly activate shelf.
+
+
+  last_request (False, bool, None)
+    Indicates this is the last request in a series of shelf add requests.
+
+
+  state (True, str, None)
+    The shelf operation.
+
+
+  shelf_serial (True, str, None)
+    Serial number of shelf.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    - name: Update shelf
+      hpe_nimble_shelf:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        shelf_serial: "{{ shelf_serial | mandatory }}"
+        accept_foreign: "{{ accept_foreign }}"
+        force: "{{ force }}"
+        activated: "{{ activated }}"
+        state: present
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

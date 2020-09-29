@@ -1,0 +1,181 @@
+.. _hpe_nimble_network_module:
+
+
+hpe_nimble_network -- Manage the HPE Nimble Storage network configuration.
+==========================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the storage network configuration on the HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  activate (False, bool, None)
+    Activate a network configuration.
+
+
+  array (False, list, None)
+    List of array network configs.
+
+
+  change_name (False, str, None)
+    Change name of the existing network config.
+
+
+  iscsi_automatic_connection_method (False, bool, None)
+    Whether automatic connection method is enabled. Enabling this means means redirecting connections from the specified iSCSI discovery IP address to the best data IP address based on connection counts.
+
+
+  iscsi_connection_rebalancing (False, bool, None)
+    Whether rebalancing is enabled. Enabling this means rebalancing iSCSI connections by periodically breaking existing connections that are out-of-balance, allowing the host to reconnect to a more appropriate data IP address.
+
+
+  ignore_validation_mask (False, int, None)
+    Indicates whether to ignore the validation.
+
+
+  mgmt_ip (False, str, None)
+    Management IP address for the Group. Four numbers in the range (0,255) separated by periods.
+
+
+  name (True, str, None)
+    Name of the network configuration. Use the name 'draft' when creating a draft configuration.
+
+
+  secondary_mgmt_ip (False, str, None)
+    Secondary management IP address for the Group. Four numbers in the range [0,255] separated by periods.
+
+
+  subnet (False, list, None)
+    List of subnet configs.
+
+
+  route (False, list, None)
+    List of static routes.
+
+
+  state (True, str, None)
+    The network config operation.
+
+
+  validate (False, bool, None)
+    Validate a network configuration.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create network config, fails if it exist or cannot create
+    # if state is present, then create network config if not present ,else success
+    - name: Create network config
+      hpe_nimble_network:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        route: "{{ route }}"
+        subnet: "{{ subnet }}"
+        array: "{{ array }}"
+        iscsi_automatic_connection_method: true
+        iscsi_connection_rebalancing: False
+        mgmt_ip: "{{ mgmt_ip }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete network config
+      hpe_nimble_network:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "absent"
+
+    - name: Validate network config
+      hpe_nimble_network:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        ignore_validation_mask: 1
+        validate: true
+
+    - name: Activate Network config
+      hpe_nimble_network:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        ignore_validation_mask: 1
+        activate: true
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+
