@@ -131,7 +131,6 @@ def create_chap_user(
 def update_chap_user(
         client_obj,
         user_name,
-        user_password,
         **kwargs):
 
     if utils.is_null_or_empty(user_name):
@@ -144,7 +143,7 @@ def update_chap_user(
 
         changed_attrs_dict, params = utils.remove_unchanged_or_null_args(user_resp, **kwargs)
         if changed_attrs_dict.__len__() > 0:
-            user_resp = client_obj.chap_users.update(id=user_resp.attrs.get("id"), password=user_password, **params)
+            user_resp = client_obj.chap_users.update(id=user_resp.attrs.get("id"), **params)
             return (True, True, f"Chap user '{user_name}' already present. Modified the following attributes '{changed_attrs_dict}'",
                     changed_attrs_dict, user_resp.attrs)
         else:
@@ -255,8 +254,8 @@ def main():
                 return_status, changed, msg, changed_attrs_dict, resp = update_chap_user(
                     client_obj,
                     user_name,
-                    user_password,
                     name=change_name,
+                    password=user_password,
                     description=description,
                     initiator_iqns=initiator_iqns)
 
