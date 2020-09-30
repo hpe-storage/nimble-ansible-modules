@@ -1,0 +1,202 @@
+.. _hpe_nimble_partner_module:
+
+
+hpe_nimble_partner -- Manage the HPE Nimble Storage Replication Partner.
+========================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the replication partner on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  control_port (False, int, None)
+    Port number of partner control interface. Value -1 for an invalid port or a positive integer value up to 65535 representing the TCP/IP port.
+
+
+  data_port (False, int, None)
+    Port number of partner data interface. Value -1 for an invalid port or a positive integer value up to 65535 representing the TCP/IP port.
+
+
+  description (False, str, None)
+    Description of replication partner.
+
+
+  downstream_hostname (True, str, None)
+    IP address or hostname of partner interface. This must be the partner's Group Management IP address. String of up to 64 alphanumeric characters, - and . and ':' are allowed after first character.
+
+
+  folder (False, str, None)
+    The Folder ID within the pool where volumes replicated from this partner will be created. This is not supported for pool partners.
+
+
+  match_folder (False, bool, None)
+    Indicates whether to match the upstream volume's folder on the downstream.
+
+
+  name (False, str, None)
+    Name of replication partner. String of up to 64 alphanumeric characters, - and . and  ':' are allowed after first character.
+
+
+  pause (False, bool, None)
+    Pause replication for the specified partner.
+
+
+  pool (False, str, None)
+    The pool name where volumes replicated from this partner will be created. Replica volumes created as clones ignore this parameter and are always created in the same pool as their parent volume.
+
+
+  repl_data_hostname (False, str, None)
+    IP address or hostname of partner data interface. String of up to 64 alphanumeric characters, - and . and ':' are allowed after first character.
+
+
+  resume (False, bool, None)
+    Resume replication for the specified partner.
+
+
+  secret (False, str, None)
+    Replication partner shared secret, used for mutual authentication of the partners.
+
+
+  state (True, str, None)
+    The replication partner operation.
+
+
+  subnet_label (False, str, None)
+    Indicates whether to match the upstream volume's folder on the downstream.
+
+
+  subnet_type (False, str, None)
+    Type of the subnet used to replicate to this partner.
+
+
+  test (False, bool, None)
+    Test connectivity to the specified partner.
+
+
+  throttles (False, list, None)
+    Throttles used while replicating from/to this partner. All the throttles for the partner.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create partner, fails if it exist or cannot create
+    # if state is present, then create partner if not present ,else success
+    - name: Create Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"  # upstream host
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name | mandatory }}"
+        description: "{{ description }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        secret: "{{ secret | mandatory }}"
+        subnet_label: "{{ subnet_label | mandatory }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "absent"
+
+    - name: Test Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "present"
+        test: true
+
+    - name: Pause Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "present"
+        pause: true
+
+    - name: Resume Partner
+      hpe_nimble_partner:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        downstream_hostname: "{{ downstream_hostname | mandatory }}"
+        state: "present"
+        resume: true
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

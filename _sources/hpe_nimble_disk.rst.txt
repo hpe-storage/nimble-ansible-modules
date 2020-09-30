@@ -1,0 +1,116 @@
+.. _hpe_nimble_disk_module:
+
+
+hpe_nimble_disk -- Manage the HPE Nimble Storage disk.
+======================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage disks on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  disk_op (True, str, None)
+    The intended operation to be performed on the specified disk.
+
+
+  force (False, bool, False)
+    Forcibly add a disk.
+
+
+  shelf_location (True, str, None)
+    Position of the shelf the disk belongs to.
+
+
+  slot (True, int, None)
+    Disk slot number.
+
+
+  state (True, str, None)
+    The disk operation.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    - name: Update Disk
+      hpe_nimble_disk:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        slot: "{{ slot | mandatory }}"
+        shelf_location: "{{ shelf_location | mandatory }}"
+        disk_op: "{{ disk_op | mandatory }}"
+        force: "{{ force }}"
+        state: present
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

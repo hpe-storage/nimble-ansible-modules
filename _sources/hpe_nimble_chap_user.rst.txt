@@ -1,0 +1,129 @@
+.. _hpe_nimble_chap_user_module:
+
+
+hpe_nimble_chap_user -- Manage the HPE Nimble Storage CHAP user.
+================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the CHAP user on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  change_name (False, str, None)
+    Change the name of the existing CHAP user.
+
+
+  description (False, str, None)
+    Text description of CHAP user.
+
+
+  initiator_iqns (False, list, None)
+    List of iSCSI initiators. To be configured with this CHAP user for iSCSI Group Target CHAP authentication. This attribute cannot be modified at the same time with other attributes. If any specified initiator is already associated with another CHAP user, it will be replaced by this CHAP user for future CHAP authentication.
+
+
+  name (True, str, None)
+    The CHAP user name.
+
+
+  state (True, str, None)
+    The CHAP user operation.
+
+
+  user_password (False, str, None)
+    CHAP secret. The CHAP secret should be between 12-16 characters and cannot contain spaces or most punctuation. string of 12 to 16 printable ASCII characters excluding ampersand and ^[];`
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create chap user, fails if it exist or cannot create
+    # if state is present, then create chap user if not present, else success
+    - name: Create Chap User
+      hpe_nimble_chap_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description }}"
+        user_password: "{{ user_password | mandatory }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete Chap User
+      hpe_nimble_chap_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "absent"
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

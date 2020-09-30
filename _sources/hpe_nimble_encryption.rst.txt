@@ -1,0 +1,161 @@
+.. _hpe_nimble_encryption_module:
+
+
+hpe_nimble_encryption -- Manage the HPE Nimble Storage encryption.
+==================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the encryption on an Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  active (False, bool, False)
+    Whether the master key is active or not.
+
+
+  age (False, int, None)
+    Minimum age (in hours) of inactive encryption keys to be purged. '0' indicates to purge the keys immediately.
+
+
+  encryption_config (False, dict, None)
+    How encryption is configured for this group. Group encryption settings.
+
+
+  group_encrypt (False, bool, None)
+    Flag for setting group encryption.
+
+
+  name (True, str, None)
+    Name of the master key. The only allowed value is "default".
+
+
+  passphrase (False, str, None)
+    Passphrase used to protect the master key, required during creation, enabling/disabling the key and change the passphrase to a new value. String with size from 8 to 64 printable characters.
+
+
+  purge_inactive (False, bool, None)
+    Purges encryption keys that have been inactive for the age or longer. If you do not specify an age, the keys will be purged immediately.
+
+
+  new_passphrase (False, str, None)
+    When changing the passphrase, this attribute specifies the new value of the passphrase. String with size from 8 to 64 printable characters.
+
+
+  state (True, str, None)
+    The encryption operation.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create master key, fails if it exist or cannot create
+    # if state is present, then create master key if not present ,else success
+    - name: Create master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        passphrase: "{{ passphrase }}"
+        active: "{{ active | default('false') }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        state: "absent"
+
+    - name: Purge inactive master key
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "default"
+        age: "{{ age | mandatory }}"
+        state: "present"
+        purge_inactive: true
+
+    - name: Group encryption
+      hpe_nimble_encryption:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        encryption_config: "{{ encryption_config | mandatory }}"
+        state: "present"
+        group_encrypt: true
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

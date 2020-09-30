@@ -1,0 +1,145 @@
+.. _hpe_nimble_pool_module:
+
+
+hpe_nimble_pool -- Manage the HPE Nimble Storage pools.
+=======================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the storage pools on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  array_list (False, list, None)
+    List of arrays in the pool with detailed information. To create or update array list, only array ID is required.
+
+
+  change_name (False, str, None)
+    Change name of the existing pool.
+
+
+  description (False, str, None)
+    Text description of pool.
+
+
+  dedupe_all_volumes (False, bool, False)
+    Indicates if dedupe is enabled by default for new volumes on this pool.
+
+
+  force (False, bool, False)
+    Forcibly delete the specified pool even if it contains deleted volumes whose space is being reclaimed. Forcibly remove an array from array_list via an update operation even if the array is not reachable. There should no volumes in the pool for the force update operation to succeed.
+
+
+  is_default (False, bool, None)
+    Indicates if this is the default pool.
+
+
+  merge (False, bool, None)
+    Merge the specified pool into the target pool. All volumes on the specified pool are moved to the target pool and the specified pool is then deleted. All the arrays in the pool are assigned to the target pool.
+
+
+  name (True, str, None)
+    Name of the pool.
+
+
+  state (True, str, None)
+    The pool operation.
+
+
+  target (False, str, None)
+    Name of the target pool.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a pool if not present. Fails if already present.
+    # if state is present, then create a pool if not present. Succeed if it already exists.
+    - name: Create pool if not present
+      hpe_nimble_pool:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        name: "{{ name }}"
+        array_list: "{{ array_list }} "
+        description: "{{ description }}"
+
+    - name: Delete pool
+      hpe_nimble_pool:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

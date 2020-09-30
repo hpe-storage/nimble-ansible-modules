@@ -1,0 +1,300 @@
+.. _hpe_nimble_volume_module:
+
+
+hpe_nimble_volume -- Manage the HPE Nimble Storage volumes.
+===========================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the volumes on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  agent_type (False, str, None)
+    External management agent type.
+
+
+  app_uuid (False, str, None)
+    Application identifier of volume.
+
+
+  block_size (False, int, None)
+    Size in bytes of blocks in the volume.
+
+
+  cache_pinned (False, bool, False)
+    If set to true, all the contents of this volume are kept in flash cache.
+
+
+  caching (False, bool, None)
+    Indicate caching the volume is enabled.
+
+
+  change_name (False, str, None)
+    Change name of the existing source volume.
+
+
+  clone (False, bool, None)
+    Whether this volume is a clone. Use this attribute in combination with name and snapshot to create a clone by setting clone = true.
+
+
+  dedupe (False, bool, None)
+    Indicate whether dedupe is enabled.
+
+
+  description (False, str, None)
+    Text description of volume.
+
+
+  destination (False, str, None)
+    Name of the destination pool where the volume is moving to.
+
+
+  encryption_cipher (False, str, None)
+    The encryption cipher of the volume.
+
+
+  folder (False, str, None)
+    Name of the folder holding this volume.
+
+
+  force (False, bool, None)
+    Forcibly offline, reduce size or change read-only status a volume.
+
+
+  force_vvol (False, bool, False)
+    Forcibly move a virtual volume.
+
+
+  iscsi_target_scope (False, str, None)
+    This indicates whether volume is exported under iSCSI Group Target or iSCSI volume target. This attribute is only meaningful to iSCSI system.
+
+
+  limit (False, int, None)
+    Limit on the volume's mapped usage, expressed as a percentage of the volume's size.
+
+
+  limit_iops (False, int, None)
+    IOPS limit for this volume.
+
+
+  limit_mbps (False, int, None)
+    Throughput limit for this volume in MB/s.
+
+
+  metadata (False, dict, None)
+    User defined key-value pairs that augment an volume's attributes. List of key-value pairs. Keys must be unique and non-empty. When creating an object, values must be non-empty. When updating an object, an empty value causes the corresponding key to be removed.
+
+
+  move (False, bool, None)
+    Move a volume to different pool.
+
+
+  multi_initiator (False, bool, None)
+    For iSCSI volume target, this flag indicates whether the volume and its snapshots can be accessed from multiple initiators at the same time.
+
+
+  name (True, str, None)
+    Name of the source volume.
+
+
+  online (False, bool, None)
+    Online state of volume, available for host initiators to establish connections.
+
+
+  owned_by_group (False, str, None)
+    Name of group that currently owns the volume.
+
+
+  parent (False, str, None)
+    Name of parent volume.
+
+
+  perf_policy (False, str, None)
+    Name of the performance policy. After creating a volume, performance policy for the volume can only be changed to another performance policy with same block size.
+
+
+  pool (False, str, None)
+    Name associated with the pool in the storage pool table.
+
+
+  read_only (False, bool, None)
+    Volume is read-only.
+
+
+  size (optional, int, None)
+    Volume size in megabytes. Size is required for creating a volume but not for cloning an existing volume.
+
+
+  snapshot (False, str, None)
+    Base snapshot name. This attribute is required together with name and clone when cloning a volume with the create operation.
+
+
+  state (True, str, None)
+    The volume operations.
+
+
+  thinly_provisioned (False, bool, None)
+    Set volume's provisioning level to thin.
+
+
+  volcoll (False, str, None)
+    Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # If state is "create", then create a volume if not present. Fails if already present.
+    # if state is present, then create a volume if not present. Succeeds if it already exists.
+    - name: Create volume if not present
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        size: "{{ size }}"
+        limit_iops: "{{ limit_iops }}"
+        limit_mbps: 5000
+        force: false
+        metadata: "{{ metadata }}" # metadata = {'mykey1': 'myval1', 'mykey2': 'myval2'}
+        description: "{{ description }}"
+        name: "{{ name }}"
+
+    - name: Changing volume "{{ name }}" to offline state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        online: False
+        state: present
+        name: "{{ name }}"
+
+    - name: Changing volume "{{ name }}" to online state
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        online: True
+        state: present
+        name: "{{ name }}"
+
+    # Create a clone from the given snapshot name.
+    # If snapshot name is not provided then a snapshot is created on the source volume.
+    # Clone task only run if "parent" is specified. Snapshot is optional.
+    - name: Create or Refresh a clone!
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}" # name here is the name of cloned volume
+        parent: "{{ parent | mandatory }}"
+        snapshot: "{{ snapshot | default(None)}}"
+        state: "{{ state | default('present') }}"
+      when:
+        - parent is defined
+
+    - name: Destroy volume (must be offline)
+      hpe_nimble_volume:
+        name: "{{ name }}"
+        state: absent
+
+    # If no snapshot is given, then restore volume to last snapshot. Fails if no snapshots exist.
+    # If snapshot is provided, then restore volume from specified snapshot.
+    - name: Restore volume "{{ name }}".
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        snapshot: "{{ snapshot | default(None)}}"
+        state: restore
+
+    - name: Delete volume "{{ name }}" (must be offline)
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+
+    - name: Move volume to pool
+      hpe_nimble_volume:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        move: true
+        name: "{{ name }}"
+        state: present
+        destination: "{{ destination | mandatory }}"
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

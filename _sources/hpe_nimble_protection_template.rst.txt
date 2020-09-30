@@ -1,0 +1,164 @@
+.. _hpe_nimble_protection_template_module:
+
+
+hpe_nimble_protection_template -- Manage the HPE Nimble Storage protection templates.
+=====================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the protection templates on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  agent_hostname (False, str, None)
+    Generic backup agent hostname.
+
+
+  agent_password (False, str, None)
+    Generic backup agent password.
+
+
+  agent_username (False, str, None)
+    Generic backup agent username.
+
+
+  app_cluster (False, str, None)
+    If the application is running within a windows cluster environment, this is the cluster name.
+
+
+  app_id (False, str, None)
+    Application ID running on the server.
+
+
+  app_server (False, str, None)
+    Application server hostname.
+
+
+  app_service_name (False, str, None)
+    If the application is running within a windows cluster environment then this is the instance name of the service running within the cluster environment.
+
+
+  app_sync (False, str, None)
+    Application synchronization.
+
+
+  change_name (False, str, None)
+    Change name of the existing protection template.
+
+
+  description (False, str, None)
+    Text description of protection template.
+
+
+  name (True, str, None)
+    Name of the protection template.
+
+
+  state (True, str, None)
+    The protection template operations.
+
+
+  vcenter_hostname (False, str, None)
+    VMware vCenter hostname.
+
+
+  vcenter_password (False, str, None)
+    Application VMware vCenter password. A password with few constraints.
+
+
+  vcenter_username (False, str, None)
+    Application VMware vCenter username. String of up to 80 alphanumeric characters, beginning with a letter. It can include ampersand (@), backslash (\), dash (-), period (.), and underscore (_).
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a protection template if not present. Fails if already present.
+    # if state is present, then create a protection template if not present. Succeed if it already exists.
+    - name: Create protection template if not present
+      hpe_nimble_protection_template:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description | default(None)}}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete protection template
+      hpe_nimble_protection_template:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

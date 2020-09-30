@@ -1,0 +1,155 @@
+.. _hpe_nimble_snapshot_module:
+
+
+hpe_nimble_snapshot -- Manage the HPE Nimble Storage snapshots.
+===============================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the snapshots on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  agent_type (False, str, None)
+    External management agent type.
+
+
+  app_uuid (False, str, None)
+    Application identifier of snapshot.
+
+
+  change_name (False, str, None)
+    Change name of the existing snapshot.
+
+
+  description (False, str, None)
+    Text description of snapshot.
+
+
+  expiry_after (False, int, None)
+    Number of seconds after which this snapshot is considered expired by snapshot TTL. A value of 0 indicates that snapshot never expires.
+
+
+  force (False, bool, False)
+    Forcibly delete the specified snapshot even if it is the last replicated collection. Doing so could lead to full re-seeding at the next replication.
+
+
+  metadata (False, dict, None)
+    Key-value pairs that augment a snapshot's attributes. List of key-value pairs. Keys must be unique and non-empty.
+
+
+  name (True, str, None)
+    Name of the snapshot.
+
+
+  online (False, bool, False)
+    Online state for a snapshot means it could be mounted for data restore.
+
+
+  state (True, str, None)
+    The snapshot state.
+
+
+  volume (True, str, None)
+    Parent volume name.
+
+
+  writable (False, bool, False)
+    Allow snapshot to be writable. Mandatory and must be set to 'true' for VSS application synchronized snapshots.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a snapshot if not present. Fails if already present.
+    # if state is present, then create a snapshot if not present. Succeeds if it already exists.
+    - name: Create snapshot if not present
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        volume: "{{ volume }}"
+        name: "{{ name }}"
+        online: "{{ online | default(true) }}"
+        writable: "{{ writable | default(false) }}"
+
+    - name: Delete snapshot  (must be offline)
+      hpe_nimble_snapshot:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        volume: "{{ volume }}"
+        name: "{{ name }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

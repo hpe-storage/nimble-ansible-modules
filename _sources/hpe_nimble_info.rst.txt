@@ -1,0 +1,166 @@
+.. _hpe_nimble_info_module:
+
+
+hpe_nimble_info -- Collect information from HPE Nimble Storage array.
+=====================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Collect information from a HPE Nimble Storage array. By default, the module will collect basic information including array, groups config, protection templates, protection schedules, snapshots, snapshot collections, volume collections and volume counts. Additional information can be collected based on the configured set of arguments.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  gather_subset (False, list, minimum)
+    When supplied, this argument will define the information to be collected. Possible values for this include "all" "minimum" "config" "access_control_records", "alarms", "application_servers", "application_categories", "arrays", "chap_users", "controllers", "disks", "fibre_channel_interfaces", "fibre_channel_configs", "fibre_channel_initiator_aliases", "fibre_channel_ports", "folders", "groups", "initiator_groups", "initiators", "master_key", "network_configs", "performance_policies", "pools", "protection_schedules", "protection_templates", "protocol_endpoints", "replication_partners", "shelves", "snapshots", "snapshot_collections", "software_versions", "user_groups", "user_policies", "users", "volumes", "volume_collections".
+
+    Each subset except "all", "minimum" and "config" supports four types of subset options. Subset "all" supports limit and detail as subset options. Subset "config" and "minimum" does not support any subset options.
+
+    See the example section for usage of the following subset options.
+
+    fields - A string representing which attributes to display for a given subset.
+
+    limit - An integer value which represents how many latest items to show for a given subset.
+
+    detail - A bool flag when set to true fetches everything for a given subset. Default is "True".
+
+    query - A key-value pair to query.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    - name: collect default set of information
+      hpe_nimble_info:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        gather_subset:
+          - minimum:
+      register: array_info
+
+    - name: show default information
+      debug:
+        msg: "{{ array_info['nimble_info']['default'] }}"
+
+    - name: collect config
+      hpe_nimble_info:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        gather_subset:
+          - config:
+      register: array_info
+
+    - name: show config information
+      debug:
+        msg: "{{ array_info['nimble_info']['config'] }}"
+
+    - name: collect all
+      hpe_nimble_info:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        gather_subset:
+          - all:
+              limit: 1
+      register: array_info
+
+    - name: show all information
+      debug:
+        msg: "{{ array_info['nimble_info'] }}"
+
+    - name: collect volume, snapshot and volume collection. Below query will show just one
+            snapshot detail with attributes 'name and id' for a volume called 'vol1'.
+      hpe_nimble_info:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        gather_subset:
+          - volumes:
+              fields: "name,id"
+              limit: 2
+          - volume_collections:
+              limit: 1
+              detail: false
+          - snapshots:
+              fields: "name,id"
+              query:
+                vol_name: "vol1"
+              limit: 1
+              detail: True
+      register: array_info
+
+    - name: show information
+      debug:
+        msg: "{{ array_info['nimble_info'] }}"
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

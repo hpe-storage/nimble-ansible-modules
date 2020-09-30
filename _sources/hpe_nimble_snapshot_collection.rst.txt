@@ -1,0 +1,178 @@
+.. _hpe_nimble_snapshot_collection_module:
+
+
+hpe_nimble_snapshot_collection -- Manage the HPE Nimble Storage snapshot collections.
+=====================================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the snapshot collections on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  agent_type (False, str, None)
+    External management agent type for snapshots being created as part of snapshot collection.
+
+
+  allow_writes (False, bool, False)
+    Allow applications to write to created snapshot(s). Mandatory and must be set to 'true' for VSS application synchronized snapshots.
+
+
+  change_name (False, str, None)
+    Change name of the existing snapshot collection.
+
+
+  description (False, str, None)
+    Text description of snapshot collection.
+
+
+  disable_appsync (False, bool, False)
+    Do not perform application synchronization for this snapshot. Create a crash-consistent snapshot instead.
+
+
+  expiry_after (False, int, None)
+    Number of seconds after which this snapcoll is considered expired by the snapshot TTL. A value of 0 indicates that the snapshot never expires, 1 indicates that the snapshot uses a group-level configured TTL value and any other value indicates the number of seconds.
+
+
+  force (False, bool, False)
+    Forcibly delete the specified snapshot collection even if it is the last replicated snapshot. Doing so could lead to full re-seeding at the next replication.
+
+
+  invoke_on_upstream_partner (False, bool, False)
+    Invoke snapshot request on upstream partner. This operation is not supported for synchronous replication volume vollections.
+
+
+  is_external_trigger (False, bool, False)
+    Is externally triggered.
+
+
+  metadata (False, dict, None)
+    Key-value pairs that augment a snapshot collection attributes. List of key-value pairs. Keys must be unique and non-empty.
+
+
+  name (True, str, None)
+    Name of the snapshot collection.
+
+
+  replicate_to (False, str, None)
+    Specifies the partner name that the snapshots in this snapshot collection are replicated to.
+
+
+  skip_db_consistency_check (False, bool, False)
+    Skip consistency check for database files on this snapshot. This option only applies to volume collections with application synchronization set to VSS, application ID set to MS Exchange 2010 or later with Database Availability Group (DAG), snap_verify option set to true, and disable_appsync option set to false.
+
+
+  snap_verify (False, bool, False)
+    Run verification tool on this snapshot. This option can only be used with a volume collection that has application synchronization.
+
+
+  start_online (False, bool, False)
+    Start with snapshot set online.
+
+
+  state (True, str, None)
+    The snapshot collection operation.
+
+
+  vol_snap_attr_list (False, list, None)
+    List of snapshot attributes for snapshots being created as part of snapshot collection creation. List of volumes with per snapshot attributes.
+
+
+  volcoll (True, str, None)
+    Parent volume collection name.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create , then create a snapshot collection if not present. Fails if already present.
+    # if state is present, then create a snapshot collection if not present. Succeeds if it already exists
+    - name: Create snapshot collection if not present
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "{{ state | default('present') }}"
+        name: "{{ name | mandatory}}"
+        volcoll: "{{ volcoll | mandatory}}"
+        description: "{{ description }}"
+
+    - name: Delete snapshot collection (must be offline)
+      hpe_nimble_snapshot_collection:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        volcoll: "{{ volcoll }}"
+        state: absent
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

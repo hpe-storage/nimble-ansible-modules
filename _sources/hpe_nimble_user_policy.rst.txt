@@ -1,0 +1,135 @@
+.. _hpe_nimble_user_policy_module:
+
+
+hpe_nimble_user_policy -- Manage the HPE Nimble Storage user policies.
+======================================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the user policies on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  allowed_attempts (False, int, None)
+    Number of authentication attempts allowed before the user account is locked. Allowed range is [1, 10] inclusive. '0' indicates no limit.
+
+
+  digit (False, int, None)
+    Number of numerical characters required in user passwords. Allowed range is [0, 255] inclusive.
+
+
+  lower (False, int, None)
+    Number of lowercase characters required in user passwords. Allowed range is [0, 255] inclusive.
+
+
+  max_sessions (False, int, None)
+    Maximum number of sessions allowed for a group. Allowed range is [10, 1000] inclusive.
+
+
+  min_length (False, int, None)
+    Minimum length for user passwords. Allowed range is [8, 255] inclusive.
+
+
+  no_reuse (False, int, None)
+    Number of times that a password must change before you can reuse a previous password. Allowed range is [1,20] inclusive.
+
+
+  previous_diff (False, int, None)
+    Number of characters that must be different from the previous password. Allowed range is [1, 255] inclusive.
+
+
+  special (False, int, None)
+    Number of special characters required in user passwords. Allowed range is [0, 255] inclusive.
+
+
+  state (True, str, None)
+    The user policy operation.
+
+
+  upper (False, int, None)
+    Number of uppercase characters required in user passwords. Allowed range is [0, 255] inclusive.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    - name: Update user policy
+      hpe_nimble_user_policy:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        upper: "{{ upper }}"
+        allowed_attempts: 2
+        min_length: 10
+        state: "present"
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

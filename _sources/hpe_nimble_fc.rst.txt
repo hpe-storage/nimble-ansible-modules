@@ -1,0 +1,152 @@
+.. _hpe_nimble_fc_module:
+
+
+hpe_nimble_fc -- Manage the HPE Nimble Storage Fibre Channel.
+=============================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage storage Fibre Channel on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  array_name_or_serial (True, str, None)
+    Name or serial number of array where the interface is hosted.
+
+
+  controller (False, str, None)
+    Name (A or B) of the controller where the interface is hosted.
+
+
+  hw_upgrade (False, bool, None)
+    Update fibre channel configuration after hardware changes. Possible values:- 'true' 'false'.
+
+
+  name (False, str, None)
+    Name of fibre channel interface
+
+
+  online (False, bool, None)
+    Identify whether the fibre channel interface is online. Possible values:- 'true' 'false'.
+
+
+  precheck (False, bool, None)
+    Check if the interfaces are offline before regenerating the WWNN. Possible values:- 'true' 'false'.
+
+
+  regenerate (False, bool, None)
+    Regenerate fibre channel configuration. Possible values:- 'true' 'false'.
+
+
+  state (True, str, None)
+    The fibre channel operation.
+
+
+  wwnn_base_str (False, str, None)
+    Base WWNN. Six bytes expressed in hex separated by colons. Example:- 'af:32:f1'.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    - name: Update fibre channel interface
+      hpe_nimble_fc:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        array_name_or_serial: "{{ array_name_or_serial | mandatory }}"
+        name: "{{ name | mandatory }}"
+        controller: "{{ controller | mandatory }}"
+        online: "{{ online | mandatory }}"
+        state: "{{ 'present' }}"
+
+    - name: Regenerate fibre channel config
+      hpe_nimble_fc:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        array_name_or_serial: "{{ array_name_or_serial | mandatory }}" # provide the group_leader_array name
+        wwnn_base_str: "{{ wwnn_base_str | mandatory }}"
+        regenerate: true
+        precheck: true
+        state: "{{ 'present' }}"
+
+    - name: Hardware upgrade for fibre channel
+      hpe_nimble_fc:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        array_name_or_serial: "{{ array_name_or_serial | mandatory }}"
+        hw_upgrade: true
+        state: "{{ 'present' }}"
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

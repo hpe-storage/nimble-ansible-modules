@@ -1,0 +1,161 @@
+.. _hpe_nimble_user_module:
+
+
+hpe_nimble_user -- Manage the HPE Nimble Storage users.
+=======================================================
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage the users on an HPE Nimble Storage group.
+
+
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- Ansible 2.9 or later
+- NimbleOS 5.0 or later
+- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+
+
+
+Parameters
+----------
+
+  auth_password (False, str, None)
+    Authorization password for changing password.
+
+
+  change_name (False, str, None)
+    Change name of the existing user.
+
+
+  description (False, str, None)
+    Description of the user.
+
+
+  disabled (False, bool, False)
+    User is currently disabled.
+
+
+  email_addr (False, str, None)
+    Email address of the user.
+
+
+  full_name (False, str, None)
+    Fully qualified name of the user.
+
+
+  inactivity_timeout (False, int, 0)
+    The amount of time that the user session is inactive before timing out. A value of 0 indicates that the timeout is taken from the group setting.
+
+
+  name (True, str, None)
+    Name of the user.
+
+
+  user_password (False, str, None)
+    User's login password.
+
+
+  role (False, str, None)
+    Role of the user. Default is 'guest'.
+
+
+  state (True, str, None)
+    The user operation.
+
+
+  unlock (False, bool, False)
+    Unlock the user.
+
+
+  host (True, str, None)
+    HPE Nimble Storage IP address.
+
+
+  password (True, str, None)
+    HPE Nimble Storage password.
+
+
+  username (True, str, None)
+    HPE Nimble Storage user name.
+
+
+
+
+
+Notes
+-----
+
+.. note::
+   - check_mode is not supported.
+
+
+
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+
+    # if state is create, then create user, fails if it exist or cannot create
+    # if state is present, then create user if not present, else success
+    - name: Create user
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        description: "{{ description }}"
+        state: "{{ state | default('present') }}"
+
+    - name: Delete user
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "absent"
+
+    - name: Unlock user
+      hpe_nimble_user:
+        host: "{{ host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        name: "{{ name }}"
+        state: "present"
+        unlock: true
+
+
+
+
+
+
+Status
+------
+
+
+
+
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
+
+
+- This module is maintained by community.
+
+
+
+Authors
+~~~~~~~
+
+- HPE Nimble Storage Ansible Team (@ar-india) <nimble-dcs-storage-automation-eng@hpe.com>
+

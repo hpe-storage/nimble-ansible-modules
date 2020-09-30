@@ -1,0 +1,243 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hpe_nimble_protection_schedule – Manage the HPE Nimble Storage protection schedules. &#8212; HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/hpedev.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates." href="hpe_nimble_protection_template.html" />
+    <link rel="prev" title="hpe_nimble_pool – Manage the HPE Nimble Storage pools." href="hpe_nimble_pool.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_protection_template.html" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_pool.html" title="hpe_nimble_pool – Manage the HPE Nimble Storage pools."
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hpe-nimble-protection-schedule-manage-the-hpe-nimble-storage-protection-schedules">
+<span id="hpe-nimble-protection-schedule-module"></span><h1>hpe_nimble_protection_schedule – Manage the HPE Nimble Storage protection schedules.<a class="headerlink" href="#hpe-nimble-protection-schedule-manage-the-hpe-nimble-storage-protection-schedules" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements" id="id2">Requirements</a></li>
+<li><a class="reference internal" href="#parameters" id="id3">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id4">Notes</a></li>
+<li><a class="reference internal" href="#examples" id="id5">Examples</a></li>
+<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+</ul>
+</div>
+<div class="section" id="synopsis">
+<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<p>Manage the protection schedules on an HPE Nimble Storage group.</p>
+</div>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li>Ansible 2.9 or later</li>
+<li>NimbleOS 5.0 or later</li>
+<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+</ul>
+</div>
+<div class="section" id="parameters">
+<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt>at_time (False, int, 0)</dt>
+<dd>Time of day when snapshot should be taken. In case repeat frequency specifies more than one snapshot in a day then the until_time option specifies until what time of day to take snapshots.</dd>
+<dt>change_name (False, str, None)</dt>
+<dd>Change the name of existing protection schedule.</dd>
+<dt>days (False, str, None)</dt>
+<dd>Specifies which days snapshots should be taken. Comma separated list of days of the week or ‘all’.</dd>
+<dt>description (False, str, None)</dt>
+<dd>Description of the schedule.</dd>
+<dt>disable_appsync (False, bool, False)</dt>
+<dd>Disables application synchronized snapshots and creates crash consistent snapshots instead.</dd>
+<dt>downstream_partner (False, str, None)</dt>
+<dd>Specifies the partner name if snapshots created by this schedule should be replicated.</dd>
+<dt>name (True, str, None)</dt>
+<dd>Name of the protection schedule to create.</dd>
+<dt>num_retain (False, int, None)</dt>
+<dd>Number of snapshots to retain. If replication is enabled on this schedule the array will always retain the latest replicated snapshot, which may exceed the specified retention value. This is necessary to ensure efficient replication performance.</dd>
+<dt>num_retain_replica (False, int, 0)</dt>
+<dd>Number of snapshots to retain on the replica.</dd>
+<dt>period (False, int, None)</dt>
+<dd>Repeat interval for snapshots with respect to the period_unit. For example, a value of 2 with the ‘period_unit’ of ‘hours’ results in one snapshot every 2 hours.</dd>
+<dt>period_unit (False, str, None)</dt>
+<dd>Time unit over which to take the number of snapshots specified in ‘period’. For example, a value of ‘days’ with a ‘period’ of ‘1’ results in one snapshot every day.</dd>
+<dt>prot_template_name (False, str, None)</dt>
+<dd>Name of the protection template in which this protection schedule is attached to.</dd>
+<dt>repl_alert_thres (False, int, None)</dt>
+<dd>Replication alert threshold in seconds. If the replication of a snapshot takes more than this amount of time to complete an alert will be generated. Enter 0 to disable this alert.</dd>
+<dt>replicate_every (False, int, None)</dt>
+<dd>Specifies which snapshots should be replicated. If snapshots are replicated and this option is not specified, every snapshot is replicated.</dd>
+<dt>schedule_type (False, str, None)</dt>
+<dd>Normal schedules have internal timers which drive snapshot creation. An externally driven schedule has no internal timers. All snapshot activity is driven by an external trigger. In other words, these schedules are used only for externally driven manual snapshots.</dd>
+<dt>skip_db_consistency_check (False, bool, False)</dt>
+<dd>Skip consistency check for database files on snapshots created by this schedule. This option only applies to snapshot schedules of a protection template with application synchronization set to VSS, application ID set to MS Exchange 2010 or later w/DAG, this schedule’s snap_verify option set to yes, and its disable_appsync option set to false. Skipping consistency checks is only recommended if each database in a DAG has multiple copies.</dd>
+<dt>snap_verify (False, bool, False)</dt>
+<dd>Run verification tool on snapshot created by this schedule. This option can only be used with snapshot schedules of a protection template that has application synchronization. The tool used to verify snapshot depends on the type of application. For example, if application synchronization is VSS and the application ID is Exchange, eseutil tool is run on the snapshots. If verification fails, the logs are not truncated.</dd>
+<dt>state (True, str, None)</dt>
+<dd>The protection schedule operations</dd>
+<dt>until_time (False, int, None)</dt>
+<dd>Time of day to stop taking snapshots. Applicable only when repeat frequency specifies more than one snapshot in a day.</dd>
+<dt>use_downstream_for_DR (False, bool, None)</dt>
+<dd>Break synchronous replication for the specified volume collection and present downstream volumes to host(s). Downstream volumes in the volume collection will be set to online and presented to the host(s) using new serial and LUN numbers. No changes will be made to the upstream volumes, their serial and LUN numbers, and their online state. The existing ACLs on the upstream volumes will be copied to the downstream volumes. Use this in conjunction with an empty downstream_partner_id. This unconfigures synchronous replication when the partner is removed from the last replicating schedule in the specified volume collection and presents the downstream volumes to host(s). Host(s) will need to be configured to access the new volumes with the newly assigned serial and LUN numbers. Use this option to expose downstream volumes in a synchronously replicated volume collection to host(s) only when the upstream partner is confirmed to be down and there is no communication between partners. Do not execute this operation if a previous Group Management Service takeover has been performed on a different array. Do not perform a subsequent Group Management Service takeover on a different array as it will lead to irreconcilable conflicts. This limitation is cleared once the Group management service backup array has successfully synchronized after reconnection.</dd>
+<dt>volcoll_or_prottmpl_type (True, str, None)</dt>
+<dd>Type of the protection policy this schedule is attached to.</dd>
+<dt>volcoll_name (False, str, None)</dt>
+<dd>Name of the volume collection in which this protection schedule is attached to.</dd>
+<dt>host (True, str, None)</dt>
+<dd>HPE Nimble Storage IP address.</dd>
+<dt>password (True, str, None)</dt>
+<dd>HPE Nimble Storage password.</dd>
+<dt>username (True, str, None)</dt>
+<dd>HPE Nimble Storage user name.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="notes">
+<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>check_mode is not supported.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># if state is create , then create a protection schedule if not present. Fails if already present.</span>
+<span class="c1"># if state is present, then create a protection schedule if not present. Succeed if it already exists.</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create protection schedule if not present</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_protection_schedule</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">description</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="kp">None</span><span class="o">)</span><span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">state</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;present&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">volcoll_or_prottmpl_type</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">volcoll_or_prottmpl_type</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">prot_template_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">prot_template_name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">num_retain</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">num_retain</span> <span class="cp">}}</span><span class="s">&quot;</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Delete protection schedule</span>
+  <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_protection_schedule</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">password</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">volcoll_or_prottmpl_type</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">volcoll_or_prottmpl_type</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">volcoll_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">volcoll_name</span> <span class="cp">}}</span><span class="s">&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">absent</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="status">
+<h2><a class="toc-backref" href="#id6">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>This module is not guaranteed to have a backwards compatible interface. <em>[preview]</em></li>
+<li>This module is maintained by community.</li>
+</ul>
+<div class="section" id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Alok Ranjan (&#64;ranjanal)</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hpe_nimble_protection_schedule – Manage the HPE Nimble Storage protection schedules.</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#status">Status</a><ul>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hpe_nimble_protection_template.html" title="hpe_nimble_protection_template – Manage the HPE Nimble Storage protection templates."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hpe_nimble_pool.html" title="hpe_nimble_pool – Manage the HPE Nimble Storage pools."
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HPE Nimble Storage Content Collection for Ansible 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Copyright 2020 Hewlett Packard Enterprise Development LP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
