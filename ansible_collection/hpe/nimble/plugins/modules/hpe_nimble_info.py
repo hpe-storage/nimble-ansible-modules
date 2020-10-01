@@ -714,7 +714,7 @@ def generate_dict(name, resp):
 
 def fetch_config_subset(info_subset):
     if info_subset is None:
-        return {}
+        return ({}, True)
     toreturn = {'config': {}}
     result = {}
     temp_dict = {}
@@ -737,15 +737,12 @@ def fetch_config_subset(info_subset):
         syslogd_server,
         vvol_enabled,
         alarms_enabled,
-        auto_switchover_enabled,
-        failover_mode,
         member_list,
         encryption_config,
         name,
         fc_enabled,
-        iscsi_enabled,
-        leader_array_name,
-        default_iscsi_target_scope
+        iscsi_enabled
+
     """
     try:
         for key, cl_obj in info_subset.items():
@@ -766,7 +763,7 @@ def fetch_config_subset(info_subset):
         result['pools'] = generate_dict('pools', temp_dict['pools'])['pools']
         result['network_configs'] = generate_dict('network_configs', temp_dict['network_configs'])['network_configs']
         toreturn['config'] = result
-        return (toreturn)
+        return (toreturn, True)
     except Exception:
         raise
 
@@ -774,7 +771,7 @@ def fetch_config_subset(info_subset):
 def fetch_minimum_subset(info_subset):
 
     if info_subset is None:
-        return {}
+        return ({}, True)
     minimum_subset = [
         "arrays",
         "disks",
@@ -802,8 +799,12 @@ def fetch_minimum_subset(info_subset):
             if key == 'arrays':
                 resp = cl_obj.list(detail=True, fields="extended_model,full_name,all_flash")
             elif key == 'groups':
-                resp = cl_obj.list(detail=True,
-                                   fields="encryption_config,name,fc_enabled,iscsi_enabled,leader_array_name,default_iscsi_target_scope,num_snaps")
+                # certain fields were only added in NimOS 5.1 and above
+                if utils.is_array_version_above_or_equal(info_subset['arrays'], "5.1"):
+                    resp = cl_obj.list(detail=True,
+                                       fields="encryption_config,name,fc_enabled,iscsi_enabled,leader_array_name,default_iscsi_target_scope,num_snaps")
+                else:
+                    resp = cl_obj.list(detail=True, fields="name")
             else:
                 resp = cl_obj.list(detail=False)
             temp_dict[key] = resp
@@ -824,11 +825,11 @@ def fetch_minimum_subset(info_subset):
         result['arrays'] = generate_dict('arrays', temp_dict['arrays'])['arrays']
         result['groups'] = generate_dict('groups', temp_dict['groups'])['groups']
         toreturn['default'] = result
-        return (toreturn)
+        return (toreturn, True)
     except Exception as ex:
         result['failed'] = str(ex)
         toreturn['default'] = result
-        return (toreturn)
+        return (toreturn, False)
 
 # snapshots actually needs a vol_name/vol_id as mandatory params. Hence ,in case of 'all' subset
 # where user cannot provide a query option. we need to fetch the snapshots by iterating
@@ -866,15 +867,22 @@ def fetch_subset(valid_subset_list, info_subset):
             result = {}
             try:
                 if subset['name'] == "minimum":
-                    result = fetch_minimum_subset(info_subset)
+                    result, flag = fetch_minimum_subset(info_subset)
+                    if flag is False:
+                        raise Exception(result)
                 elif subset['name'] == "config":
-                    result = fetch_config_subset(info_subset)
+                    result, flag = fetch_config_subset(info_subset)
+                    if flag is False:
+                        raise Exception(result)
                 elif subset['name'] == "all":
                     result = fetch_snapshots_for_all_subset(subset, info_subset['all'])
                     for key, value in result.items():
                         result_dict[key] = value
                     continue
                 else:
+                    # if subset is user_policies then make sure nimos aversion is fiji and above
+                    if subset['name'] == 'user_policies' and utils.is_array_version_above_or_equal(info_subset['arrays'], "5.1.0") is False:
+                        continue
                     cl_obj_set = info_subset[subset['name']]
                     query = subset['query']
                     if query is not None:

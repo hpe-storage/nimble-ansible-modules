@@ -133,18 +133,18 @@ def update_fc_interface(
         online):
 
     if utils.is_null_or_empty(array_name_or_serial):
-        return (False, False, "Fibre channel interface update failed as no array name is provided.", {})
+        return (False, False, "Fibre channel interface update failed as no array name is provided.", {}, {})
     if utils.is_null_or_empty(fc_name):
-        return (False, False, "Fibre channel interface update failed as no interface name is provided.", {})
+        return (False, False, "Fibre channel interface update failed as no interface name is provided.", {}, {})
     if utils.is_null_or_empty(controller):
-        return (False, False, "Fibre channel interface update failed as no controller name is provided.", {})
+        return (False, False, "Fibre channel interface update failed as no controller name is provided.", {}, {})
     if utils.is_null_or_empty(online):
-        return (False, False, "Fibre channel interface update failed as online flag is not provided.", {})
+        return (False, False, "Fibre channel interface update failed as online flag is not provided.", {}, {})
     try:
         # get the details of the fc
         fc_resp = client_obj.fibre_channel_interfaces.list(detail=True, array_name_or_serial=array_name_or_serial)
         if fc_resp is None:
-            return (False, False, f"No fibre channel is present for array '{array_name_or_serial}'.", {})
+            return (False, False, f"No fibre channel is present for array '{array_name_or_serial}'.", {}, {})
         else:
             fc_result = None
             for fc_interface_obj in fc_resp:
@@ -155,11 +155,15 @@ def update_fc_interface(
                 changed_attrs_dict, params = utils.remove_unchanged_or_null_args(fc_result, online=online)
                 if changed_attrs_dict.__len__() > 0:
                     fc_result = client_obj.fibre_channel_interfaces.update(id=fc_result.attrs.get("id"), online=online)
-                    return (True, True, f"Updated fibre channel interface '{fc_result.attrs.get('name')}'.", {})
+                    if hasattr(fc_result, 'attrs'):
+                        fc_result = fc_result.attrs
+                    return (True, True, "Updated fibre channel interface.", {}, fc_result)
                 else:
-                    return (True, False, f"Fibre channel interface '{fc_result.attrs.get('name')}' already in given state.", {})
+                    if hasattr(fc_result, 'attrs'):
+                        fc_result = fc_result.attrs
+                    return (True, False, "Fibre channel interface already in given state.", {}, fc_result)
     except Exception as ex:
-        return (False, False, f"Fibre channel update failed |'{ex}'", {})
+        return (False, False, f"Fibre channel update failed |'{ex}'", {}, {})
 
 
 def regenerate_wwn(
@@ -169,20 +173,22 @@ def regenerate_wwn(
         precheck):
 
     if utils.is_null_or_empty(array_name_or_serial):
-        return (False, False, "Fibre channel config update failed as no array name is provided.", {})
+        return (False, False, "Fibre channel config update failed as no array name is provided.", {}, {})
     try:
         # get the details of the fc config
         fc_config_resp = client_obj.fibre_channel_configs.get(id=None, group_leader_array=array_name_or_serial)
         if fc_config_resp is None:
-            return (False, False, f"No fibre channel config is present for array '{array_name_or_serial}'.", {})
+            return (False, False, f"No fibre channel config is present for array '{array_name_or_serial}'.", {}, {})
         else:
             changed_attrs_dict = {}
             fc_config_resp = client_obj.fibre_channel_configs.regenerate(fc_config_resp.attrs.get("id"), precheck, wwnn_base_str)
+            if hasattr(fc_config_resp, 'attrs'):
+                fc_config_resp = fc_config_resp.attrs
             changed_attrs_dict['wwnn_base_str'] = wwnn_base_str
             return (True, True, f"Updated fibre channel config for group leader array '{array_name_or_serial}'."
-                    "Modified the following fields :", changed_attrs_dict)
+                    f"Modified the following fields '{changed_attrs_dict}'.", changed_attrs_dict, fc_config_resp)
     except Exception as ex:
-        return (False, False, f"Fibre channel config update failed |'{ex}'", {})
+        return (False, False, f"Fibre channel config update failed |'{ex}'", {}, {})
 
 
 def upgrade_hardware(
@@ -190,17 +196,19 @@ def upgrade_hardware(
         array_name_or_serial):
 
     if utils.is_null_or_empty(array_name_or_serial):
-        return (False, False, "Hardware update failed as no array name is provided.", {})
+        return (False, False, "Hardware update failed as no array name is provided.", {}, {})
     try:
         # get the details of the fc config
         fc_config_resp = client_obj.fibre_channel_configs.get(id=None, group_leader_array=array_name_or_serial)
         if fc_config_resp is None:
-            return (False, False, f"No fibre channel config is present for array '{array_name_or_serial}'.", {})
+            return (False, False, f"No fibre channel config is present for array '{array_name_or_serial}'.", {}, {})
         else:
             fc_config_resp = client_obj.fibre_channel_configs.hw_upgrade(fc_config_resp.attrs.get("id"))
-            return (True, True, f"Hardware update for group leader array '{array_name_or_serial}' done successfully", {})
+            if hasattr(fc_config_resp, 'attrs'):
+                fc_config_resp = fc_config_resp.attrs
+            return (True, True, f"Hardware update for group leader array '{array_name_or_serial}' done successfully", {}, fc_config_resp)
     except Exception as ex:
-        return (False, False, f"Hardware update failed |'{ex}'", {})
+        return (False, False, f"Hardware update failed |'{ex}'", {}, {})
 
 
 def main():
@@ -278,6 +286,7 @@ def main():
     # defaults
     return_status = changed = False
     msg = "No task to run."
+    resp = None
     try:
         client_obj = client.NimOSClient(
             hostname,
@@ -288,19 +297,19 @@ def main():
         # States
         if state == "present":
             if regenerate is True:
-                return_status, changed, msg, changed_attrs_dict = regenerate_wwn(
+                return_status, changed, msg, changed_attrs_dict, resp = regenerate_wwn(
                     client_obj,
                     array_name_or_serial,
                     wwnn_base_str,
                     precheck)
 
             elif hw_upgrade is True:
-                return_status, changed, msg, changed_attrs_dict = upgrade_hardware(
+                return_status, changed, msg, changed_attrs_dict, resp = upgrade_hardware(
                     client_obj,
                     array_name_or_serial)
 
             else:
-                return_status, changed, msg, changed_attrs_dict = update_fc_interface(
+                return_status, changed, msg, changed_attrs_dict, resp = update_fc_interface(
                     client_obj,
                     array_name_or_serial,
                     fc_name,
@@ -311,10 +320,10 @@ def main():
         msg = str(ex)
 
     if return_status:
-        if not utils.is_null_or_empty(changed_attrs_dict) and changed_attrs_dict.__len__() > 0:
-            module.exit_json(return_status=return_status, changed=changed, message=msg, modified_attrs=changed_attrs_dict)
-        else:
+        if utils.is_null_or_empty(resp):
             module.exit_json(return_status=return_status, changed=changed, msg=msg)
+        else:
+            module.exit_json(return_status=return_status, changed=changed, msg=msg, attrs=resp)
     else:
         module.fail_json(return_status=return_status, changed=changed, msg=msg)
 
