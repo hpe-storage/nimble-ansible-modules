@@ -658,13 +658,17 @@ def main():
                 replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
 
         elif state == 'present' and handover is True:
+            replication_partner_id = utils.get_replication_partner_id(client_obj, replication_partner)
+            if utils.is_null_or_empty(replication_partner_id) is True:
+                module.fail_json(msg="Handover for volume collection failed. Please provide a valid replication partner.")
+
             return_status, changed, msg, changed_attrs_dict = handover_volcoll(
                 client_obj,
                 volcoll_name,
-                invoke_on_upstream_partner,
-                no_reverse,
-                override_upstream_down,
-                replication_partner_id=utils.get_replication_partner_id(client_obj, replication_partner))
+                invoke_on_upstream_partner=invoke_on_upstream_partner,
+                no_reverse=no_reverse,
+                override_upstream_down=override_upstream_down,
+                replication_partner_id=replication_partner_id)
 
         elif state == 'present' and abort_handover is True:
             return_status, changed, msg, changed_attrs_dict = abort_handover_volcoll(client_obj, volcoll_name)

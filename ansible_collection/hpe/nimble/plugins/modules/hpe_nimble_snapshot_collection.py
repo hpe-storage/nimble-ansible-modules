@@ -64,7 +64,6 @@ options:
   force:
     required: False
     type: bool
-    default: False
     description:
     - Forcibly delete the specified snapshot collection even if it is the last replicated snapshot. Doing so could lead to full re-seeding at the
       next replication.
@@ -327,7 +326,6 @@ def main():
         "force": {
             "required": False,
             "type": "bool",
-            "default": False,
             "no_log": False
         }
     }
