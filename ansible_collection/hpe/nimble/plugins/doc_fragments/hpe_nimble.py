@@ -40,8 +40,9 @@ options:
     type: str
 requirements:
   - Ansible 2.9 or later
-  - NimbleOS 5.0 or later
-  - HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+  - Python 3.6 or later
+  - HPE Nimble Storage SDK for Python
+  - HPE Nimble Storage arrays running NimbleOS 5.0 or later
 
 notes:
   -  check_mode is not supported.
