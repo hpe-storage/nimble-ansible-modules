@@ -3,9 +3,9 @@
 ## Requirements
 
 - Ansible 2.9 or later
-- HPE Nimble Storage arrays running NimbleOS 5.0 or later
+- Python 3.6 or later
 - HPE Nimble Storage SDK for Python
-- Python >=v3.6
+- HPE Nimble Storage arrays running NimbleOS 5.0 or later
 
 ## Installation
 
