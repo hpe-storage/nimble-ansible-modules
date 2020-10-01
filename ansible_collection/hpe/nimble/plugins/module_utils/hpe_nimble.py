@@ -128,8 +128,7 @@ def remove_unchanged_or_null_args(server_resp, **kwargs):
             if len(value) == 0:
                 # don't add empty list for update
                 continue
-            else:
-                changed_attrs_dict[key] = value
+            changed_attrs_dict[key] = value
         elif server_value != value:
             # This is a special key used to force any operation for object.
             # So, that is never updated as a server attribute.
@@ -325,5 +324,7 @@ def is_array_version_above_or_equal(array_obj_client, arr_version_to_check):
     if arr_version[0] > version_to_check[0]:
         return True
     elif arr_version[0] >= version_to_check[0] and arr_version[1] >= version_to_check[1]:
+        return True
+    elif arr_version[0] >= version_to_check[0] and arr_version[1] >= version_to_check[1] and arr_version[2] >= version_to_check[2]:
         return True
     return False

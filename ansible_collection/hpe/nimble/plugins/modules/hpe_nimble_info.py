@@ -799,9 +799,8 @@ def fetch_minimum_subset(info_subset):
             if key == 'arrays':
                 resp = cl_obj.list(detail=True, fields="extended_model,full_name,all_flash")
             elif key == 'groups':
-                cl_obj = info_subset['arrays']
-                # certainn fields were only added in NimOS 5.1 and above
-                if utils.is_array_version_above_or_equal(cl_obj, "5.1"):
+                # certain fields were only added in NimOS 5.1 and above
+                if utils.is_array_version_above_or_equal(info_subset['arrays'], "5.1"):
                     resp = cl_obj.list(detail=True,
                                        fields="encryption_config,name,fc_enabled,iscsi_enabled,leader_array_name,default_iscsi_target_scope,num_snaps")
                 else:
@@ -882,7 +881,7 @@ def fetch_subset(valid_subset_list, info_subset):
                     continue
                 else:
                     # if subset is user_policies then make sure nimos aversion is fiji and above
-                    if subset['name'] == 'user_policies' and utils.is_array_version_above_or_equal(info_subset['arrays'], "5.1") is False:
+                    if subset['name'] == 'user_policies' and utils.is_array_version_above_or_equal(info_subset['arrays'], "5.1.0") is False:
                         continue
                     cl_obj_set = info_subset[subset['name']]
                     query = subset['query']

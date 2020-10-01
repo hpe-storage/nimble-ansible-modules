@@ -157,11 +157,11 @@ def update_fc_interface(
                     fc_result = client_obj.fibre_channel_interfaces.update(id=fc_result.attrs.get("id"), online=online)
                     if hasattr(fc_result, 'attrs'):
                         fc_result = fc_result.attrs
-                    return (True, True, f"Updated fibre channel interface.", {}, fc_result)
+                    return (True, True, "Updated fibre channel interface.", {}, fc_result)
                 else:
                     if hasattr(fc_result, 'attrs'):
                         fc_result = fc_result.attrs
-                    return (True, False, f"Fibre channel interface already in given state.", {}, fc_result)
+                    return (True, False, "Fibre channel interface already in given state.", {}, fc_result)
     except Exception as ex:
         return (False, False, f"Fibre channel update failed |'{ex}'", {}, {})
 
