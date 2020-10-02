@@ -52,29 +52,30 @@
 <span id="hpe-nimble-group-module"></span><h1>hpe_nimble_group – Manage the HPE Nimble Storage group.<a class="headerlink" href="#hpe-nimble-group-manage-the-hpe-nimble-storage-group" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></li>
-<li><a class="reference internal" href="#requirements" id="id2">Requirements</a></li>
-<li><a class="reference internal" href="#parameters" id="id3">Parameters</a></li>
-<li><a class="reference internal" href="#notes" id="id4">Notes</a></li>
-<li><a class="reference internal" href="#examples" id="id5">Examples</a></li>
-<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+<li><a class="reference internal" href="#synopsis" id="id3">Synopsis</a></li>
+<li><a class="reference internal" href="#requirements" id="id4">Requirements</a></li>
+<li><a class="reference internal" href="#parameters" id="id5">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id6">Notes</a></li>
+<li><a class="reference internal" href="#examples" id="id7">Examples</a></li>
+<li><a class="reference internal" href="#status" id="id8">Status</a></li>
 </ul>
 </div>
 <div class="section" id="synopsis">
-<h2><a class="toc-backref" href="#id1">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
 <p>Manage an HPE Nimble Storage group on an Nimble Storage array.</p>
 </div>
 <div class="section" id="requirements">
-<h2><a class="toc-backref" href="#id2">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The below requirements are needed on the host that executes this module.</p>
 <ul class="simple">
 <li>Ansible 2.9 or later</li>
-<li>NimbleOS 5.0 or later</li>
-<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+<li>Python 3.6 or later</li>
+<li>HPE Nimble Storage SDK for Python</li>
+<li>HPE Nimble Storage arrays running NimbleOS 5.0 or later</li>
 </ul>
 </div>
 <div class="section" id="parameters">
-<h2><a class="toc-backref" href="#id3">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="docutils">
 <dt>alarms (False, bool, None)</dt>
@@ -154,8 +155,9 @@
 <dt>proxy_server (False, str, None)</dt>
 <dd>Hostname or IP Address of HTTP Proxy Server. Setting this attribute to an empty string will unset all proxy settings.</dd>
 <dt>proxy_username (False, str, None)</dt>
-<dd>Username to authenticate with HTTP Proxy Server. HTTP proxy server username, string up to 255 characters, special
-characters are not allowed.</dd>
+<dd><p class="first">Username to authenticate with HTTP Proxy Server. HTTP proxy server username, string up to 255 characters, special</p>
+<p class="last">characters ([, ], <a href="#id1"><span class="problematic" id="id2">`</span></a>, ;, ampersand, tab, space, newline) are not allowed.</p>
+</dd>
 <dt>proxy_password (False, str, None)</dt>
 <dd>Password to authenticate with HTTP Proxy Server.</dd>
 <dt>reboot (False, bool, None)</dt>
@@ -238,7 +240,7 @@ characters are not allowed.</dd>
 </div></blockquote>
 </div>
 <div class="section" id="notes">
-<h2><a class="toc-backref" href="#id4">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Notes</a><a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
@@ -247,7 +249,7 @@ characters are not allowed.</dd>
 </div>
 </div>
 <div class="section" id="examples">
-<h2><a class="toc-backref" href="#id5">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Update group</span>
   <span class="l l-Scalar l-Scalar-Plain">hpe_nimble_group</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="s">&quot;</span>
@@ -333,7 +335,7 @@ characters are not allowed.</dd>
 </div>
 </div>
 <div class="section" id="status">
-<h2><a class="toc-backref" href="#id6">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Status</a><a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>This module is not guaranteed to have a backwards compatible interface. <em>[preview]</em></li>
 <li>This module is maintained by community.</li>

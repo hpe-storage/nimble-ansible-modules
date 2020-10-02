@@ -21,8 +21,9 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - Ansible 2.9 or later
-- NimbleOS 5.0 or later
-- HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)
+- Python 3.6 or later
+- HPE Nimble Storage SDK for Python
+- HPE Nimble Storage arrays running NimbleOS 5.0 or later
 
 
 
@@ -49,7 +50,7 @@ Parameters
     Number of seconds after which this snapshot is considered expired by snapshot TTL. A value of 0 indicates that snapshot never expires.
 
 
-  force (False, bool, False)
+  force (False, bool, None)
     Forcibly delete the specified snapshot even if it is the last replicated collection. Doing so could lead to full re-seeding at the next replication.
 
 

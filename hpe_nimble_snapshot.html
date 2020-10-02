@@ -69,8 +69,9 @@
 <p>The below requirements are needed on the host that executes this module.</p>
 <ul class="simple">
 <li>Ansible 2.9 or later</li>
-<li>NimbleOS 5.0 or later</li>
-<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+<li>Python 3.6 or later</li>
+<li>HPE Nimble Storage SDK for Python</li>
+<li>HPE Nimble Storage arrays running NimbleOS 5.0 or later</li>
 </ul>
 </div>
 <div class="section" id="parameters">
@@ -87,7 +88,7 @@
 <dd>Text description of snapshot.</dd>
 <dt>expiry_after (False, int, None)</dt>
 <dd>Number of seconds after which this snapshot is considered expired by snapshot TTL. A value of 0 indicates that snapshot never expires.</dd>
-<dt>force (False, bool, False)</dt>
+<dt>force (False, bool, None)</dt>
 <dd>Forcibly delete the specified snapshot even if it is the last replicated collection. Doing so could lead to full re-seeding at the next replication.</dd>
 <dt>metadata (False, dict, None)</dt>
 <dd>Key-value pairs that augment a snapshot’s attributes. List of key-value pairs. Keys must be unique and non-empty.</dd>

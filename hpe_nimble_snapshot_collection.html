@@ -69,8 +69,9 @@
 <p>The below requirements are needed on the host that executes this module.</p>
 <ul class="simple">
 <li>Ansible 2.9 or later</li>
-<li>NimbleOS 5.0 or later</li>
-<li>HPE Nimble Storage SDK for Python 1.0.0 or later (nimble-sdk Python module)</li>
+<li>Python 3.6 or later</li>
+<li>HPE Nimble Storage SDK for Python</li>
+<li>HPE Nimble Storage arrays running NimbleOS 5.0 or later</li>
 </ul>
 </div>
 <div class="section" id="parameters">
@@ -89,7 +90,7 @@
 <dd>Do not perform application synchronization for this snapshot. Create a crash-consistent snapshot instead.</dd>
 <dt>expiry_after (False, int, None)</dt>
 <dd>Number of seconds after which this snapcoll is considered expired by the snapshot TTL. A value of 0 indicates that the snapshot never expires, 1 indicates that the snapshot uses a group-level configured TTL value and any other value indicates the number of seconds.</dd>
-<dt>force (False, bool, False)</dt>
+<dt>force (False, bool, None)</dt>
 <dd>Forcibly delete the specified snapshot collection even if it is the last replicated snapshot. Doing so could lead to full re-seeding at the next replication.</dd>
 <dt>invoke_on_upstream_partner (False, bool, False)</dt>
 <dd>Invoke snapshot request on upstream partner. This operation is not supported for synchronous replication volume vollections.</dd>
