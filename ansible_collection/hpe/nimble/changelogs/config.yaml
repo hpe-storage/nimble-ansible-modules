@@ -27,6 +27,6 @@ sections:
   - Bugfixes
 - - known_issues
   - Known Issues
-title: Hpe.Nimble
+title: HPE Nimble Storage Content Collection for Ansible
 trivial_section_name: trivial
 use_fqcn: true
