@@ -1,0 +1,3 @@
+ansible-pylibssh
+nimble-sdk
+selectors2 ; python_version == '3.6'
