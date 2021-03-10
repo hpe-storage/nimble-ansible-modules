@@ -40,6 +40,10 @@ ansible-galaxy collection install hpe.nimble
 - hpe_nimble_volume -  Manage the HPE Nimble Storage volumes
 - hpe_nimble_volume_collection - Manage the HPE Nimble Storage volume collections
 
+## Support
+
+HPE Nimble Storage Content Collection for Ansible is supported by HPE when used with HPE Nimble Storage arrays on valid support contracts. Please send an email to [support@nimblestorage.com](mailto:support@nimblestorage.com) to get started with any issue you might need assistance with. Engage with your HPE representative for other means on how to get in touch with Nimble support directly.
+ 
 ## License
 
 HPE Nimble Storage Content Collection for Ansible is released under the Apache-2.0 license.
