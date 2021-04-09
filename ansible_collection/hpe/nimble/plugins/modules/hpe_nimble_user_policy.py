@@ -18,11 +18,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -83,14 +78,14 @@ options:
     description:
     - Number of uppercase characters required in user passwords. Allowed range is [0, 255] inclusive.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage user policies.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage user policies
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
 
 - name: Update user policy
-  hpe_nimble_user_policy:
+  hpe.nimble.hpe_nimble_user_policy:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -141,48 +136,39 @@ def main():
         },
         "allowed_attempts": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "min_length": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "upper": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "lower": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "digit": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "special": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "previous_diff": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "no_reuse": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "max_sessions": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         }
     }
     default_fields = utils.basic_auth_arg_fields()

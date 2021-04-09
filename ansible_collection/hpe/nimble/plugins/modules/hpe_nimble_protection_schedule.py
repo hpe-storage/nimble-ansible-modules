@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -53,7 +49,6 @@ options:
   disable_appsync:
     required: False
     type: bool
-    default: False
     description:
     - Disables application synchronized snapshots and creates crash consistent snapshots instead.
   downstream_partner:
@@ -123,7 +118,6 @@ options:
   skip_db_consistency_check:
     required: False
     type: bool
-    default: False
     description:
     - Skip consistency check for database files on snapshots created by this schedule. This option only applies to snapshot schedules of a protection
       template with application synchronization set to VSS, application ID set to MS Exchange 2010 or later w/DAG, this schedule's snap_verify option
@@ -131,7 +125,6 @@ options:
   snap_verify:
     required: False
     type: bool
-    default: False
     description:
     - Run verification tool on snapshot created by this schedule. This option can only be used with snapshot schedules of a protection template
       that has application synchronization. The tool used to verify snapshot depends on the type of application. For example, if application
@@ -178,8 +171,8 @@ options:
     description:
     - Name of the volume collection in which this protection schedule is attached to.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage protection schedules.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage protection schedules
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -187,7 +180,7 @@ EXAMPLES = r'''
 # if state is create , then create a protection schedule if not present. Fails if already present.
 # if state is present, then create a protection schedule if not present. Succeed if it already exists.
 - name: Create protection schedule if not present
-  hpe_nimble_protection_schedule:
+  hpe.nimble.hpe_nimble_protection_schedule:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -199,7 +192,7 @@ EXAMPLES = r'''
     num_retain: "{{ num_retain }}"
 
 - name: Delete protection schedule
-  hpe_nimble_protection_schedule:
+  hpe.nimble.hpe_nimble_protection_schedule:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -298,111 +291,90 @@ def main():
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "volcoll_or_prottmpl_type": {
             "choices": ['protection_template', 'volume_collection'],
             "required": True,
-            "type": "str",
-            "no_log": False,
+            "type": "str"
         },
         "volcoll_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "prot_template_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "period": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "period_unit": {
             "choices": ['minutes', 'hours', 'days', 'weeks'],
             "required": False,
-            "type": "str",
-            "no_log": False,
+            "type": "str"
         },
         "at_time": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "until_time": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "days": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "num_retain": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "downstream_partner": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "replicate_every": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "num_retain_replica": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "repl_alert_thres": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "snap_verify": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "skip_db_consistency_check": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "disable_appsync": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "schedule_type": {
             "choices": ['regular', 'external_trigger'],
             "required": False,
-            "type": "str",
-            "no_log": False,
+            "type": "str"
         },
         "use_downstream_for_DR": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
 

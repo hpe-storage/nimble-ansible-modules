@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -128,8 +124,8 @@ options:
     description:
     - Throttles used while replicating from/to this partner. All the throttles for the partner.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage Replication Partner.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage Replication Partner
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -137,7 +133,7 @@ EXAMPLES = r'''
 # if state is create, then create partner, fails if it exist or cannot create
 # if state is present, then create partner if not present ,else success
 - name: Create Partner
-  hpe_nimble_partner:
+  hpe.nimble.hpe_nimble_partner:
     host: "{{ host }}"  # upstream host
     username: "{{ username }}"
     password: "{{ password }}"
@@ -149,7 +145,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete Partner
-  hpe_nimble_partner:
+  hpe.nimble.hpe_nimble_partner:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -157,7 +153,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Test Partner
-  hpe_nimble_partner:
+  hpe.nimble.hpe_nimble_partner:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -166,7 +162,7 @@ EXAMPLES = r'''
     test: true
 
 - name: Pause Partner
-  hpe_nimble_partner:
+  hpe.nimble.hpe_nimble_partner:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -175,7 +171,7 @@ EXAMPLES = r'''
     pause: true
 
 - name: Resume Partner
-  hpe_nimble_partner:
+  hpe.nimble.hpe_nimble_partner:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -320,58 +316,47 @@ def main():
     fields = {
         "control_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "data_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "folder": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "match_folder": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "downstream_hostname": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "pause": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "pool": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "repl_data_hostname": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "resume": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "secret": {
             "required": False,
@@ -380,8 +365,7 @@ def main():
         },
         "subnet_label": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "subnet_type": {
             "required": False,
@@ -392,19 +376,16 @@ def main():
                         'data',
                         'mgmt_data'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "test": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "throttles": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "state": {
             "required": True,

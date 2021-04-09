@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -46,7 +42,6 @@ options:
   disabled:
     required: False
     type: bool
-    default: False
     description:
     - User is currently disabled.
   email_addr:
@@ -97,12 +92,11 @@ options:
   unlock:
     required: False
     type: bool
-    default: False
     description:
     - Unlock the user.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage users.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage users
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -110,7 +104,7 @@ EXAMPLES = r'''
 # if state is create, then create user, fails if it exist or cannot create
 # if state is present, then create user if not present, else success
 - name: Create user
-  hpe_nimble_user:
+  hpe.nimble.hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -119,7 +113,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete user
-  hpe_nimble_user:
+  hpe.nimble.hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -127,7 +121,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Unlock user
-  hpe_nimble_user:
+  hpe.nimble.hpe_nimble_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -243,18 +237,15 @@ def main():
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "role": {
             "required": False,
@@ -263,8 +254,7 @@ def main():
                         'operator',
                         'guest'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "user_password": {
             "required": False,
@@ -273,33 +263,28 @@ def main():
         },
         "inactivity_timeout": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "full_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "email_addr": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "disabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "auth_password": {
             "required": False,
             "type": "str",
-            "no_log": False
+            "no_log": True
         },
         "unlock": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()

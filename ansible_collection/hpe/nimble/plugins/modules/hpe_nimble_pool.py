@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -45,15 +41,12 @@ options:
     description:
     - Text description of pool.
   dedupe_all_volumes:
-    required: False
     type: bool
-    default: False
     description:
     - Indicates if dedupe is enabled by default for new volumes on this pool.
   force:
     required: False
-    type: bool
-    default: False
+    type:  bool
     description:
     - Forcibly delete the specified pool even if it contains deleted volumes whose space is being reclaimed.
       Forcibly remove an array from array_list via an update operation even if the array is not reachable.
@@ -89,8 +82,8 @@ options:
     description:
     - Name of the target pool.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage pools.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage pools
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -98,7 +91,7 @@ EXAMPLES = r'''
 # if state is create , then create a pool if not present. Fails if already present.
 # if state is present, then create a pool if not present. Succeed if it already exists.
 - name: Create pool if not present
-  hpe_nimble_pool:
+  hpe.nimble.hpe_nimble_pool:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -108,7 +101,7 @@ EXAMPLES = r'''
     description: "{{ description }}"
 
 - name: Delete pool
-  hpe_nimble_pool:
+  hpe.nimble.hpe_nimble_pool:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -224,43 +217,35 @@ def main():
         "array_list": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "dedupe_all_volumes": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "force": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "is_default": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "merge": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "state": {
             "required": True,
@@ -272,8 +257,7 @@ def main():
         },
         "target": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         }
     }
     default_fields = utils.basic_auth_arg_fields()

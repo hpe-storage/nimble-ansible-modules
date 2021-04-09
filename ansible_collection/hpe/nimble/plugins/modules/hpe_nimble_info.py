@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -53,14 +49,16 @@ options:
       - detail - A bool flag when set to true fetches everything for a given subset. Default is "True".
       - query - A key-value pair to query.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Collect information from HPE Nimble Storage array.
-version_added: "2.9.0"
+short_description: Collect information from HPE Nimble Storage array
+version_added: "1.0.0"
+notes:
+  - This module supports C(check_mode).
 '''
 
 EXAMPLES = r'''
 
-- name: collect default set of information
-  hpe_nimble_info:
+- name: Collect default set of information
+  hpe.nimble.hpe_nimble_info:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -68,12 +66,12 @@ EXAMPLES = r'''
       - minimum:
   register: array_info
 
-- name: show default information
-  debug:
+- name: Show default information
+  ansible.builtin.debug:
     msg: "{{ array_info['nimble_info']['default'] }}"
 
-- name: collect config
-  hpe_nimble_info:
+- name: Collect config
+  hpe.nimble.hpe_nimble_info:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -81,12 +79,12 @@ EXAMPLES = r'''
       - config:
   register: array_info
 
-- name: show config information
-  debug:
+- name: Show config information
+  ansible.builtin.debug:
     msg: "{{ array_info['nimble_info']['config'] }}"
 
-- name: collect all
-  hpe_nimble_info:
+- name: Collect all
+  hpe.nimble.hpe_nimble_info:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -95,13 +93,13 @@ EXAMPLES = r'''
           limit: 1
   register: array_info
 
-- name: show all information
-  debug:
+- name: Show all information
+  ansible.builtin.debug:
     msg: "{{ array_info['nimble_info'] }}"
 
-- name: collect volume, snapshot and volume collection. Below query will show just one
-        snapshot detail with attributes 'name and id' for a volume called 'vol1'.
-  hpe_nimble_info:
+- name: Collect volume, snapshot and volume collection. Below query will show just one
+        snapshot detail with attributes 'name and id' for a volume called 'vol1'
+  hpe.nimble.hpe_nimble_info:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -120,8 +118,8 @@ EXAMPLES = r'''
           detail: True
   register: array_info
 
-- name: show information
-  debug:
+- name: Show information
+  ansible.builtin.debug:
     msg: "{{ array_info['nimble_info'] }}"
 
 '''
@@ -978,13 +976,12 @@ def main():
             "required": False,
             "type": "list",
             "elements": 'raw',
-            'default': "minimum",
-            "no_log": False
+            'default': "minimum"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
     fields.update(default_fields)
-    module = AnsibleModule(argument_spec=fields)
+    module = AnsibleModule(argument_spec=fields, supports_check_mode=True)
     if client is None:
         module.fail_json(msg='Python nimble-sdk could not be found.')
 

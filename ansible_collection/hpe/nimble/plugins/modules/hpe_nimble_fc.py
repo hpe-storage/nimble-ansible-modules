@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -76,14 +72,14 @@ options:
     description:
     - Base WWNN. Six bytes expressed in hex separated by colons. Example:- 'af:32:f1'.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage Fibre Channel.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage Fibre Channel
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
 
 - name: Update fibre channel interface
-  hpe_nimble_fc:
+  hpe.nimble.hpe_nimble_fc:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -94,7 +90,7 @@ EXAMPLES = r'''
     state: "{{ 'present' }}"
 
 - name: Regenerate fibre channel config
-  hpe_nimble_fc:
+  hpe.nimble.hpe_nimble_fc:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -105,7 +101,7 @@ EXAMPLES = r'''
     state: "{{ 'present' }}"
 
 - name: Hardware upgrade for fibre channel
-  hpe_nimble_fc:
+  hpe.nimble.hpe_nimble_fc:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -216,38 +212,31 @@ def main():
     fields = {
         "array_name_or_serial": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "controller": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "hw_upgrade": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "online": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "precheck": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "regenerate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "state": {
             "required": True,
@@ -256,8 +245,7 @@ def main():
         },
         "wwnn_base_str": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
     }
     default_fields = utils.basic_auth_arg_fields()

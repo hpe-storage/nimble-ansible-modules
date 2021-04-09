@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -37,9 +33,7 @@ options:
     description:
     - The intended operation to be performed on the specified disk.
   force:
-    required: False
     type: bool
-    default: False
     description:
     - Forcibly add a disk.
   shelf_location:
@@ -60,14 +54,14 @@ options:
     description:
     - The disk operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage disk.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage disk
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
 
 - name: Update Disk
-  hpe_nimble_disk:
+  hpe.nimble.hpe_nimble_disk:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -132,23 +126,19 @@ def main():
         "disk_op": {
             "required": True,
             "choices": ['add', 'remove'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "slot": {
             "required": True,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "shelf_location": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "force": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()

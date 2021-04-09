@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -73,9 +69,7 @@ options:
     description:
     - Description of a performance policy.
   dedupe:
-    required: False
     type: bool
-    default: False
     description:
     - Specifies if dedupe is enabled for volumes created with this performance policy.
   name:
@@ -106,7 +100,7 @@ options:
     - The performance policy operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage the HPE Nimble Storage performance policies
-version_added: "2.9.0"
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -114,7 +108,7 @@ EXAMPLES = r'''
 # if state is create , then create a performance policy if not present. Fails if already present.
 # if state is present, then create a performance policy if not present. Succeed if it already exists.
 - name: Create performance policy if not present
-  hpe_nimble_performance_policy:
+  hpe.nimble.hpe_nimble_performance_policy:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -125,7 +119,7 @@ EXAMPLES = r'''
     compress: "{{ compress }}"
 
 - name: Delete performance policy
-  hpe_nimble_performance_policy:
+  hpe.nimble.hpe_nimble_performance_policy:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -210,55 +204,45 @@ def main():
     fields = {
         "app_category": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "block_size": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "cache": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "cache_policy": {
             "required": False,
             "choices": ['disabled', 'normal', 'aggressive', 'no_write', 'aggressive_read_no_write'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "compress": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "dedupe": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "space_policy": {
             "required": False,
             "choices": ['invalid', 'offline', 'non_writable', 'read_only', 'login_only'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "state": {
             "required": True,

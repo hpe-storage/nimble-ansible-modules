@@ -18,10 +18,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -53,7 +49,6 @@ options:
   cache_pinned:
     required: False
     type: bool
-    default: False
     description:
     - If set to true, all the contents of this volume are kept in flash cache.
   caching:
@@ -218,8 +213,8 @@ options:
     - Name of volume collection of which this volume is a member. Use this attribute in update operation to associate or dissociate volumes with or from
       volume collections. When associating, set this attribute to the name of the volume collection. When dissociating, set this attribute to empty string.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage volumes.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage volumes
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -227,7 +222,7 @@ EXAMPLES = r'''
 # If state is "create", then create a volume if not present. Fails if already present.
 # if state is present, then create a volume if not present. Succeeds if it already exists.
 - name: Create volume if not present
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -241,7 +236,7 @@ EXAMPLES = r'''
     name: "{{ name }}"
 
 - name: Changing volume "{{ name }}" to offline state
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -250,7 +245,7 @@ EXAMPLES = r'''
     name: "{{ name }}"
 
 - name: Changing volume "{{ name }}" to online state
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -261,8 +256,8 @@ EXAMPLES = r'''
 # Create a clone from the given snapshot name.
 # If snapshot name is not provided then a snapshot is created on the source volume.
 # Clone task only run if "parent" is specified. Snapshot is optional.
-- name: Create or Refresh a clone!
-  hpe_nimble_volume:
+- name: Create or Refresh a clone
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -274,14 +269,14 @@ EXAMPLES = r'''
     - parent is defined
 
 - name: Destroy volume (must be offline)
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     name: "{{ name }}"
     state: absent
 
 # If no snapshot is given, then restore volume to last snapshot. Fails if no snapshots exist.
 # If snapshot is provided, then restore volume from specified snapshot.
-- name: Restore volume "{{ name }}".
-  hpe_nimble_volume:
+- name: Restore volume "{{ name }}"
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -290,7 +285,7 @@ EXAMPLES = r'''
     state: restore
 
 - name: Delete volume "{{ name }}" (must be offline)
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -298,7 +293,7 @@ EXAMPLES = r'''
     state: absent
 
 - name: Move volume to pool
-  hpe_nimble_volume:
+  hpe.nimble.hpe_nimble_volume:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -558,13 +553,11 @@ def main():
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "size": {
             "type": "int"

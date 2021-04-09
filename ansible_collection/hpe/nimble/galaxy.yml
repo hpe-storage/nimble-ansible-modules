@@ -1,6 +1,6 @@
 namespace: hpe
 name: nimble
-version: 1.0.1
+version: 1.0.2
 authors:
   - HPE Nimble Storage <nimble-dcs-storage-automation-eng@hpe.com>
 license: Apache-2.0

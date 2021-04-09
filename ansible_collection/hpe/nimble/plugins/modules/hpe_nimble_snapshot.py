@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -77,7 +73,6 @@ options:
   online:
     required: False
     type: bool
-    default: False
     description:
     - Online state for a snapshot means it could be mounted for data restore.
   state:
@@ -97,12 +92,11 @@ options:
   writable:
     required: False
     type: bool
-    default: False
     description:
     - Allow snapshot to be writable. Mandatory and must be set to 'true' for VSS application synchronized snapshots.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage snapshots.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage snapshots
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -110,7 +104,7 @@ EXAMPLES = r'''
 # if state is create , then create a snapshot if not present. Fails if already present.
 # if state is present, then create a snapshot if not present. Succeeds if it already exists.
 - name: Create snapshot if not present
-  hpe_nimble_snapshot:
+  hpe.nimble.hpe_nimble_snapshot:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -121,7 +115,7 @@ EXAMPLES = r'''
     writable: "{{ writable | default(false) }}"
 
 - name: Delete snapshot  (must be offline)
-  hpe_nimble_snapshot:
+  hpe.nimble.hpe_nimble_snapshot:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -229,18 +223,15 @@ def main():
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "volume": {
             "required": True,
@@ -248,18 +239,15 @@ def main():
         },
         "online": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "writable": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "app_uuid": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "metadata": {
             "required": False,
@@ -272,13 +260,11 @@ def main():
         },
         "expiry_after": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "force": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
