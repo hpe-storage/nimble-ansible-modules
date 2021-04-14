@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -67,8 +63,8 @@ options:
     - CHAP secret. The CHAP secret should be between 12-16 characters and cannot contain spaces or most punctuation.
       string of 12 to 16 printable ASCII characters excluding ampersand and ^[];`
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage CHAP user.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage CHAP user
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -76,7 +72,7 @@ EXAMPLES = r'''
 # if state is create, then create chap user, fails if it exist or cannot create
 # if state is present, then create chap user if not present, else success
 - name: Create Chap User
-  hpe_nimble_chap_user:
+  hpe.nimble.hpe_nimble_chap_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -86,7 +82,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete Chap User
-  hpe_nimble_chap_user:
+  hpe.nimble.hpe_nimble_chap_user:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -102,6 +98,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -175,24 +172,20 @@ def main():
     fields = {
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "initiator_iqns": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "user_password": {
             "required": False,
@@ -238,7 +231,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

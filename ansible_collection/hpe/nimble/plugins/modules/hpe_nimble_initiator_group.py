@@ -18,10 +18,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -103,8 +99,8 @@ options:
     description:
     - List of target subnet labels. If specified, discovery and access to volumes will be restricted to the specified subnets.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage initiator groups.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage initiator groups
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -112,7 +108,7 @@ EXAMPLES = r'''
 # if state is create, then create ig. Fails if already present.
 # if state is present, then create ig if not present. Succeeds if it already exists.
 - name: Create an igroup
-  hpe_nimble_initiator_group:
+  hpe.nimble.hpe_nimble_initiator_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -123,7 +119,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete igroup
-  hpe_nimble_initiator_group:
+  hpe.nimble.hpe_nimble_initiator_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -140,6 +136,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -219,65 +216,54 @@ def main():
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "access_protocol": {
             "choices": ['iscsi',
                         'fc'
                         ],
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "host_type": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "fc_tdz_ports": {
             "required": False,
             "type": "list",
-            "elements": 'int',
-            "no_log": False,
+            "elements": 'int'
         },
         "target_subnets": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False,
+            "elements": 'dict'
         },
         "iscsi_initiators": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False,
+            "elements": 'dict'
         },
         "fc_initiators": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "app_uuid": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "no_log": False
+            "type": "dict"
         }
     }
 
@@ -316,7 +302,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

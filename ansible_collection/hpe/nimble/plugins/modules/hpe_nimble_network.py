@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -107,8 +103,8 @@ options:
     description:
     - Validate a network configuration.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage network configuration.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage network configuration
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -116,7 +112,7 @@ EXAMPLES = r'''
 # if state is create, then create network config, fails if it exist or cannot create
 # if state is present, then create network config if not present ,else success
 - name: Create network config
-  hpe_nimble_network:
+  hpe.nimble.hpe_nimble_network:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -130,7 +126,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete network config
-  hpe_nimble_network:
+  hpe.nimble.hpe_nimble_network:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -138,7 +134,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Validate network config
-  hpe_nimble_network:
+  hpe.nimble.hpe_nimble_network:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -148,7 +144,7 @@ EXAMPLES = r'''
     validate: true
 
 - name: Activate Network config
-  hpe_nimble_network:
+  hpe.nimble.hpe_nimble_network:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -166,6 +162,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -282,39 +279,32 @@ def main():
     fields = {
         "activate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "array": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "iscsi_automatic_connection_method": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "iscsi_connection_rebalancing": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "ignore_validation_mask": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "mgmt_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
@@ -322,25 +312,21 @@ def main():
                         'backup',
                         'draft'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "secondary_mgmt_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "subnet": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "route": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "state": {
             "required": True,
@@ -352,8 +338,7 @@ def main():
         },
         "validate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -392,7 +377,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

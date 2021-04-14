@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -37,7 +33,7 @@ options:
     required: False
     type: str
     description:
-    - Comma-separated list of email addresss to receive emails. Comma separated email list.
+    - Comma-separated list of email addresses to receive emails. Comma separated email list.
   alert_from_email_addrs:
     required: False
     type: str
@@ -396,7 +392,7 @@ options:
     required: False
     type: str
     description:
-    - arget Driven Zoning (TDZ) prefix for peer zones created by TDZ.
+    - Target Driven Zoning (TDZ) prefix for peer zones created by TDZ.
   test_alert:
     required: False
     type: bool
@@ -434,14 +430,14 @@ options:
     description:
     - Are vVol enabled on this group.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage group.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage group
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
 
 - name: Update group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -451,7 +447,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Reboot group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -460,7 +456,7 @@ EXAMPLES = r'''
     reboot: true
 
 - name: Halt group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -469,7 +465,7 @@ EXAMPLES = r'''
     halt: true
 
 - name: Validate merge group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -482,7 +478,7 @@ EXAMPLES = r'''
     validate_merge: true
 
 - name: Merge group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -495,7 +491,7 @@ EXAMPLES = r'''
     merge: true
 
 - name: Test alert group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -505,7 +501,7 @@ EXAMPLES = r'''
     test_alert: true
 
 - name: Migrate group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -514,7 +510,7 @@ EXAMPLES = r'''
     migrate: true
 
 - name: Check migrate group
-  hpe_nimble_group:
+  hpe.nimble.hpe_nimble_group:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -531,6 +527,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -705,18 +702,15 @@ def main():
     fields = {
         "alarms": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "alert_to_email_addrs": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "alert_from_email_addrs": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "alert_min_level": {
             "required": False,
@@ -725,133 +719,108 @@ def main():
                         'warning',
                         'critical'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "allow_analytics_gui": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "allow_support_tunnel": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "auto_switchover": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "autoclean_unmanaged_snapshots": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "autoclean_unmanaged_snapshots_ttl_unit": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "autosupport": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "cc_mode": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "check_migrate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "date": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "default_iscsi_target_scope": {
             "required": False,
             "choices": ['volume',
                         'group'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "default_volume_limit": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "domain_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "dns_servers": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "fc_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "force": {
             "required": False,
             "type": "bool",
-            "default": False,
-            "no_log": False
+            "default": False
         },
         "group_snapshot_ttl": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "group_target_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "group_target_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "halt": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "iscsi_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "isns_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "isns_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "isns_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "level": {
             "required": False,
@@ -860,58 +829,47 @@ def main():
                         'warning',
                         'critical'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "login_banner_after_auth": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "login_banner_message": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "login_banner_reset": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "merge": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "migrate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "ntp_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "proxy_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "proxy_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "proxy_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "proxy_password": {
             "required": False,
@@ -920,29 +878,24 @@ def main():
         },
         "reboot": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "repl_throttle_list": {
             "required": False,
             "type": "list",
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "send_alert_to_support": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "skip_secondary_mgmt_ip": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "smtp_auth_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "smtp_auth_password": {
             "required": False,
@@ -951,13 +904,11 @@ def main():
         },
         "smtp_auth_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "smtp_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "smtp_encrypt_type": {
             "required": False,
@@ -965,63 +916,51 @@ def main():
                         'starttls',
                         'ssl'
                         ],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "snmp_community": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "snmp_get_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "snmp_get_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "snmp_trap_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "snmp_trap_host": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "snmp_trap_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "snmp_sys_contact": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "snmp_sys_location": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "src_group_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "src_group_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "src_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "src_passphrase": {
             "required": False,
@@ -1042,63 +981,51 @@ def main():
         },
         "syslogd_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "syslogd_port": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "syslogd_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "tdz_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "tdz_prefix": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "test_alert": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "timezone": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "tlsv1_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "user_inactivity_timeout": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "validate_merge": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "vss_validation_timeout": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "vvol_enabled": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -1198,7 +1125,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

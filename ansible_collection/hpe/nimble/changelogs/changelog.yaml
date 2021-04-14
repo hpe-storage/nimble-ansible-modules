@@ -1,5 +1,15 @@
 ancestor: null
 releases:
+  1.1.0:
+    changes:
+      release_summary: 'This patch release provides compatibility with Ansible v4.0.0'
+    release_date: '2021-04-15'
+
+  1.0.1:
+    changes:
+      release_summary: 'This patch release provides compatibility with Ansible v3.0.0'
+    release_date: '2021-03-20'
+
   1.0.0:
     changes:
       release_summary: 'First release of the HPE Nimble Storage Content Collection for Ansible'

@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -68,8 +64,8 @@ options:
     description:
     - The name of the volume that this access control record applies to.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage access control records.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage access control records
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -77,7 +73,7 @@ EXAMPLES = r'''
 # If state is "create", create access control record for given volume, fails if it exist.
 # if state is present, create access control record if not already present.
 - name: Create access control record for volume
-  hpe_nimble_access_control_record:
+  hpe.nimble.hpe_nimble_access_control_record:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -87,7 +83,7 @@ EXAMPLES = r'''
 
 # Delete the access control record for a given volume name
 - name: Delete access control record for volume
-  hpe_nimble_access_control_record:
+  hpe.nimble.hpe_nimble_access_control_record:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -104,6 +100,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -186,28 +183,23 @@ def main():
         "apply_to": {
             "required": False,
             "choices": ['volume', 'snapshot', 'both'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "chap_user": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "lun": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "volume": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "initiator_group": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -238,7 +230,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

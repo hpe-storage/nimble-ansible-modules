@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -31,7 +27,6 @@ options:
   allow_lower_limits:
     required: False
     type: bool
-    default : False
     description:
     - A True setting will allow you to add an array with lower limits to a pool with higher limits.
   change_name:
@@ -42,7 +37,6 @@ options:
   create_pool:
     required: False
     type: bool
-    default: False
     description:
     - Whether to create an associated pool during the array creation.
   ctrlr_a_support_ip:
@@ -116,8 +110,8 @@ options:
       description:
       - The array operation
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage array.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage array
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -125,7 +119,7 @@ EXAMPLES = r'''
 # if state is create , then create a array if not present. Fails if already present.
 # if state is present, then create a array if not present. Succeed if it already exists.
 - name: Create array if not present
-  hpe_nimble_array:
+  hpe.nimble.hpe_nimble_array:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -138,7 +132,7 @@ EXAMPLES = r'''
     pool_name: "{{ pool_name | mandatory}}"
 
 - name: Delete array
-  hpe_nimble_array:
+  hpe.nimble.hpe_nimble_array:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -147,7 +141,7 @@ EXAMPLES = r'''
     state: absent
 
 - name: Failover array
-  hpe_nimble_array:
+  hpe.nimble.hpe_nimble_array:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -155,8 +149,8 @@ EXAMPLES = r'''
     failover: true
     state: present
 
-- name: halt array
-  hpe_nimble_array:
+- name: Halt array
+  hpe.nimble.hpe_nimble_array:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -165,7 +159,7 @@ EXAMPLES = r'''
     halt: true
 
 - name: Reboot array
-  hpe_nimble_array:
+  hpe.nimble.hpe_nimble_array:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -182,6 +176,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -311,79 +306,64 @@ def main():
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "pool_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "serial": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "create_pool": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "pool_description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "allow_lower_limits": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "ctrlr_a_support_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "ctrlr_b_support_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "nic_list": {
             "required": False,
             "type": 'list',
-            "elements": 'dict',
-            "no_log": False
+            "elements": 'dict'
         },
         "secondary_mgmt_ip": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "force": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "failover": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "halt": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "reboot": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -424,7 +404,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

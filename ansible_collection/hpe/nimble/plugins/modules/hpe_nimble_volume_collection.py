@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -122,11 +118,10 @@ options:
     required: False
     type: bool
     description:
-    - Invoke handover request on upstream partner. This operation is not supported for synchronous replication volume vollections.
+    - Invoke handover request on upstream partner. This operation is not supported for synchronous replication volume collections.
   is_standalone_volcoll:
     required: False
     type: bool
-    default: False
     description:
     - Indicates whether this is a standalone volume collection.
   metadata:
@@ -143,7 +138,6 @@ options:
   no_reverse:
     required: False
     type: bool
-    default: False
     description:
     - Do not automatically reverse direction of replication.
       Using this argument will prevent the new owner from automatically replicating the volume collection to this node when the handover completes.
@@ -166,7 +160,7 @@ options:
     type: str
     description:
     - Name of the protection template whose attributes will be used to create this volume collection.
-      This attribute is only used for input when creating a volume collection and is not outputed.
+      This attribute is only used for input when creating a volume collection and is not outputted.
   replication_partner:
     required: False
     type: str
@@ -211,8 +205,8 @@ options:
     description:
     - Application VMware vCenter password. A password with few constraints.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage volume collections.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage volume collections
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -220,7 +214,7 @@ EXAMPLES = r'''
 # if state is create , then create a volcoll if not present. Fails if already present.
 # if state is present, then create a volcoll if not present. Succeed if it already exists.
 - name: Create volume collection if not present
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -229,7 +223,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -237,7 +231,7 @@ EXAMPLES = r'''
     state: absent
 
 - name: Promote volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -246,7 +240,7 @@ EXAMPLES = r'''
     promote: True
 
 - name: Demote volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -255,7 +249,7 @@ EXAMPLES = r'''
     demote: True
 
 - name: Handover volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -264,7 +258,7 @@ EXAMPLES = r'''
     handover: True
 
 - name: Abort handover volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -273,7 +267,7 @@ EXAMPLES = r'''
     abort_handover: True
 
 - name: Validate volume collection
-  hpe_nimble_volume_collection:
+  hpe.nimble.hpe_nimble_volume_collection:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -456,81 +450,67 @@ def main():
         },
         "prot_template": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "replication_type": {
             "choices": ['periodic_snapshot', 'synchronous'],
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_sync": {
             "choices": ['none', 'vss', 'vmware', 'generic'],
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_id": {
             "required": False,
             "choices": ['inval', 'exchange', 'exchange_dag', 'hyperv', 'sql2005', 'sql2008', 'sql2012', 'sql2014', 'sql2016', 'sql2017'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_cluster": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_service": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_hostname": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_password": {
             "required": False,
             "type": "str",
-            "no_log": False
+            "no_log": True
         },
         "agent_hostname": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "agent_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "agent_password": {
             "required": False,
@@ -539,58 +519,47 @@ def main():
         },
         "is_standalone_volcoll": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "metadata": {
             "required": False,
-            "type": "dict",
-            "no_log": False
+            "type": "dict"
         },
         "promote": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "demote": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "handover": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "abort_handover": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "validate": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "replication_partner": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "invoke_on_upstream_partner": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "no_reverse": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "override_upstream_down": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()

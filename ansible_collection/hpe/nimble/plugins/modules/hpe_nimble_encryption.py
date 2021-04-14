@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -29,9 +25,7 @@ description: Manage the encryption on an Nimble Storage group.
 module: hpe_nimble_encryption
 options:
   active:
-    required: False
     type: bool
-    default: False
     description:
     - Whether the master key is active or not.
   age:
@@ -80,8 +74,8 @@ options:
     description:
     - The encryption operation.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage encryption.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage encryption
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -89,7 +83,7 @@ EXAMPLES = r'''
 # if state is create, then create master key, fails if it exist or cannot create
 # if state is present, then create master key if not present ,else success
 - name: Create master key
-  hpe_nimble_encryption:
+  hpe.nimble.hpe_nimble_encryption:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -99,7 +93,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete master key
-  hpe_nimble_encryption:
+  hpe.nimble.hpe_nimble_encryption:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -107,7 +101,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Purge inactive master key
-  hpe_nimble_encryption:
+  hpe.nimble.hpe_nimble_encryption:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -117,7 +111,7 @@ EXAMPLES = r'''
     purge_inactive: true
 
 - name: Group encryption
-  hpe_nimble_encryption:
+  hpe.nimble.hpe_nimble_encryption:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -135,6 +129,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -247,28 +242,23 @@ def main():
     fields = {
         "active": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "age": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "encryption_config": {
             "required": False,
-            "type": "dict",
-            "no_log": False
+            "type": "dict"
         },
         "group_encrypt": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "passphrase": {
             "required": False,
@@ -277,8 +267,7 @@ def main():
         },
         "purge_inactive": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "new_passphrase": {
             "required": False,
@@ -327,7 +316,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

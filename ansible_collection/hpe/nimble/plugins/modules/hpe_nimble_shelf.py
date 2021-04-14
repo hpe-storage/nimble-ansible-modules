@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -72,14 +68,14 @@ options:
     description:
     - Serial number of shelf.
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage shelves.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage shelves
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
 
 - name: Update shelf
-  hpe_nimble_shelf:
+  hpe.nimble.hpe_nimble_shelf:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -98,6 +94,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -143,38 +140,31 @@ def main():
         },
         "shelf_serial": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "activated": {
             "required": True,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "driveset": {
             "required": False,
-            "type": "int",
-            "no_log": False
+            "type": "int"
         },
         "force": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "accept_foreign": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "accept_dedupe_impact": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         },
         "last_request": {
             "required": False,
-            "type": "bool",
-            "no_log": False
+            "type": "bool"
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -207,7 +197,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States

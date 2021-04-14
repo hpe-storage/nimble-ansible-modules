@@ -17,10 +17,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'}
-
 DOCUMENTATION = r'''
 ---
 author:
@@ -125,8 +121,8 @@ options:
     - Application VMware vCenter username. String of up to 80 alphanumeric characters, beginning with a letter.
       It can include ampersand (@), backslash (\), dash (-), period (.), and underscore (_).
 extends_documentation_fragment: hpe.nimble.hpe_nimble
-short_description: Manage the HPE Nimble Storage protection templates.
-version_added: "2.9.0"
+short_description: Manage the HPE Nimble Storage protection templates
+version_added: "1.0.0"
 '''
 
 EXAMPLES = r'''
@@ -134,7 +130,7 @@ EXAMPLES = r'''
 # if state is create , then create a protection template if not present. Fails if already present.
 # if state is present, then create a protection template if not present. Succeed if it already exists.
 - name: Create protection template if not present
-  hpe_nimble_protection_template:
+  hpe.nimble.hpe_nimble_protection_template:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -143,7 +139,7 @@ EXAMPLES = r'''
     state: "{{ state | default('present') }}"
 
 - name: Delete protection template
-  hpe_nimble_protection_template:
+  hpe.nimble.hpe_nimble_protection_template:
     host: "{{ host }}"
     username: "{{ username }}"
     password: "{{ password }}"
@@ -159,6 +155,7 @@ try:
     from nimbleclient.v1 import client
 except ImportError:
     client = None
+from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 
 
@@ -231,75 +228,63 @@ def main():
         },
         "change_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "name": {
             "required": True,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "description": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_sync": {
             "choices": ['none', 'vss', 'vmware', 'generic'],
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_server": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_id": {
             "required": False,
             "choices": ['inval', 'exchange', 'exchange_dag', 'hyperv', 'sql2005', 'sql2008', 'sql2012', 'sql2014', 'sql2016', 'sql2017'],
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_cluster": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "app_service_name": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_hostname": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "vcenter_password": {
             "required": False,
             "type": "str",
-            "no_log": False
+            "no_log": True
         },
         "agent_hostname": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "agent_username": {
             "required": False,
-            "type": "str",
-            "no_log": False
+            "type": "str"
         },
         "agent_password": {
             "required": False,
             "type": "str",
-            "no_log": False
+            "no_log": True
         }
     }
     default_fields = utils.basic_auth_arg_fields()
@@ -339,7 +324,8 @@ def main():
         client_obj = client.NimOSClient(
             hostname,
             username,
-            password
+            password,
+            f"HPE Nimble Ansible Modules v{NIMBLE_ANSIBLE_VERSION}"
         )
 
         # States
