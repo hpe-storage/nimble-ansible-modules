@@ -4,7 +4,7 @@ HPE Nimble Storage Content Collection for Ansible Release Notes
 
 .. contents:: Topics
 
-v1.0.2
+v1.1.0
 ======
 
 Release Summary

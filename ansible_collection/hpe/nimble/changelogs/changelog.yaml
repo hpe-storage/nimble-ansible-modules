@@ -1,6 +1,6 @@
 ancestor: null
 releases:
-  1.0.2:
+  1.1.0:
     changes:
       release_summary: 'This patch release provides compatibility with Ansible v4.0.0'
     release_date: '2021-04-15'
