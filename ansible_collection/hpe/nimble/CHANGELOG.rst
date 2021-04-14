@@ -1,6 +1,6 @@
-=================================================
-HPE Nimble Storage Ansible Modules Release Notes
-=================================================
+===============================================================
+HPE Nimble Storage Content Collection for Ansible Release Notes
+===============================================================
 
 .. contents:: Topics
 
@@ -10,12 +10,12 @@ v1.0.2
 Release Summary
 ---------------
 
-This release provides compatibilty for Ansible v4.0.0
+This release provides compatibility with Ansible v4.0.0
 
 Minor Changes
 -------------
 
-- Made it compatible for Ansible v4.0.0
+- Made it compatible with Ansible v4.0.0
 
 v1.0.1
 ======
@@ -23,12 +23,12 @@ v1.0.1
 Release Summary
 ---------------
 
-This release provides compatibilty for Ansible v3.0.0
+This release provides compatibility with Ansible v3.0.0
 
 Minor Changes
 -------------
 
-- Made it compatible for Ansible v3.0.0
+- Made it compatible with Ansible v3.0.0
 
 v1.0.0
 ======

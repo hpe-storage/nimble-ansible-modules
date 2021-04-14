@@ -20,6 +20,8 @@ __metaclass__ = type
 import datetime
 import uuid
 
+__version__ = "1.1.0"
+
 
 def is_null_or_empty(name):
     if type(name) is bool:
