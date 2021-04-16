@@ -15,7 +15,7 @@
     src_password: "Password-1"
     src_passphrase: "Passphrase-1"
     src_group_name: "testname"
-    src_username: "admin"
+    src_username: "test"
     skip_secondary_mgmt_ip: false
 
   tasks:
