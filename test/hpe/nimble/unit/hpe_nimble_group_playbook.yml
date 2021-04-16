@@ -11,9 +11,11 @@
     # name: "group-alokr1-va"
     alert_to_email_addrs: "ansible.rnjxsfxx@hpe.com"
     send_alert_to_support: true
-    src_group_ip: "10.18.175.96"
+    src_group_ip: "1.1.1.1"
     src_password: "Password-1"
     src_passphrase: "Passphrase-1"
+    src_group_name: "testname"
+    src_username: "test"
     skip_secondary_mgmt_ip: false
 
   tasks:
@@ -52,6 +54,8 @@
         src_password: "{{ src_password }}"
         skip_secondary_mgmt_ip: "{{ skip_secondary_mgmt_ip }}"
         src_passphrase: "{{ src_passphrase }}"
+        src_group_name: "{{ src_group_name }}"
+        src_username: "{{ src_username }}"
         state: "present"
         validate_merge: true
       register: output
@@ -91,16 +95,20 @@
       register: output
       failed_when: "'Backup Group Leader Array has not been setup yet' not in output.msg"
 
-    - name: Merge group. Should fail with 'specified for the argument 'src_passphrase'
+    - name: Merge group. Should fail with 'SM_failed_source_group_login'
       hpe_nimble_group:
         host: "{{ host }}"
         username: "{{ username }}"
         password: "{{ password }}"
         name: "{{ group_name }}"
+        src_group_ip: "{{ src_group_ip }}"
+        src_password: "{{ src_password }}"
+        src_group_name: "{{ src_group_name }}"
+        src_username: "{{ src_username }}"
         state: "present"
         merge: true
       register: output
-      failed_when: "'SM_invalid_arg_value' not in output.msg"
+      failed_when: "'SM_failed_source_group_login' not in output.msg"
 
     - name: Halt group. Should fail with 'SM_invalid_arg_value'
       hpe_nimble_group:
