@@ -3,4 +3,4 @@ username: "admin"
 password: "admin"
 downstream_hostname: "10.18.175.96"
 downstream_group_name: "group-alokr8-va" # please specify the exact group name of downstream partner
-group_name: testname # please specify the exact group name of upstream
+group_name: group-alokr1-va # please specify the exact group name of upstream
