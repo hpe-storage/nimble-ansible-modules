@@ -11,7 +11,7 @@
     # name: "group-alokr1-va"
     alert_to_email_addrs: "ansible.rnjxsfxx@hpe.com"
     send_alert_to_support: true
-    src_group_ip: "10.18.175.96"
+    src_group_ip: "1.1.1.1"
     src_password: "Password-1"
     src_passphrase: "Passphrase-1"
     src_group_name: "testname"
