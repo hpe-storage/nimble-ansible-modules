@@ -216,7 +216,7 @@ extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage the HPE Nimble Storage volumes
 version_added: "1.0.0"
 notes:
-  -  check_mode is not supported.
+  - This module does not supports C(check_mode).
 '''
 
 EXAMPLES = r'''
@@ -315,6 +315,7 @@ try:
 except ImportError:
     client = None
 from ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
+# from hpe_nimble import __version__ as NIMBLE_ANSIBLE_VERSION
 import ansible_collections.hpe.nimble.plugins.module_utils.hpe_nimble as utils
 from enum import Enum
 

@@ -174,7 +174,7 @@ extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage the HPE Nimble Storage protection schedules
 version_added: "1.0.0"
 notes:
-  -  check_mode is not supported.
+  - This module does not supports C(check_mode).
 '''
 
 EXAMPLES = r'''
