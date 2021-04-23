@@ -126,6 +126,8 @@ options:
 extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage the HPE Nimble Storage snapshot collections
 version_added: "1.0.0"
+notes:
+  -  check_mode is not supported.
 '''
 
 EXAMPLES = r'''

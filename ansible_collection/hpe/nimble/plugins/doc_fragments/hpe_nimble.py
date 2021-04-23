@@ -47,6 +47,4 @@ requirements:
   - HPE Nimble Storage SDK for Python
   - HPE Nimble Storage arrays running NimbleOS 5.0 or later
 
-notes:
-  -  check_mode is not supported.
 '''
