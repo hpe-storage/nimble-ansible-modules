@@ -66,6 +66,8 @@ options:
 extends_documentation_fragment: hpe.nimble.hpe_nimble
 short_description: Manage the HPE Nimble Storage access control records
 version_added: "1.0.0"
+notes:
+  - This module does not support C(check_mode).
 '''
 
 EXAMPLES = r'''
