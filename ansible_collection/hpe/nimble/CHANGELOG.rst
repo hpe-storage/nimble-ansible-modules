@@ -4,6 +4,19 @@ HPE Nimble Storage Content Collection for Ansible Release Notes
 
 .. contents:: Topics
 
+v1.1.3
+======
+
+Release Summary
+---------------
+
+This release provides compatibility with Ansible v4.0.0
+
+Minor Changes
+-------------
+
+- Updated changelog file to correct the version
+
 v1.1.2
 ======
 
@@ -15,7 +28,7 @@ This release provides compatibility with Ansible v4.0.0
 Minor Changes
 -------------
 
-- updated changelog file to correct the version
+- Updated changelog file to correct the version
 
 v1.1.1
 ======
@@ -28,7 +41,7 @@ This release provides compatibility with Ansible v4.0.0
 Minor Changes
 -------------
 
-- updated galaxy file to correct the version
+- Updated galaxy file to correct the version
 
 v1.1.0
 ======
