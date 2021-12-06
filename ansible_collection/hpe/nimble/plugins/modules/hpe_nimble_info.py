@@ -453,7 +453,7 @@ nimble_info:
                     "protocol_endpoints": 0,
                     "snapshot_collections": 49,
                     "snapshots": 49,
-                    "software versions": "5.2.2.0-730069-opt",
+                    "software_versions": "5.2.2.0-730069-opt",
                     "users": 2,
                     "volume_collections": 1,
                     "volumes": 3
@@ -811,7 +811,7 @@ def fetch_minimum_subset(info_subset):
         result['volumes'] = len(temp_dict['volumes'])
         result['volume_collections'] = len(temp_dict['volume_collections'])
         result['users'] = len(temp_dict['users'])
-        result['software versions'] = temp_dict['software_versions'][-1].attrs.get('version')  # get the latest
+        result['software_versions'] = temp_dict['software_versions'][-1].attrs.get('version')  # get the latest
         result['snapshot_collections'] = len(temp_dict['snapshot_collections'])
         result['snapshots'] = temp_dict['groups'][-1].attrs.get('num_snaps')
         result['protocol_endpoints'] = len(temp_dict['protocol_endpoints'])
