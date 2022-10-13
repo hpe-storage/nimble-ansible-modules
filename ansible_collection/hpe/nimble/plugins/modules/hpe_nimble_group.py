@@ -34,7 +34,7 @@ options:
     type: str
     description:
     - Comma-separated list of email addresses to receive emails. Comma separated email list.
-  alert_from_email_addrs:
+  alert_from_email_addr:
     required: False
     type: str
     description:
@@ -710,7 +710,7 @@ def main():
             "required": False,
             "type": "str"
         },
-        "alert_from_email_addrs": {
+        "alert_from_email_addr": {
             "required": False,
             "type": "str"
         },
@@ -1041,7 +1041,7 @@ def main():
     password = module.params["password"]
     alarms = module.params["alarms"]
     alert_to_email_addrs = module.params["alert_to_email_addrs"]
-    alert_from_email_addrs = module.params["alert_from_email_addrs"]
+    alert_from_email_addr = module.params["alert_from_email_addr"]
     alert_min_level = module.params["alert_min_level"]
     allow_analytics_gui = module.params["allow_analytics_gui"]
     allow_support_tunnel = module.params["allow_support_tunnel"]
@@ -1179,7 +1179,7 @@ def main():
                     name=change_name,
                     alarms=alarms,
                     alert_to_email_addrs=alert_to_email_addrs,
-                    alert_from_email_addrs=alert_from_email_addrs,
+                    alert_from_email_addr=alert_from_email_addr,
                     alert_min_level=alert_min_level,
                     allow_analytics_gui=allow_analytics_gui,
                     allow_support_tunnel=allow_support_tunnel,
