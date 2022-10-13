@@ -281,11 +281,6 @@ options:
     type: str
     description:
     - Username to authenticate with SMTP Server.
-  smtp_port:
-    required: False
-    type: int
-    description:
-    - Port number of SMTP Server.
   smtp_encrypt_type:
     required: False
     choices:
@@ -295,6 +290,16 @@ options:
     type: str
     description:
     - Level of encryption for SMTP.
+  smtp_port:
+    required: False
+    type: int
+    description:
+    - Port number of SMTP Server.
+  smtp_server:
+    required: False
+    type: str
+    description: Hostname or IP Address of SMTP Server
+    - Port number of SMTP Server.
   snmp_community:
     required: False
     type: str
@@ -908,16 +913,20 @@ def main():
             "required": False,
             "type": "str"
         },
-        "smtp_port": {
-            "required": False,
-            "type": "int"
-        },
         "smtp_encrypt_type": {
             "required": False,
             "choices": ['none',
                         'starttls',
                         'ssl'
                         ],
+            "type": "str"
+        },
+        "smtp_port": {
+            "required": False,
+            "type": "int"
+        },
+        "smtp_server": {
+            "required": False,
             "type": "str"
         },
         "snmp_community": {
@@ -1086,8 +1095,9 @@ def main():
     smtp_auth_enabled = module.params["smtp_auth_enabled"]
     smtp_auth_password = module.params["smtp_auth_password"]
     smtp_auth_username = module.params["smtp_auth_username"]
-    smtp_port = module.params["smtp_port"]
     smtp_encrypt_type = module.params["smtp_encrypt_type"]
+    smtp_port = module.params["smtp_port"]
+    smtp_server = module.params["smtp_server"]
     snmp_community = module.params["snmp_community"]
     snmp_get_enabled = module.params["snmp_get_enabled"]
     snmp_get_port = module.params["snmp_get_port"]
@@ -1214,8 +1224,9 @@ def main():
                     smtp_auth_enabled=smtp_auth_enabled,
                     smtp_auth_password=smtp_auth_password,
                     smtp_auth_username=smtp_auth_username,
-                    smtp_port=smtp_port,
                     smtp_encrypt_type=smtp_encrypt_type,
+                    smtp_port=smtp_port,
+                    smtp_server=smtp_server,
                     snmp_community=snmp_community,
                     snmp_get_enabled=snmp_get_enabled,
                     snmp_get_port=snmp_get_port,
