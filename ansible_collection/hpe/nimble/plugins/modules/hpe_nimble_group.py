@@ -24,7 +24,7 @@ author:
 description: Manage an HPE Nimble Storage group on an Nimble Storage array.
 module: hpe_nimble_group
 options:
-  alarms:
+  alarms_enabled:
     required: False
     type: bool
     description:
@@ -702,7 +702,7 @@ def migrate_group(
 def main():
 
     fields = {
-        "alarms": {
+        "alarms_enabled": {
             "required": False,
             "type": "bool"
         },
@@ -1039,7 +1039,7 @@ def main():
     hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
-    alarms = module.params["alarms"]
+    alarms_enabled = module.params["alarms_enabled"]
     alert_to_email_addrs = module.params["alert_to_email_addrs"]
     alert_from_email_addr = module.params["alert_from_email_addr"]
     alert_min_level = module.params["alert_min_level"]
@@ -1177,7 +1177,7 @@ def main():
                     client_obj,
                     group_name,
                     name=change_name,
-                    alarms=alarms,
+                    alarms_enabled=alarms_enabled,
                     alert_to_email_addrs=alert_to_email_addrs,
                     alert_from_email_addr=alert_from_email_addr,
                     alert_min_level=alert_min_level,
