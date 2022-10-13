@@ -24,7 +24,7 @@ author:
 description: Manage an HPE Nimble Storage group on an Nimble Storage array.
 module: hpe_nimble_group
 options:
-  alarms:
+  alarms_enabled:
     required: False
     type: bool
     description:
@@ -34,7 +34,7 @@ options:
     type: str
     description:
     - Comma-separated list of email addresses to receive emails. Comma separated email list.
-  alert_from_email_addrs:
+  alert_from_email_addr:
     required: False
     type: str
     description:
@@ -281,11 +281,6 @@ options:
     type: str
     description:
     - Username to authenticate with SMTP Server.
-  smtp_port:
-    required: False
-    type: int
-    description:
-    - Port number of SMTP Server.
   smtp_encrypt_type:
     required: False
     choices:
@@ -295,6 +290,16 @@ options:
     type: str
     description:
     - Level of encryption for SMTP.
+  smtp_port:
+    required: False
+    type: int
+    description:
+    - Port number of SMTP Server.
+  smtp_server:
+    required: False
+    type: str
+    description: Hostname or IP Address of SMTP Server
+    - Port number of SMTP Server.
   snmp_community:
     required: False
     type: str
@@ -702,7 +707,7 @@ def migrate_group(
 def main():
 
     fields = {
-        "alarms": {
+        "alarms_enabled": {
             "required": False,
             "type": "bool"
         },
@@ -710,7 +715,7 @@ def main():
             "required": False,
             "type": "str"
         },
-        "alert_from_email_addrs": {
+        "alert_from_email_addr": {
             "required": False,
             "type": "str"
         },
@@ -908,16 +913,20 @@ def main():
             "required": False,
             "type": "str"
         },
-        "smtp_port": {
-            "required": False,
-            "type": "int"
-        },
         "smtp_encrypt_type": {
             "required": False,
             "choices": ['none',
                         'starttls',
                         'ssl'
                         ],
+            "type": "str"
+        },
+        "smtp_port": {
+            "required": False,
+            "type": "int"
+        },
+        "smtp_server": {
+            "required": False,
             "type": "str"
         },
         "snmp_community": {
@@ -1039,9 +1048,9 @@ def main():
     hostname = module.params["host"]
     username = module.params["username"]
     password = module.params["password"]
-    alarms = module.params["alarms"]
+    alarms_enabled = module.params["alarms_enabled"]
     alert_to_email_addrs = module.params["alert_to_email_addrs"]
-    alert_from_email_addrs = module.params["alert_from_email_addrs"]
+    alert_from_email_addr = module.params["alert_from_email_addr"]
     alert_min_level = module.params["alert_min_level"]
     allow_analytics_gui = module.params["allow_analytics_gui"]
     allow_support_tunnel = module.params["allow_support_tunnel"]
@@ -1086,8 +1095,9 @@ def main():
     smtp_auth_enabled = module.params["smtp_auth_enabled"]
     smtp_auth_password = module.params["smtp_auth_password"]
     smtp_auth_username = module.params["smtp_auth_username"]
-    smtp_port = module.params["smtp_port"]
     smtp_encrypt_type = module.params["smtp_encrypt_type"]
+    smtp_port = module.params["smtp_port"]
+    smtp_server = module.params["smtp_server"]
     snmp_community = module.params["snmp_community"]
     snmp_get_enabled = module.params["snmp_get_enabled"]
     snmp_get_port = module.params["snmp_get_port"]
@@ -1177,9 +1187,9 @@ def main():
                     client_obj,
                     group_name,
                     name=change_name,
-                    alarms=alarms,
+                    alarms_enabled=alarms_enabled,
                     alert_to_email_addrs=alert_to_email_addrs,
-                    alert_from_email_addrs=alert_from_email_addrs,
+                    alert_from_email_addr=alert_from_email_addr,
                     alert_min_level=alert_min_level,
                     allow_analytics_gui=allow_analytics_gui,
                     allow_support_tunnel=allow_support_tunnel,
@@ -1214,8 +1224,9 @@ def main():
                     smtp_auth_enabled=smtp_auth_enabled,
                     smtp_auth_password=smtp_auth_password,
                     smtp_auth_username=smtp_auth_username,
-                    smtp_port=smtp_port,
                     smtp_encrypt_type=smtp_encrypt_type,
+                    smtp_port=smtp_port,
+                    smtp_server=smtp_server,
                     snmp_community=snmp_community,
                     snmp_get_enabled=snmp_get_enabled,
                     snmp_get_port=snmp_get_port,
